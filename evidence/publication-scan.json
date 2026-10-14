@@ -1,0 +1,11 @@
+{
+  "files_scanned": 165,
+  "secret_pattern_or_exact_credential_matches": [],
+  "absolute_personal_paths": [],
+  "prohibited_private_files": [],
+  "public_upstream_synthetic_data_included": true,
+  "original_private_git_history_included": false,
+  "method": "Exact local credential comparison and bounded token/private-key patterns; no matched values are emitted",
+  "status": "pass",
+  "independent_review": "evidence/ZERO_COST_INDEPENDENT_REVIEW.md"
+}

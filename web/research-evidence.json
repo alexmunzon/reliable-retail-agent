@@ -1,0 +1,267 @@
+{
+  "schema_version": 2,
+  "prepared_date_utc": "2026-10-14",
+  "status": "Four official author files, recomputed offline",
+  "description": "Read-only analysis of 1,980 released trajectories across four later official author files. No new model inference was performed. These results describe those saved records only; they do not reproduce the original 2024 paper or measure the current confirmation gate.",
+  "analysis": {
+    "provider_calls_made": 0,
+    "new_model_runs": 0,
+    "released_file_count": 4,
+    "released_trajectory_count": 1980,
+    "source_revision": "59a200c6d575d595120f1cb70fea53cef0632f6b",
+    "file_introduction_commit": "7362a1708d720a4d697d042f21fd8637ea144c3b",
+    "file_introduction_date": "2024-11-22",
+    "rows": [
+      {
+        "source_file": "gpt-4o-retail.json",
+        "source_sha256": "df01707894836168ff0ec9616b0bf08f66c7e5afcf313e5fe4f7a2f5c2ec938b",
+        "model_label": "gpt-4o",
+        "domain": "retail",
+        "task_count": 115,
+        "trials_per_task": 4,
+        "rollout_count": 460,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.6043478260869565,
+            "pass_at_k_exact": "139/230",
+            "pass_power_k": 0.6043478260869565,
+            "pass_power_k_exact": "139/230"
+          },
+          "2": {
+            "pass_at_k": 0.717391304347826,
+            "pass_at_k_exact": "33/46",
+            "pass_power_k": 0.49130434782608695,
+            "pass_power_k_exact": "113/230"
+          },
+          "4": {
+            "pass_at_k": 0.808695652173913,
+            "pass_at_k_exact": "93/115",
+            "pass_power_k": 0.3826086956521739,
+            "pass_power_k_exact": "44/115"
+          }
+        },
+        "source_url": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/gpt-4o-retail.json"
+      },
+      {
+        "source_file": "gpt-4o-airline.json",
+        "source_sha256": "e9e6c0297660c537f83d4fd9c476ce7a9a86ecd2784874b7bfc13be598e37bfa",
+        "model_label": "gpt-4o",
+        "domain": "airline",
+        "task_count": 50,
+        "trials_per_task": 4,
+        "rollout_count": 200,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.42,
+            "pass_at_k_exact": "21/50",
+            "pass_power_k": 0.42,
+            "pass_power_k_exact": "21/50"
+          },
+          "2": {
+            "pass_at_k": 0.5666666666666667,
+            "pass_at_k_exact": "17/30",
+            "pass_power_k": 0.2733333333333333,
+            "pass_power_k_exact": "41/150"
+          },
+          "4": {
+            "pass_at_k": 0.72,
+            "pass_at_k_exact": "18/25",
+            "pass_power_k": 0.2,
+            "pass_power_k_exact": "1/5"
+          }
+        },
+        "source_url": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/gpt-4o-airline.json"
+      },
+      {
+        "source_file": "sonnet-35-new-retail.json",
+        "source_sha256": "0df526398e9d2720c32d340815cffb04fe8c4f8a61b1f4f84bf3bb558f760131",
+        "model_label": "sonnet-35-new",
+        "domain": "retail",
+        "task_count": 115,
+        "trials_per_task": 8,
+        "rollout_count": 920,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.6923913043478261,
+            "pass_at_k_exact": "637/920",
+            "pass_power_k": 0.6923913043478261,
+            "pass_power_k_exact": "637/920"
+          },
+          "2": {
+            "pass_at_k": 0.808695652173913,
+            "pass_at_k_exact": "93/115",
+            "pass_power_k": 0.5760869565217391,
+            "pass_power_k_exact": "53/92"
+          },
+          "4": {
+            "pass_at_k": 0.8862111801242236,
+            "pass_at_k_exact": "3567/4025",
+            "pass_power_k": 0.4622360248447205,
+            "pass_power_k_exact": "3721/8050"
+          },
+          "8": {
+            "pass_at_k": 0.9391304347826087,
+            "pass_at_k_exact": "108/115",
+            "pass_power_k": 0.3565217391304348,
+            "pass_power_k_exact": "41/115"
+          }
+        },
+        "source_url": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/sonnet-35-new-retail.json"
+      },
+      {
+        "source_file": "sonnet-35-new-airline.json",
+        "source_sha256": "fe62fcd514b855b36f156dd4c3c7748597b392b006aff739b53337a9f3ba94d1",
+        "model_label": "sonnet-35-new",
+        "domain": "airline",
+        "task_count": 50,
+        "trials_per_task": 8,
+        "rollout_count": 400,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.46,
+            "pass_at_k_exact": "23/50",
+            "pass_power_k": 0.46,
+            "pass_power_k_exact": "23/50"
+          },
+          "2": {
+            "pass_at_k": 0.5942857142857143,
+            "pass_at_k_exact": "104/175",
+            "pass_power_k": 0.32571428571428573,
+            "pass_power_k_exact": "57/175"
+          },
+          "4": {
+            "pass_at_k": 0.7114285714285714,
+            "pass_at_k_exact": "249/350",
+            "pass_power_k": 0.22428571428571428,
+            "pass_power_k_exact": "157/700"
+          },
+          "8": {
+            "pass_at_k": 0.8,
+            "pass_at_k_exact": "4/5",
+            "pass_power_k": 0.16,
+            "pass_power_k_exact": "4/25"
+          }
+        },
+        "source_url": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/sonnet-35-new-airline.json"
+      }
+    ],
+    "equal_domain_averages": {
+      "gpt-4o": {
+        "airline_task_count": 50,
+        "domain": "equal_domain_average",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.5121739130434783,
+            "pass_at_k_exact": "589/1150",
+            "pass_power_k": 0.5121739130434783,
+            "pass_power_k_exact": "589/1150"
+          },
+          "2": {
+            "pass_at_k": 0.6420289855072464,
+            "pass_at_k_exact": "443/690",
+            "pass_power_k": 0.38231884057971016,
+            "pass_power_k_exact": "1319/3450"
+          },
+          "4": {
+            "pass_at_k": 0.7643478260869565,
+            "pass_at_k_exact": "879/1150",
+            "pass_power_k": 0.29130434782608694,
+            "pass_power_k_exact": "67/230"
+          }
+        },
+        "model_label": "gpt-4o",
+        "retail_task_count": 115,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "weighting": "one half retail plus one half airline"
+      },
+      "sonnet-35-new": {
+        "airline_task_count": 50,
+        "domain": "equal_domain_average",
+        "metrics": {
+          "1": {
+            "pass_at_k": 0.576195652173913,
+            "pass_at_k_exact": "5301/9200",
+            "pass_power_k": 0.576195652173913,
+            "pass_power_k_exact": "5301/9200"
+          },
+          "2": {
+            "pass_at_k": 0.7014906832298137,
+            "pass_at_k_exact": "5647/8050",
+            "pass_power_k": 0.45090062111801243,
+            "pass_power_k_exact": "14519/32200"
+          },
+          "4": {
+            "pass_at_k": 0.7988198757763976,
+            "pass_at_k_exact": "12861/16100",
+            "pass_power_k": 0.3432608695652174,
+            "pass_power_k_exact": "1579/4600"
+          },
+          "8": {
+            "pass_at_k": 0.8695652173913043,
+            "pass_at_k_exact": "20/23",
+            "pass_power_k": 0.2582608695652174,
+            "pass_power_k_exact": "297/1150"
+          }
+        },
+        "model_label": "sonnet-35-new",
+        "retail_task_count": 115,
+        "status": "complete",
+        "strategy": "author_release_unspecified",
+        "weighting": "one half retail plus one half airline"
+      }
+    },
+    "validation": [
+      "Complete declared task-by-trial grids",
+      "No duplicate task/trial identities",
+      "Binary native rewards and nonempty released trajectories",
+      "Exact rational pass^k and pass@k calculations"
+    ],
+    "provenance_limit": "Git provenance and released records are verified; signed provider transcripts and fully pinned original run configurations are not supplied. The sonnet-35-new release label is not a paper Table 2 model.",
+    "metric_definitions": {
+      "pass_power_k": "Mean over tasks of C(successful_trials,k)/C(total_trials,k): all k sampled trials succeed.",
+      "pass_at_k": "One minus mean over tasks of C(failed_trials,k)/C(total_trials,k): at least one of k sampled trials succeeds.",
+      "pass_power_1": "Mean native reward over the complete declared task/trial grid.",
+      "domain_average": "One half retail plus one half airline; not weighted by task count."
+    }
+  },
+  "native_offline_checks": {
+    "status": "offline_integration_checks",
+    "model_performance_measurement": false,
+    "scope": [
+      "Original actor/parser and native environment parity on handcrafted synthetic fixtures",
+      "Exact-payload confirmation, rejection, changed payload and stale prompt handling",
+      "Single-attempt dispatch and uncertain-outcome stopping",
+      "Strict metrics validation for missing, duplicate, nonbinary or censored inputs"
+    ],
+    "limit": "Offline contracts establish integration behavior. They do not demonstrate model performance or benchmark-wide improvement."
+  },
+  "current_development": {
+    "version": "current-dev-v5",
+    "model_evaluated": false,
+    "status": "UNEVALUATED",
+    "evidence": "offline-synthetic-checks",
+    "measured_improvement_claimed": false
+  },
+  "limitations": [
+    "All original tau-bench tasks carry an outdated-task warning.",
+    "The selected paper-era source revision contains no saved result files, and is not proven to be the exact executed paper snapshot.",
+    "Original main-table, method, policy-ablation and high-repeat reliability experiments have not been fully reproduced.",
+    "Released gpt-4o files support k up to 4; sonnet-35-new files support k up to 8, not the paper reliability curves through k=32.",
+    "The interactive demo uses synthetic fixtures; its baseline is a scripted illustration, not a measured model failure."
+  ],
+  "sources": {
+    "paper": "https://arxiv.org/html/2406.12045v1",
+    "paper_era_source": "https://github.com/sierra-research/tau-bench/tree/6f4b718037db619539b8b692060e6686f3f0dcc9",
+    "later_author_source": "https://github.com/sierra-research/tau-bench/tree/59a200c6d575d595120f1cb70fea53cef0632f6b",
+    "trajectory_introduction": "https://github.com/sierra-research/tau-bench/commit/7362a1708d720a4d697d042f21fd8637ea144c3b"
+  }
+}

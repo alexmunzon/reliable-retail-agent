@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f1eb">
+  <title>Reliable Retail Agent · Interactive proof of concept</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to the interactive comparison</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Reliable Retail Agent home"><span class="brand-mark" aria-hidden="true">r<span>r</span></span><span>Reliable Retail Agent<small>INTERACTIVE PROOF OF CONCEPT</small></span></a>
+    <nav class="header-nav" aria-label="Main navigation"><a href="/" aria-current="page">Interactive demo</a><a href="/research.html">Research evidence <span aria-hidden="true">↗</span></a></nav>
+    <div class="header-badges"><span class="badge synthetic"><i></i>SCRIPTED / SYNTHETIC</span><span class="badge">NO API KEY</span></div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="intro-title">
+      <div><p class="eyebrow"><span class="eyebrow-rule" aria-hidden="true"></span> CONSENT AT THE POINT OF ACTION</p><h1 id="intro-title">Helpful by design.<br><em>Accountable</em> at dispatch.</h1><p class="intro-copy">Watch the same request take two paths. The gated path binds fresh customer confirmation to the exact tool payload before a local mutation can run.</p></div>
+      <aside class="principle"><p class="principle-label">THE CONSENT BOUNDARY</p><div class="principle-flow"><span><b>01</b>Propose</span><i aria-hidden="true">→</i><span><b>02</b>Confirm</span><i aria-hidden="true">→</i><span><b>03</b>Dispatch</span></div><p>A “yes” belongs to one operation,<br>one prompt, and one exact payload.</p><div class="principle-foot"><span class="dot"></span>Local functions · Synthetic fixtures · No model</div></aside>
+    </section>
+
+    <section class="scenario-section" aria-labelledby="scenario-heading">
+      <div class="section-heading"><h2 id="scenario-heading"><span class="section-number">01</span>Choose a scenario</h2><span class="muted small" id="scenario-count">Scripted scenarios · Select one to explore</span></div>
+      <div id="scenario-list" class="scenario-list" role="group" aria-label="Demo scenarios"><p class="loading">Loading scenarios…</p></div>
+    </section>
+
+    <section class="workspace" aria-labelledby="demo-title" aria-busy="true" id="workspace" tabindex="-1">
+      <div class="workspace-toolbar">
+        <div class="demo-heading"><p class="eyebrow" id="demo-domain">LOCAL SIMULATION</p><h2 id="demo-title">Preparing the demo</h2><p id="demo-description" class="muted">Connecting to the local server.</p></div>
+        <div class="playback"><button id="reset-button" class="button quiet" type="button" data-testid="reset-button" disabled><span aria-hidden="true">↺</span> Reset</button><button id="step-button" class="button secondary" type="button" data-testid="step-button" disabled>Next step <span aria-hidden="true">→</span></button><button id="run-button" class="button primary" type="button" data-testid="run-button" disabled><span aria-hidden="true">▶</span> Run scenario</button></div>
+      </div>
+      <div class="progress-row"><div class="progress-track" role="progressbar" aria-label="Script progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><span id="progress-fill"></span></div><span id="step-count">Ready</span></div>
+      <div id="current-step" class="current-step" aria-live="polite">Select a scenario to begin.</div>
+      <div id="error" class="error" role="alert" hidden></div>
+
+      <nav class="comparison-nav" aria-label="Jump within the comparison"><span>Inspect the paths</span><a href="#baseline-lane">Baseline</a><a href="#gated-lane">Gated agent</a><a href="#customer-controls">Your response <span aria-hidden="true">↓</span></a></nav>
+      <div class="scenario-outcome" id="scenario-outcome" data-tone="neutral"><span class="outcome-mark" aria-hidden="true">↳</span><div><p class="eyebrow">CURRENT LOCAL OUTCOME</p><h3 id="outcome-title" aria-live="polite">Preparing the comparison</h3><p id="outcome-description">The outcome follows the actual local dispatch records.</p></div></div>
+      <div id="comparison-summary" class="comparison-summary" aria-label="Comparison at a glance"></div>
+      <div class="comparison-caption"><span>THE SAME REQUEST, TWO EXECUTION PATHS</span><span>Independent synthetic fixture state</span></div>
+      <div class="lane-grid" id="lanes"><div class="lane skeleton">Loading illustrative baseline…</div><div class="lane skeleton">Loading gated agent…</div></div>
+
+      <section class="response-panel" id="customer-controls" aria-labelledby="response-heading" tabindex="-1">
+        <div class="response-intro"><span class="eyebrow">YOU ARE THE CUSTOMER</span><h3 id="response-heading">Give a fresh response</h3><p id="response-help">Run or step through the script, then respond to the current confirmation prompt.</p><div id="response-prompt-review"></div></div>
+        <form id="response-form" class="response-form"><div class="quick-responses"><button type="button" class="button response-button" data-response="yes" data-testid="respond-yes" disabled>Yes, confirm <span aria-hidden="true">↗</span></button><button type="button" class="button response-button" data-response="no" data-testid="respond-no" disabled>No, cancel</button><button type="button" class="button response-button" data-response="maybe" data-testid="respond-ambiguous" disabled>Maybe</button></div><div class="response-input"><label class="sr-only" for="customer-response">Customer response</label><input id="customer-response" name="response" aria-describedby="response-help" placeholder="Or write your own customer response…" maxlength="4000" autocomplete="off" disabled><button class="button secondary" id="send-response" type="submit" data-testid="send-response" disabled>Send <span aria-hidden="true">→</span></button></div></form>
+      </section>
+      <div class="lesson"><span class="lesson-icon" aria-hidden="true">↳</span><div><span class="eyebrow">WHAT THIS SCENARIO SHOWS</span><p id="lesson-text">Confirmation is a property of the exact action, not a reusable permission slip.</p></div></div>
+    </section>
+
+    <details class="methodology"><summary><span><span class="section-number">02</span>How to read this demonstration</span><span class="details-indicator" aria-hidden="true">+</span></summary><div class="methodology-content"><div><h3>A transparent, local proof of concept</h3><p>Every conversation, customer, order, and reservation is a scripted synthetic fixture. Both lanes invoke real local Python functions on independent in-memory fixture state. The dispatch counters and traces come from those local calls. No model, paid API, or real retailer is involved.</p><p>The baseline illustrates what an ungated scripted actor can do. It is not a measured failure of ChatReActAgent. The gated lane checks a mutating-tool allowlist, fresh prompt-bound consent, and a SHA-256 fingerprint of the tool name and complete arguments. An operation ledger prevents repeat attempts; uncertain outcomes stop without retrying.</p></div><div><h3>Research context, with limits</h3><p>This proof of concept targets the original <em>τ-bench</em> ChatReActAgent architecture. The original benchmark tasks are outdated. This demo does not run the benchmark, report a score, or claim to reproduce its results. The airline example demonstrates reuse of the gate across domains, not an airline evaluation.</p><p class="research-links"><a href="https://arxiv.org/abs/2406.12045" target="_blank" rel="noopener noreferrer">Original τ-bench paper ↗</a><a href="https://github.com/sierra-research/tau-bench/tree/6f4b718037db619539b8b692060e6686f3f0dcc9" target="_blank" rel="noopener noreferrer">Paper-era author code ↗</a></p></div></div></details>
+    <p class="research-note"><strong>Research boundary.</strong> Original τ-bench tasks are outdated. This scripted demo is not a benchmark run. Current development <span id="development-version">current-dev-v5</span> is <strong>UNEVALUATED</strong>. No score or improvement is claimed.</p>
+    <footer><span class="footer-brand">Reliable Retail Agent</span><a href="/research.html">Separate research evidence →</a><span id="connection-status"><i class="dot"></i>Connecting locally</span></footer>
+  </main>
+</body>
+</html>

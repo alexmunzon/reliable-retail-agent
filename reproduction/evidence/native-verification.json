@@ -1,0 +1,4493 @@
+{
+  "schema_version": 1,
+  "evidence_type": "offline_original_native_verification",
+  "attempt_id": "d260576a-cd80-4090-9a2e-d754fc39463e",
+  "created_at_utc": "2026-10-14T13:15:41.828647+00:00",
+  "model_api_requests": 0,
+  "paid_execution_enabled": false,
+  "is_paper_reproduction": false,
+  "worker_environment": "fixed minimal PATH; provider credentials never read or forwarded",
+  "provenance": {
+    "repository": "https://github.com/sierra-research/tau-bench",
+    "commit": "6f4b718037db619539b8b692060e6686f3f0dcc9",
+    "license": "MIT",
+    "tracked_files_verified": 70,
+    "source_sha256": {
+      "LICENSE": "243d23d45b80122b5ac575586ccef352fdc9c45e6d7d2605449aca8a17478b42",
+      "README.md": "820e1c9c2a23c376094f7554bc3fb53ef11c51f503f6eebeb0f0561f53bb32bb",
+      "run.py": "6707095b789735468ad66729d768cd7e0fd2b65fb9049d41e25531cdf906b9e9",
+      "setup.py": "146efdbb9b23f0f6c976b98b16c162c50d91834b6c7dd11194f46bec00cca179",
+      "tau_bench/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+      "tau_bench/agents/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+      "tau_bench/agents/base.py": "f25f7537f36799f1919fcecc698b860df2a207f03e54c257703f4b66b240fc78",
+      "tau_bench/agents/chat_react_agent.py": "a72ad3d05000c9593f80b9fa136fdc177c306162f11c5dcc9370e65b714548d4",
+      "tau_bench/agents/claude_function_calling_agent.py": "794d0eb08bffb2c9aeecc056c3505f29165c4fcda83bf5cdc769d3d338207319",
+      "tau_bench/agents/custom_function_calling_agent.py": "1f11b66fbb670423b3b6222160551090a0cd6a29e32cda94a66c8f6a9d1e2f76",
+      "tau_bench/agents/gemini_function_calling_agent.py": "c0fac1908aa650956d7ef0f6a44d76512ca649dc2d7ec8b1367aad6815015f6f",
+      "tau_bench/agents/gpt_function_calling_agent.py": "7bbe8a1b294c6567625d5a7ffe615a3a2bbac77af20672ebda266d149734f2fb",
+      "tau_bench/agents/mistral_function_calling_agent.py": "7edeaf60e2034bfbb35ed436c1ee639e622c9268c94f9c20f4b420d3d2ee98c3",
+      "tau_bench/agents/utils.py": "09427a65fda0ec2db2335139ca5ea781ed6ee00e3bb96cfb953d3ee7cb6db59d",
+      "tau_bench/envs/__init__.py": "c2cc53567f11f798b24037ea08b2a6c95c5a703e592bb7d33fc77ce21d9aac34",
+      "tau_bench/envs/airline/__init__.py": "358d84ab6e14ead05de85a837e5dc85a7531463fdec322ffdbaecfd1b4fc78f9",
+      "tau_bench/envs/airline/data/__init__.py": "a9d45e61db304bd5fd6cc035fbc5f51ba5bd6cf4945bb4ff410b1cbe22ad0993",
+      "tau_bench/envs/airline/data/flights.json": "444d7565c68434a3e3fb72efd717f9f9cd5c56dce227f6f56e078f1cb0ed233a",
+      "tau_bench/envs/airline/data/reservations.json": "1cf0bbc58ad984be9de7c24dba6dd27393f94cdbd482d8524f6a54db1f561a8c",
+      "tau_bench/envs/airline/data/users.json": "224c2ee6cbdff81b2890c25bb4b9dfb4e66c21d289fb3f2b9f76fa00596b8550",
+      "tau_bench/envs/airline/rules.py": "6924d72d1d8e01fd89d941df775085b013addfb6d64ffdf45761ff05f7a9e76d",
+      "tau_bench/envs/airline/tasks.py": "91cc059f18690e8e0e780dd2b7a18fb5a61a29eb8fbb018d259a61561d186626",
+      "tau_bench/envs/airline/tools/__init__.py": "7efbeb30e97fdeb9a6eb426044907a0d181bf577549c1000f88102776642259b",
+      "tau_bench/envs/airline/tools/book_reservation.py": "c26eb4e1b43cd1ed4d1e544782b488993a8d7642884bb1e7647eb51dcafb7663",
+      "tau_bench/envs/airline/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+      "tau_bench/envs/airline/tools/cancel_reservation.py": "b7583e9293834c00940f34873e38d190173fa6678f233c4c722e928ac7b2730f",
+      "tau_bench/envs/airline/tools/get_reservation_details.py": "ef114e7c5332e0141923096b2f5214764c142fe5de7d6befd5ef1e30a030345c",
+      "tau_bench/envs/airline/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+      "tau_bench/envs/airline/tools/list_all_airports.py": "160c52f85109265f9c81389fb8e9165651d65db83a3dc82839f3564e301673ba",
+      "tau_bench/envs/airline/tools/search_direct_flight.py": "22e9c2a1231d217291731fd51a2439e6931329713276e95e5ea70e4d4957874f",
+      "tau_bench/envs/airline/tools/search_onestop_flight.py": "71df70bf28713b98b950c00d27003704464723080ba9da8c2499db8cece1f8c6",
+      "tau_bench/envs/airline/tools/send_certificate.py": "12a4c618befa85b30ec971d7f71724f02b8d3e3ac986fa47efab24a03a36dcac",
+      "tau_bench/envs/airline/tools/think.py": "d7147670abb6983fb89efb2d9241f603f4798bc5a82aa35cda80f97ab79bebec",
+      "tau_bench/envs/airline/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+      "tau_bench/envs/airline/tools/update_reservation_baggages.py": "e4a313ac6a76a507921ab0295f8c8c1ce2c0d22ffb02e9bd795fab6f23586fb8",
+      "tau_bench/envs/airline/tools/update_reservation_flights.py": "b4a26da9b10e3158253e5651e7dcc31376e9cbc56f7c3b02b1fe6eb9ea1cef27",
+      "tau_bench/envs/airline/tools/update_reservation_passengers.py": "6dbbd74ea45d1d37ded1dba9f1652245520160e93d8b4ca5e058da66b90be3df",
+      "tau_bench/envs/airline/wiki.md": "f81115d5d3cfe2f0c35ca17291e0f36aa2ccee81c00d765a7ea3b07676dcac15",
+      "tau_bench/envs/airline/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+      "tau_bench/envs/base.py": "93ae15cbd27b1edb4cbdcd783f9eda5b26c890b7ae34e0ee10192158e983b6fb",
+      "tau_bench/envs/retail/__init__.py": "5e68b4f6e154bd4d1317998be17fab442a8c76a09ede263b6fd0db539801592c",
+      "tau_bench/envs/retail/data/__init__.py": "b3e1af4f06b6591f26a8120784caea0d6013cd3f6e5cd80938c963a0e2ea88a6",
+      "tau_bench/envs/retail/data/orders.json": "2598a12586d28f2d6bd16bc86f4c800029b6af18e0abb5c475ef5c869c11ced1",
+      "tau_bench/envs/retail/data/products.json": "a9eabcc1a9742c5f5288c2779acce52b9308423383ed24706bbaf0889f762a0f",
+      "tau_bench/envs/retail/data/readme.md": "448640f4b5e104f15e4476e2aa10f3b6616181135dc38262a86e71ed1b30737d",
+      "tau_bench/envs/retail/data/users.json": "f65237e6ead656b28df1929274aeadbc147bcf4364be1d463f45261f8f01e308",
+      "tau_bench/envs/retail/rules.py": "1c94487b9ca7c9b58d3bf8af0f024829800a355594a68261ca7a8c959da80b93",
+      "tau_bench/envs/retail/tasks.py": "6abb6f392d6050f65d27936143a43b0732ad4e78c1b19a0cffd9ccb23354d765",
+      "tau_bench/envs/retail/tasks_dev.py": "7fabff58236c629d37f2fc2728c8058a89e85371c285a0f78b3808d11d179583",
+      "tau_bench/envs/retail/tasks_train.py": "1ccf1e1eafd1cfa1a97b334dafd5f9169fc862b319f67bd409af399f49ce2d62",
+      "tau_bench/envs/retail/tools/__init__.py": "bb264a46c6face7d6897e9f467250e27d5a205c8500b6462268e7e33802ac845",
+      "tau_bench/envs/retail/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+      "tau_bench/envs/retail/tools/cancel_pending_order.py": "d46d23844f6d2e0e7129fc19bf526c77b0990872a5fc7f5d86e83c158e13ba96",
+      "tau_bench/envs/retail/tools/exchange_delivered_order_items.py": "d33556ce50acd496fcf13a03023f194dcc168252d6149c42a14a542099607e18",
+      "tau_bench/envs/retail/tools/find_user_id_by_email.py": "1c22c19910342fa87a74d9b2d70a2c248aed2098627580f52370f9232e95eb28",
+      "tau_bench/envs/retail/tools/find_user_id_by_name_zip.py": "606646684a9bc1167d9ef0fb642a102fd4231def2851a89a9b122b5c22c779d9",
+      "tau_bench/envs/retail/tools/get_order_details.py": "569809ccb259d36b405ce1c19d690cc93b9ec0db9d1d43c6f6e29e7dff03b2fb",
+      "tau_bench/envs/retail/tools/get_product_details.py": "ef580f722310baa465c842fc0cb77ed25322b72c2438053d91e87d1ea4c735c2",
+      "tau_bench/envs/retail/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+      "tau_bench/envs/retail/tools/list_all_product_types.py": "2974d3edba2630aba91eb98e7147a12486cf4341147455749a2fc65122b18aec",
+      "tau_bench/envs/retail/tools/modify_pending_order_address.py": "0c24844aafc3d1b25ab1fe76a0bc5f1ac348c08dd91fff290ff563380b6bbca7",
+      "tau_bench/envs/retail/tools/modify_pending_order_items.py": "483c15ba8e10c8e19a558bd40919b5de43ab8a10e5faf25f3c9eb93357012522",
+      "tau_bench/envs/retail/tools/modify_pending_order_payment.py": "696456fb2456384dcfd2e204d70f5125814601b9332e5d73d2415ba0a875b620",
+      "tau_bench/envs/retail/tools/modify_user_address.py": "af81d731f2a0ad06e41e7cdc62d50e680a48a2e677e9128ba2f8780a6a1088e0",
+      "tau_bench/envs/retail/tools/return_delivered_order_items.py": "af765934681400663e49e258af5322a5ca57d989ff48bee5ce6869fe550caeaf",
+      "tau_bench/envs/retail/tools/think.py": "6f2202ed5fad6ef476c96d269ce8d4c81e07135f9893c4e752ebc7753aaefb58",
+      "tau_bench/envs/retail/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+      "tau_bench/envs/retail/wiki.md": "d539fd2a46a8b8dd2e934ff9ed92f43e9f6b56bc7a718db8d2803ba8ad8f6bf7",
+      "tau_bench/envs/retail/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+      "tau_bench/envs/user.py": "55f9fb45cfa03243754ac7c0c37c2ea6827c140258c2265ff87c303ef72c772d"
+    },
+    "upstream_modified": false,
+    "source_validation_method": "live_git_tree_at_declared_commit",
+    "selection": "sole_visible_commit_preceding_paper_submission",
+    "exact_paper_run_snapshot_proven": false,
+    "python": "3.11.1 (v3.11.1:a7a450f84a, Dec  6 2022, 15:24:06) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "dependencies": {
+      "openai": "1.54.4",
+      "tenacity": "8.3.0",
+      "termcolor": "2.4.0"
+    }
+  },
+  "synthetic_runs": [
+    {
+      "strategy": "function_calling",
+      "scenario": "success",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 1,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "receipt"
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 1,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "receipt"
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 1,
+        "outputs": {
+          "receipt": true
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0,
+        "usage": {
+          "completion_tokens": [
+            0,
+            0
+          ],
+          "prompt_tokens": [
+            0,
+            0
+          ],
+          "total_tokens": [
+            0,
+            0
+          ],
+          "completion_price": 0.0,
+          "prompt_price": 0.0,
+          "total_price": 0.0
+        }
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt."
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='set_counter', arguments='{\"value\": 1}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "set_counter",
+          "content": "{\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "receipt"
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "GPTFunctionCallingAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/gpt_function_calling_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "function_calling",
+      "scenario": "missing_output",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "Done."
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 0,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "Done."
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 0,
+        "outputs": {
+          "receipt": false
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0,
+        "usage": {
+          "completion_tokens": [
+            0,
+            0
+          ],
+          "prompt_tokens": [
+            0,
+            0
+          ],
+          "total_tokens": [
+            0,
+            0
+          ],
+          "completion_price": 0.0,
+          "prompt_price": 0.0,
+          "total_price": 0.0
+        }
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt."
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='set_counter', arguments='{\"value\": 1}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "set_counter",
+          "content": "{\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "Done."
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "GPTFunctionCallingAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/gpt_function_calling_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "function_calling",
+      "scenario": "action_cutoff",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_action_budget",
+      "actor_requests": 30,
+      "user_requests": 1,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 3,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 4,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 5,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 6,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 7,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 8,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 9,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 10,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 11,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 12,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 13,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 14,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 15,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 16,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 17,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 18,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 19,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 20,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 21,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 22,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 23,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 24,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 25,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 26,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 27,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 28,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 29,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 30,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        }
+      ],
+      "actor_data_before_terminal_scoring": null,
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        }
+      ],
+      "native_info": {
+        "source": "read_counter",
+        "usage": {
+          "completion_tokens": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "prompt_tokens": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_tokens": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "completion_price": 0.0,
+          "prompt_price": 0.0,
+          "total_price": 0.0
+        }
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt."
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "function_call": "namespace(name='read_counter', arguments='{}')"
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "offline-call",
+          "name": "read_counter",
+          "content": "{\"counter\": 0}"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "GPTFunctionCallingAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/gpt_function_calling_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0,
+          "tool_choice": "auto"
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "react",
+      "scenario": "success",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 1,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "receipt"
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 1,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "receipt"
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 1,
+        "outputs": {
+          "receipt": true
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 6 lines (without ```):\n\n```\nThought:\nA single line of reasoning to process the context and inform the decision making. Do not include extra lines.\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nThought:\nSince the user asks for the weather of San Francisco in USA, the unit should be in fahrenheit. I can query get_current_weather to get the weather.\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nThought:\nI can answer the user now.\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nset_counter\nArguments:\n{\"value\": 1}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nrespond\nArguments:\nreceipt"
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "react",
+      "scenario": "missing_output",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "Done."
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 0,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "Done."
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 0,
+        "outputs": {
+          "receipt": false
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 6 lines (without ```):\n\n```\nThought:\nA single line of reasoning to process the context and inform the decision making. Do not include extra lines.\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nThought:\nSince the user asks for the weather of San Francisco in USA, the unit should be in fahrenheit. I can query get_current_weather to get the weather.\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nThought:\nI can answer the user now.\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nset_counter\nArguments:\n{\"value\": 1}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nrespond\nArguments:\nDone."
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "react",
+      "scenario": "action_cutoff",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_action_budget",
+      "actor_requests": 30,
+      "user_requests": 1,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 3,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 4,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 5,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 6,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 7,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 8,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 9,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 10,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 11,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 12,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 13,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 14,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 15,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 16,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 17,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 18,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 19,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 20,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 21,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 22,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 23,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 24,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 25,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 26,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 27,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 28,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 29,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 30,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        }
+      ],
+      "actor_data_before_terminal_scoring": null,
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        }
+      ],
+      "native_info": {
+        "source": "read_counter"
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 6 lines (without ```):\n\n```\nThought:\nA single line of reasoning to process the context and inform the decision making. Do not include extra lines.\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nThought:\nSince the user asks for the weather of San Francisco in USA, the unit should be in fahrenheit. I can query get_current_weather to get the weather.\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nThought:\nI can answer the user now.\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Thought:\nSynthetic fixture script.\nAction:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "act",
+      "scenario": "success",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 1,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "receipt"
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 1,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "receipt"
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 1,
+        "outputs": {
+          "receipt": true
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 4 lines (without ```):\n\n```\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy. Always make sure you generate four lines with the correct format.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nset_counter\nArguments:\n{\"value\": 1}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nrespond\nArguments:\nreceipt"
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "act",
+      "scenario": "missing_output",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_terminal",
+      "actor_requests": 2,
+      "user_requests": 2,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 1}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "respond",
+            "arguments": {
+              "content": "Done."
+            }
+          },
+          "data_hash_before": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+          "observation": "###STOP###",
+          "reward": 0,
+          "done": true
+        }
+      ],
+      "actor_data_before_terminal_scoring": {
+        "counter": 1
+      },
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        },
+        {
+          "name": "respond",
+          "arguments": {
+            "content": "Done."
+          }
+        },
+        {
+          "name": "set_counter",
+          "arguments": {
+            "value": 1
+          }
+        }
+      ],
+      "native_info": {
+        "data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "actions": [
+          {
+            "name": "set_counter",
+            "arguments": {
+              "value": 1
+            }
+          }
+        ],
+        "r_outputs": 0,
+        "outputs": {
+          "receipt": false
+        },
+        "r_actions": true,
+        "gt_data_hash": "b4f76a77adda04917e4752aae2a5583bb6ca31b7ee0f35540f2b5ccadb68529a",
+        "user_cost": 0.0
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 4 lines (without ```):\n\n```\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy. Always make sure you generate four lines with the correct format.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nset_counter\nArguments:\n{\"value\": 1}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 1}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nrespond\nArguments:\nDone."
+        },
+        {
+          "role": "user",
+          "content": "###STOP###"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        },
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    },
+    {
+      "strategy": "act",
+      "scenario": "action_cutoff",
+      "trial_index": 0,
+      "evidence_type": "synthetic_original_author_code_contract",
+      "is_model_evaluation": false,
+      "model_api_requests": 0,
+      "network_blocked": true,
+      "native_reward": 0,
+      "original_method_prompt_preserved": true,
+      "termination": "native_action_budget",
+      "actor_requests": 30,
+      "user_requests": 1,
+      "actor_dispatches": [
+        {
+          "sequence": 1,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 2,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 3,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 4,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 5,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 6,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 7,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 8,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 9,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 10,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 11,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 12,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 13,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 14,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 15,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 16,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 17,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 18,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 19,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 20,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 21,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 22,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 23,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 24,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 25,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 26,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 27,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 28,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 29,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        },
+        {
+          "sequence": 30,
+          "action": {
+            "name": "read_counter",
+            "arguments": {}
+          },
+          "data_hash_before": "52fcf4bc4121388dd8c9c820df351617fd08531bb6aeb2e9f0d0a754091159c5",
+          "observation": "{\"counter\": 0}",
+          "reward": 0,
+          "done": false
+        }
+      ],
+      "actor_data_before_terminal_scoring": null,
+      "native_actions_after_scoring_replay": [
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        },
+        {
+          "name": "read_counter",
+          "arguments": {}
+        }
+      ],
+      "native_info": {
+        "source": "read_counter"
+      },
+      "actor_messages": [
+        {
+          "role": "system",
+          "content": "Synthetic policy: set the requested visible counter and report receipt.\n#Available tools\n[{\"type\": \"function\", \"function\": {\"name\": \"set_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"integer\"}}, \"required\": [\"value\"]}}}, {\"type\": \"function\", \"function\": {\"name\": \"read_counter\", \"description\": \"Synthetic local contract tool\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"required\": []}}}]\n# Instruction\nYou need to act as an agent that use the above tools to help the user according to the above policy.\n\nAt each step, your generation should have exactly the following format and have exactly 4 lines (without ```):\n\n```\nAction:\nThe name of the action to take. It has to come from \"Available tools\", or \"respond\" to respond to the user.\nArguments:\nThe arguments to the action in json format. If the action is \"respond\", the argument is the response to the user.\n```\n\nYou should not use made-up or placeholder arguments.\n\n\nFor example, if the user says \"I want to know the current weather of San Francisco\", and there is such a tool available\n```json\n{\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_current_weather\",\n            \"description\": \"Get the current weather\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"location\": {\n                        \"type\": \"string\",\n                        \"description\": \"The city and state, e.g. San Francisco, CA\",\n                    },\n                    \"format\": {\n                        \"type\": \"string\",\n                        \"enum\": [\"celsius\", \"fahrenheit\"],\n                        \"description\": \"The temperature unit to use. Infer this from the users location.\",\n                    },\n                },\n                \"required\": [\"location\", \"format\"],\n            },\n        }\n    }\n```\n\nYour response can be like this:\n```\nAction:\nget_current_weather\nArguments:\n{\"location\": \"San Francisco, CA\", \"format\": \"fahrenheit\"}\n```\n\nAnd if the tool returns \"70F\", your response can be:\n```\nAction:\nrespond\nArguments:\nThe current weather of San Francisco is 70F.\n```\n\nTry to be helpful and always follow the policy. Always make sure you generate four lines with the correct format.\n"
+        },
+        {
+          "role": "user",
+          "content": "Please set the visible counter to one and report receipt."
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        },
+        {
+          "role": "assistant",
+          "content": "Action:\nread_counter\nArguments:\n{}"
+        },
+        {
+          "role": "user",
+          "content": "API output: {\"counter\": 0}"
+        }
+      ],
+      "hidden_task_instruction_in_actor": false,
+      "native_methods": {
+        "agent": "ChatReActAgent",
+        "act": "vendor/tau-bench-paper-era/tau_bench/agents/chat_react_agent.py",
+        "step": "vendor/tau-bench-paper-era/tau_bench/envs/base.py",
+        "calculate_reward": "vendor/tau-bench-paper-era/tau_bench/envs/base.py"
+      },
+      "actor_request_parameters": [
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        },
+        {
+          "model": "gpt-4o",
+          "temperature": 0.0
+        }
+      ],
+      "simulator_request_parameters": [
+        {
+          "model": "gpt-4",
+          "temperature": 1.0,
+          "max_tokens": 150
+        }
+      ]
+    }
+  ],
+  "original_runner_errors": {
+    "actual_original_run_executed": true,
+    "ordinary_act_exception_reward": 0,
+    "recorded_trial_count": 1,
+    "setup_failures_outside_act_catch": true,
+    "catch_class": "Exception",
+    "external_BaseException_stops_not_converted_to_zero": true
+  },
+  "claim": "Original FC, ReAct, Act and native scorer plumbing verified; no model benchmark result",
+  "inventory": {
+    "schema_version": 1,
+    "evidence_type": "offline_source_inventory",
+    "model_api_requests": 0,
+    "primary": {
+      "repository": "https://github.com/sierra-research/tau-bench",
+      "commit": "6f4b718037db619539b8b692060e6686f3f0dcc9",
+      "license": "MIT",
+      "tracked_files_verified": 70,
+      "source_sha256": {
+        "LICENSE": "243d23d45b80122b5ac575586ccef352fdc9c45e6d7d2605449aca8a17478b42",
+        "README.md": "820e1c9c2a23c376094f7554bc3fb53ef11c51f503f6eebeb0f0561f53bb32bb",
+        "run.py": "6707095b789735468ad66729d768cd7e0fd2b65fb9049d41e25531cdf906b9e9",
+        "setup.py": "146efdbb9b23f0f6c976b98b16c162c50d91834b6c7dd11194f46bec00cca179",
+        "tau_bench/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+        "tau_bench/agents/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+        "tau_bench/agents/base.py": "f25f7537f36799f1919fcecc698b860df2a207f03e54c257703f4b66b240fc78",
+        "tau_bench/agents/chat_react_agent.py": "a72ad3d05000c9593f80b9fa136fdc177c306162f11c5dcc9370e65b714548d4",
+        "tau_bench/agents/claude_function_calling_agent.py": "794d0eb08bffb2c9aeecc056c3505f29165c4fcda83bf5cdc769d3d338207319",
+        "tau_bench/agents/custom_function_calling_agent.py": "1f11b66fbb670423b3b6222160551090a0cd6a29e32cda94a66c8f6a9d1e2f76",
+        "tau_bench/agents/gemini_function_calling_agent.py": "c0fac1908aa650956d7ef0f6a44d76512ca649dc2d7ec8b1367aad6815015f6f",
+        "tau_bench/agents/gpt_function_calling_agent.py": "7bbe8a1b294c6567625d5a7ffe615a3a2bbac77af20672ebda266d149734f2fb",
+        "tau_bench/agents/mistral_function_calling_agent.py": "7edeaf60e2034bfbb35ed436c1ee639e622c9268c94f9c20f4b420d3d2ee98c3",
+        "tau_bench/agents/utils.py": "09427a65fda0ec2db2335139ca5ea781ed6ee00e3bb96cfb953d3ee7cb6db59d",
+        "tau_bench/envs/__init__.py": "c2cc53567f11f798b24037ea08b2a6c95c5a703e592bb7d33fc77ce21d9aac34",
+        "tau_bench/envs/airline/__init__.py": "358d84ab6e14ead05de85a837e5dc85a7531463fdec322ffdbaecfd1b4fc78f9",
+        "tau_bench/envs/airline/data/__init__.py": "a9d45e61db304bd5fd6cc035fbc5f51ba5bd6cf4945bb4ff410b1cbe22ad0993",
+        "tau_bench/envs/airline/data/flights.json": "444d7565c68434a3e3fb72efd717f9f9cd5c56dce227f6f56e078f1cb0ed233a",
+        "tau_bench/envs/airline/data/reservations.json": "1cf0bbc58ad984be9de7c24dba6dd27393f94cdbd482d8524f6a54db1f561a8c",
+        "tau_bench/envs/airline/data/users.json": "224c2ee6cbdff81b2890c25bb4b9dfb4e66c21d289fb3f2b9f76fa00596b8550",
+        "tau_bench/envs/airline/rules.py": "6924d72d1d8e01fd89d941df775085b013addfb6d64ffdf45761ff05f7a9e76d",
+        "tau_bench/envs/airline/tasks.py": "91cc059f18690e8e0e780dd2b7a18fb5a61a29eb8fbb018d259a61561d186626",
+        "tau_bench/envs/airline/tools/__init__.py": "7efbeb30e97fdeb9a6eb426044907a0d181bf577549c1000f88102776642259b",
+        "tau_bench/envs/airline/tools/book_reservation.py": "c26eb4e1b43cd1ed4d1e544782b488993a8d7642884bb1e7647eb51dcafb7663",
+        "tau_bench/envs/airline/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+        "tau_bench/envs/airline/tools/cancel_reservation.py": "b7583e9293834c00940f34873e38d190173fa6678f233c4c722e928ac7b2730f",
+        "tau_bench/envs/airline/tools/get_reservation_details.py": "ef114e7c5332e0141923096b2f5214764c142fe5de7d6befd5ef1e30a030345c",
+        "tau_bench/envs/airline/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+        "tau_bench/envs/airline/tools/list_all_airports.py": "160c52f85109265f9c81389fb8e9165651d65db83a3dc82839f3564e301673ba",
+        "tau_bench/envs/airline/tools/search_direct_flight.py": "22e9c2a1231d217291731fd51a2439e6931329713276e95e5ea70e4d4957874f",
+        "tau_bench/envs/airline/tools/search_onestop_flight.py": "71df70bf28713b98b950c00d27003704464723080ba9da8c2499db8cece1f8c6",
+        "tau_bench/envs/airline/tools/send_certificate.py": "12a4c618befa85b30ec971d7f71724f02b8d3e3ac986fa47efab24a03a36dcac",
+        "tau_bench/envs/airline/tools/think.py": "d7147670abb6983fb89efb2d9241f603f4798bc5a82aa35cda80f97ab79bebec",
+        "tau_bench/envs/airline/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+        "tau_bench/envs/airline/tools/update_reservation_baggages.py": "e4a313ac6a76a507921ab0295f8c8c1ce2c0d22ffb02e9bd795fab6f23586fb8",
+        "tau_bench/envs/airline/tools/update_reservation_flights.py": "b4a26da9b10e3158253e5651e7dcc31376e9cbc56f7c3b02b1fe6eb9ea1cef27",
+        "tau_bench/envs/airline/tools/update_reservation_passengers.py": "6dbbd74ea45d1d37ded1dba9f1652245520160e93d8b4ca5e058da66b90be3df",
+        "tau_bench/envs/airline/wiki.md": "f81115d5d3cfe2f0c35ca17291e0f36aa2ccee81c00d765a7ea3b07676dcac15",
+        "tau_bench/envs/airline/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+        "tau_bench/envs/base.py": "93ae15cbd27b1edb4cbdcd783f9eda5b26c890b7ae34e0ee10192158e983b6fb",
+        "tau_bench/envs/retail/__init__.py": "5e68b4f6e154bd4d1317998be17fab442a8c76a09ede263b6fd0db539801592c",
+        "tau_bench/envs/retail/data/__init__.py": "b3e1af4f06b6591f26a8120784caea0d6013cd3f6e5cd80938c963a0e2ea88a6",
+        "tau_bench/envs/retail/data/orders.json": "2598a12586d28f2d6bd16bc86f4c800029b6af18e0abb5c475ef5c869c11ced1",
+        "tau_bench/envs/retail/data/products.json": "a9eabcc1a9742c5f5288c2779acce52b9308423383ed24706bbaf0889f762a0f",
+        "tau_bench/envs/retail/data/readme.md": "448640f4b5e104f15e4476e2aa10f3b6616181135dc38262a86e71ed1b30737d",
+        "tau_bench/envs/retail/data/users.json": "f65237e6ead656b28df1929274aeadbc147bcf4364be1d463f45261f8f01e308",
+        "tau_bench/envs/retail/rules.py": "1c94487b9ca7c9b58d3bf8af0f024829800a355594a68261ca7a8c959da80b93",
+        "tau_bench/envs/retail/tasks.py": "6abb6f392d6050f65d27936143a43b0732ad4e78c1b19a0cffd9ccb23354d765",
+        "tau_bench/envs/retail/tasks_dev.py": "7fabff58236c629d37f2fc2728c8058a89e85371c285a0f78b3808d11d179583",
+        "tau_bench/envs/retail/tasks_train.py": "1ccf1e1eafd1cfa1a97b334dafd5f9169fc862b319f67bd409af399f49ce2d62",
+        "tau_bench/envs/retail/tools/__init__.py": "bb264a46c6face7d6897e9f467250e27d5a205c8500b6462268e7e33802ac845",
+        "tau_bench/envs/retail/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+        "tau_bench/envs/retail/tools/cancel_pending_order.py": "d46d23844f6d2e0e7129fc19bf526c77b0990872a5fc7f5d86e83c158e13ba96",
+        "tau_bench/envs/retail/tools/exchange_delivered_order_items.py": "d33556ce50acd496fcf13a03023f194dcc168252d6149c42a14a542099607e18",
+        "tau_bench/envs/retail/tools/find_user_id_by_email.py": "1c22c19910342fa87a74d9b2d70a2c248aed2098627580f52370f9232e95eb28",
+        "tau_bench/envs/retail/tools/find_user_id_by_name_zip.py": "606646684a9bc1167d9ef0fb642a102fd4231def2851a89a9b122b5c22c779d9",
+        "tau_bench/envs/retail/tools/get_order_details.py": "569809ccb259d36b405ce1c19d690cc93b9ec0db9d1d43c6f6e29e7dff03b2fb",
+        "tau_bench/envs/retail/tools/get_product_details.py": "ef580f722310baa465c842fc0cb77ed25322b72c2438053d91e87d1ea4c735c2",
+        "tau_bench/envs/retail/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+        "tau_bench/envs/retail/tools/list_all_product_types.py": "2974d3edba2630aba91eb98e7147a12486cf4341147455749a2fc65122b18aec",
+        "tau_bench/envs/retail/tools/modify_pending_order_address.py": "0c24844aafc3d1b25ab1fe76a0bc5f1ac348c08dd91fff290ff563380b6bbca7",
+        "tau_bench/envs/retail/tools/modify_pending_order_items.py": "483c15ba8e10c8e19a558bd40919b5de43ab8a10e5faf25f3c9eb93357012522",
+        "tau_bench/envs/retail/tools/modify_pending_order_payment.py": "696456fb2456384dcfd2e204d70f5125814601b9332e5d73d2415ba0a875b620",
+        "tau_bench/envs/retail/tools/modify_user_address.py": "af81d731f2a0ad06e41e7cdc62d50e680a48a2e677e9128ba2f8780a6a1088e0",
+        "tau_bench/envs/retail/tools/return_delivered_order_items.py": "af765934681400663e49e258af5322a5ca57d989ff48bee5ce6869fe550caeaf",
+        "tau_bench/envs/retail/tools/think.py": "6f2202ed5fad6ef476c96d269ce8d4c81e07135f9893c4e752ebc7753aaefb58",
+        "tau_bench/envs/retail/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+        "tau_bench/envs/retail/wiki.md": "d539fd2a46a8b8dd2e934ff9ed92f43e9f6b56bc7a718db8d2803ba8ad8f6bf7",
+        "tau_bench/envs/retail/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+        "tau_bench/envs/user.py": "55f9fb45cfa03243754ac7c0c37c2ea6827c140258c2265ff87c303ef72c772d"
+      },
+      "upstream_modified": false,
+      "source_validation_method": "live_git_tree_at_declared_commit",
+      "selection": "sole_visible_commit_preceding_paper_submission",
+      "exact_paper_run_snapshot_proven": false,
+      "python": "3.11.1 (v3.11.1:a7a450f84a, Dec  6 2022, 15:24:06) [Clang 13.0.0 (clang-1300.0.29.30)]",
+      "dependencies": {
+        "openai": "1.54.4",
+        "tenacity": "8.3.0",
+        "termcolor": "2.4.0"
+      }
+    },
+    "paper_audit_sha256": "748fdec0fa4f9bfb90e7a746d8510dfd51c343ede4400446bf75e530ee6110b1",
+    "experiments": [
+      {
+        "id": "table2-main-model-comparison",
+        "paper_location": "\u00a75.1, Table 2, PDF pp.5-6",
+        "domains": [
+          "tau-retail",
+          "tau-airline"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k",
+          "gpt-3.5-turbo",
+          "claude-3-opus",
+          "claude-3-sonnet",
+          "claude-3-haiku",
+          "gemini-1.5-pro-latest",
+          "gemini-1.5-flash-latest",
+          "mistral-large",
+          "open-mixtral-8x22b",
+          "meta-llama-3-70B-instruct"
+        ],
+        "methods": "FC for all profiles except Meta-Llama-3-70B-instruct, which uses text ReAct because FC is unsupported",
+        "metric": "pass^1; domain average is weighted by domains rather than task counts",
+        "repeat_requirement": "at least 3 trials per task; exact count per task not reported",
+        "nominal_model_domain_results": 24,
+        "certainty": "high for scope; exact repeats and model snapshots unknown"
+      },
+      {
+        "id": "figure3-method-comparison",
+        "paper_location": "\u00a75.1, Figure 3, PDF p.6",
+        "domains": [
+          "tau-retail"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k",
+          "gpt-3.5-turbo"
+        ],
+        "methods": [
+          "function_calling",
+          "text_ReAct",
+          "Act_only"
+        ],
+        "nominal_model_method_results": 12,
+        "repeat_requirement": "not separately stated in caption; exact counts unknown",
+        "certainty": "high for plotted dimensions; trial count unknown"
+      },
+      {
+        "id": "figure4-reliability-curves",
+        "paper_location": "\u00a75.1, Figure 4, PDF p.6",
+        "domains": [
+          "tau-retail"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k-0613",
+          "claude-3-opus",
+          "gpt-3.5-turbo"
+        ],
+        "method": "main agent method (FC, except method-specific profile details are not repeated in caption)",
+        "k_values": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ],
+        "metrics": [
+          "pass^k",
+          "pass@k"
+        ],
+        "minimum_trials_implied_by_largest_k": 32,
+        "exact_per_task_trial_counts_published": false,
+        "certainty": "high for profiles, metrics and k-axis; exact sampling record unavailable"
+      },
+      {
+        "id": "table3-policy-ablation",
+        "paper_location": "\u00a75.2, Table 3, PDF p.7",
+        "domains": [
+          "tau-retail",
+          "tau-airline"
+        ],
+        "models": [
+          "gpt-4o",
+          "gpt-3.5-turbo"
+        ],
+        "conditions": [
+          "full_domain_policy_in_FC_system_prompt",
+          "domain_policy_removed_from_FC_system_prompt"
+        ],
+        "nominal_model_domain_pairs": 4,
+        "metric": "pass^1",
+        "repeat_count": null,
+        "certainty": "high for ablation definition and reported cells; repeat count not given"
+      },
+      {
+        "id": "figure5-failure-analysis",
+        "paper_location": "\u00a75.2, Figure 5, PDF p.6",
+        "domain": "tau-retail",
+        "profile": "gpt-4o FC",
+        "initial_trajectories": 115,
+        "initial_failures": 40,
+        "instruction_typos_or_ambiguities_removed_after_review": 4,
+        "agent_failures_categorized": 36,
+        "categories": [
+          "wrong_argument",
+          "wrong_info",
+          "wrong_decision",
+          "partially_resolve"
+        ],
+        "repeat_count": 1,
+        "certainty": "high for paper-reported counts; raw trajectories, original versions and annotation agreement unavailable"
+      },
+      {
+        "id": "figure6-write-count-difficulty",
+        "paper_location": "\u00a75.2, Figure 6, PDF p.7",
+        "domain": "tau-retail",
+        "models": [
+          "gpt-4-turbo",
+          "gpt-3.5-turbo"
+        ],
+        "x_variable": "number of ground-truth write API actions",
+        "metric": "task success/pass^1 as plotted",
+        "per_task_data_published": false,
+        "certainty": "high for scope; plot-level data absent"
+      },
+      {
+        "id": "figure7-task-difficulty-diagnostic",
+        "paper_location": "Appendix A, Figure 7",
+        "domain": "tau-retail",
+        "profile": "gpt-4-turbo FC",
+        "trials_per_task": "more than 40",
+        "purpose": "sort tasks by difficulty and inspect zero/low success tasks during task annotation",
+        "is_independent_test_split": false,
+        "certainty": "high"
+      }
+    ],
+    "paper_method": {
+      "environment": "tool-agent-user interaction; actor sees policy/tools; user simulator receives task instruction; reward checks final database state and required information in agent responses",
+      "main_method": "zero-shot function calling; FC chooses either a user response or a tool call; compared with text ReAct and Act-only",
+      "actor_action_limit": 30,
+      "agent_temperature": 0.0,
+      "user_temperature": 1.0,
+      "user_simulator_paper_label": "gpt-4-0613",
+      "user_simulator_comparison_experiment": false,
+      "user_simulator_note": "Single simulator profile is described; the reported cost breakdown is not a user-model comparison.",
+      "sampling": "paper describes i.i.d. stochastic trials from user and agent language-model sampling; exact per-episode seeds and raw logs are not supplied",
+      "pass_k_definition": "For each task with n trials and c successes, task estimate is binom(c,k)/binom(n,k); pass^k is the average across tasks. pass@k is 1 minus average binom(n-c,k)/binom(n,k). pass^1 is mean reward.",
+      "source_locations": [
+        "paper \u00a73, PDF pp.2-4",
+        "paper \u00a75, PDF p.5",
+        "paper-era run.py",
+        "paper-era tau_bench/agents/gpt_function_calling_agent.py",
+        "paper-era tau_bench/envs/user.py",
+        "paper-era tau_bench/envs/base.py"
+      ]
+    },
+    "model_profiles": [
+      {
+        "paper_label": "gpt-4o",
+        "paper_era_cli_candidate": "gpt-4o",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-4-turbo",
+        "paper_era_cli_candidates": [
+          "gpt-4-turbo",
+          "gpt-4-0125-preview",
+          "gpt-4-1106-preview"
+        ],
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-4-32k",
+        "paper_era_cli_candidate": "gpt-4-32k-0613",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-3.5-turbo",
+        "paper_era_cli_candidates": [
+          "gpt-3.5-turbo",
+          "gpt-3.5-turbo-1106",
+          "gpt-3.5-turbo-0125"
+        ],
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-opus",
+        "paper_era_cli_candidate": "claude-3-opus-20240229",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-sonnet",
+        "paper_era_cli_candidate": "claude-3-sonnet-20240229",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-haiku",
+        "paper_era_cli_candidate": "claude-3-haiku-20240307",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gemini-1.5-pro-latest",
+        "paper_era_cli_candidate": "gemini-1.5-pro-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gemini-1.5-flash-latest",
+        "paper_era_cli_candidate": "gemini-1.5-flash-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "mistral-large",
+        "paper_era_cli_candidate": "mistral-large-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "open-mixtral-8x22b",
+        "paper_era_cli_candidate": "open-mixtral-8x22b",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "meta-llama-3-70B-instruct",
+        "paper_era_cli_candidate": "meta-llama/Meta-Llama-3-70B-Instruct",
+        "immutable_paper_snapshot": null
+      }
+    ],
+    "original_paper_era_released_trajectory_files": [],
+    "later_author_release": {
+      "commit": "59a200c6d575d595120f1cb70fea53cef0632f6b",
+      "files": {
+        "historical_trajectories/gpt-4o-airline.json": "e9e6c0297660c537f83d4fd9c476ce7a9a86ecd2784874b7bfc13be598e37bfa",
+        "historical_trajectories/gpt-4o-retail.json": "df01707894836168ff0ec9616b0bf08f66c7e5afcf313e5fe4f7a2f5c2ec938b",
+        "historical_trajectories/sonnet-35-new-airline.json": "fe62fcd514b855b36f156dd4c3c7748597b392b006aff739b53337a9f3ba94d1",
+        "historical_trajectories/sonnet-35-new-retail.json": "0df526398e9d2720c32d340815cffb04fe8c4f8a61b1f4f84bf3bb558f760131"
+      },
+      "verification": "artifact SHA-256 against bundled manifest previously verified from official Git tree",
+      "interpretation": "Later released author artifacts; not original paper-v1 trials"
+    },
+    "source_limitations": [
+      {
+        "id": "cli_default_trial_count",
+        "finding": "paper Table 2 requires at least 3 trials/task; paper-era run.py defaults --num_trials to 1",
+        "effect": "running documented defaults does not reproduce the main-results protocol",
+        "certainty": "high"
+      },
+      {
+        "id": "user_model_alias",
+        "finding": "paper \u00a73 names gpt-4-0613; paper-era run.py and user loader default to alias gpt-4",
+        "effect": "default source config does not prove exact simulator snapshot used for paper results",
+        "certainty": "high for discrepancy; historical run resolution unknown"
+      },
+      {
+        "id": "actor_model_pin_mapping",
+        "finding": "paper lists model names/providers but generally not dated immutable model snapshots; code offers multiple dated candidates and aliases without mapping each published table row to one exact ID",
+        "effect": "current aliases cannot be assumed to reproduce historical model behavior",
+        "certainty": "high"
+      },
+      {
+        "id": "seed_and_trial_logs",
+        "finding": "paper does not publish per-episode seeds, exact n per task, or raw run manifests; code's default Python random seed controls ordering but does not fix hosted model sampling",
+        "effect": "stochastic run records cannot be exactly replayed from public paper/source alone",
+        "certainty": "high"
+      },
+      {
+        "id": "figure5_task_edits",
+        "finding": "paper says 4 of 40 initial failures were instruction typo/ambiguity and then fixed; published artifacts do not preserve those four pre-fix task versions and complete labels",
+        "effect": "exact reproduction of the original 115-trajectory failure classification is blocked",
+        "certainty": "high"
+      },
+      {
+        "id": "deprecated_profile",
+        "finding": "gpt-4-32k profile is no longer callable from its original provider as a historic service snapshot",
+        "effect": "exact historical replication of that model profile is not presently available via the original service",
+        "certainty": "high as of 2025-06-06 provider shutoff reported by parent; current availability is not inferred for other providers"
+      },
+      {
+        "id": "source_revision_identity",
+        "finding": "6f4b718 is the nearest visible pre-submission author revision, not a proven executed-paper snapshot; 59a200c is a materially later comparator with 113 tracked files and changes across run, agent, environment, task and user code",
+        "effect": "the later tree cannot silently replace the paper-era tree or be treated as the v1 benchmark state",
+        "certainty": "high from local manifests and git diff"
+      },
+      {
+        "id": "historical_comparison_claims",
+        "finding": "the local study's v4 contains four episodes on one exposed airline test task, zero complete paired trials, and is explicitly developmental; the proposed 1,320 episode gate grid is a separate two-arm/four-repeat local extension",
+        "effect": "neither local result is evidence of full paper reproduction or paper-wide gate effect",
+        "certainty": "high from docs/POST_V4_FINDINGS.md and frozen local plans"
+      }
+    ]
+  },
+  "dry_manifest": {
+    "schema_version": 1,
+    "mode": "offline_dry_plan",
+    "paid_execution_enabled": false,
+    "original_baseline_only": true,
+    "model_evaluated": false,
+    "source_commit": "6f4b718037db619539b8b692060e6686f3f0dcc9",
+    "source_sha256": {
+      "LICENSE": "243d23d45b80122b5ac575586ccef352fdc9c45e6d7d2605449aca8a17478b42",
+      "README.md": "820e1c9c2a23c376094f7554bc3fb53ef11c51f503f6eebeb0f0561f53bb32bb",
+      "run.py": "6707095b789735468ad66729d768cd7e0fd2b65fb9049d41e25531cdf906b9e9",
+      "setup.py": "146efdbb9b23f0f6c976b98b16c162c50d91834b6c7dd11194f46bec00cca179",
+      "tau_bench/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+      "tau_bench/agents/__init__.py": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032",
+      "tau_bench/agents/base.py": "f25f7537f36799f1919fcecc698b860df2a207f03e54c257703f4b66b240fc78",
+      "tau_bench/agents/chat_react_agent.py": "a72ad3d05000c9593f80b9fa136fdc177c306162f11c5dcc9370e65b714548d4",
+      "tau_bench/agents/claude_function_calling_agent.py": "794d0eb08bffb2c9aeecc056c3505f29165c4fcda83bf5cdc769d3d338207319",
+      "tau_bench/agents/custom_function_calling_agent.py": "1f11b66fbb670423b3b6222160551090a0cd6a29e32cda94a66c8f6a9d1e2f76",
+      "tau_bench/agents/gemini_function_calling_agent.py": "c0fac1908aa650956d7ef0f6a44d76512ca649dc2d7ec8b1367aad6815015f6f",
+      "tau_bench/agents/gpt_function_calling_agent.py": "7bbe8a1b294c6567625d5a7ffe615a3a2bbac77af20672ebda266d149734f2fb",
+      "tau_bench/agents/mistral_function_calling_agent.py": "7edeaf60e2034bfbb35ed436c1ee639e622c9268c94f9c20f4b420d3d2ee98c3",
+      "tau_bench/agents/utils.py": "09427a65fda0ec2db2335139ca5ea781ed6ee00e3bb96cfb953d3ee7cb6db59d",
+      "tau_bench/envs/__init__.py": "c2cc53567f11f798b24037ea08b2a6c95c5a703e592bb7d33fc77ce21d9aac34",
+      "tau_bench/envs/airline/__init__.py": "358d84ab6e14ead05de85a837e5dc85a7531463fdec322ffdbaecfd1b4fc78f9",
+      "tau_bench/envs/airline/data/__init__.py": "a9d45e61db304bd5fd6cc035fbc5f51ba5bd6cf4945bb4ff410b1cbe22ad0993",
+      "tau_bench/envs/airline/data/flights.json": "444d7565c68434a3e3fb72efd717f9f9cd5c56dce227f6f56e078f1cb0ed233a",
+      "tau_bench/envs/airline/data/reservations.json": "1cf0bbc58ad984be9de7c24dba6dd27393f94cdbd482d8524f6a54db1f561a8c",
+      "tau_bench/envs/airline/data/users.json": "224c2ee6cbdff81b2890c25bb4b9dfb4e66c21d289fb3f2b9f76fa00596b8550",
+      "tau_bench/envs/airline/rules.py": "6924d72d1d8e01fd89d941df775085b013addfb6d64ffdf45761ff05f7a9e76d",
+      "tau_bench/envs/airline/tasks.py": "91cc059f18690e8e0e780dd2b7a18fb5a61a29eb8fbb018d259a61561d186626",
+      "tau_bench/envs/airline/tools/__init__.py": "7efbeb30e97fdeb9a6eb426044907a0d181bf577549c1000f88102776642259b",
+      "tau_bench/envs/airline/tools/book_reservation.py": "c26eb4e1b43cd1ed4d1e544782b488993a8d7642884bb1e7647eb51dcafb7663",
+      "tau_bench/envs/airline/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+      "tau_bench/envs/airline/tools/cancel_reservation.py": "b7583e9293834c00940f34873e38d190173fa6678f233c4c722e928ac7b2730f",
+      "tau_bench/envs/airline/tools/get_reservation_details.py": "ef114e7c5332e0141923096b2f5214764c142fe5de7d6befd5ef1e30a030345c",
+      "tau_bench/envs/airline/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+      "tau_bench/envs/airline/tools/list_all_airports.py": "160c52f85109265f9c81389fb8e9165651d65db83a3dc82839f3564e301673ba",
+      "tau_bench/envs/airline/tools/search_direct_flight.py": "22e9c2a1231d217291731fd51a2439e6931329713276e95e5ea70e4d4957874f",
+      "tau_bench/envs/airline/tools/search_onestop_flight.py": "71df70bf28713b98b950c00d27003704464723080ba9da8c2499db8cece1f8c6",
+      "tau_bench/envs/airline/tools/send_certificate.py": "12a4c618befa85b30ec971d7f71724f02b8d3e3ac986fa47efab24a03a36dcac",
+      "tau_bench/envs/airline/tools/think.py": "d7147670abb6983fb89efb2d9241f603f4798bc5a82aa35cda80f97ab79bebec",
+      "tau_bench/envs/airline/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+      "tau_bench/envs/airline/tools/update_reservation_baggages.py": "e4a313ac6a76a507921ab0295f8c8c1ce2c0d22ffb02e9bd795fab6f23586fb8",
+      "tau_bench/envs/airline/tools/update_reservation_flights.py": "b4a26da9b10e3158253e5651e7dcc31376e9cbc56f7c3b02b1fe6eb9ea1cef27",
+      "tau_bench/envs/airline/tools/update_reservation_passengers.py": "6dbbd74ea45d1d37ded1dba9f1652245520160e93d8b4ca5e058da66b90be3df",
+      "tau_bench/envs/airline/wiki.md": "f81115d5d3cfe2f0c35ca17291e0f36aa2ccee81c00d765a7ea3b07676dcac15",
+      "tau_bench/envs/airline/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+      "tau_bench/envs/base.py": "93ae15cbd27b1edb4cbdcd783f9eda5b26c890b7ae34e0ee10192158e983b6fb",
+      "tau_bench/envs/retail/__init__.py": "5e68b4f6e154bd4d1317998be17fab442a8c76a09ede263b6fd0db539801592c",
+      "tau_bench/envs/retail/data/__init__.py": "b3e1af4f06b6591f26a8120784caea0d6013cd3f6e5cd80938c963a0e2ea88a6",
+      "tau_bench/envs/retail/data/orders.json": "2598a12586d28f2d6bd16bc86f4c800029b6af18e0abb5c475ef5c869c11ced1",
+      "tau_bench/envs/retail/data/products.json": "a9eabcc1a9742c5f5288c2779acce52b9308423383ed24706bbaf0889f762a0f",
+      "tau_bench/envs/retail/data/readme.md": "448640f4b5e104f15e4476e2aa10f3b6616181135dc38262a86e71ed1b30737d",
+      "tau_bench/envs/retail/data/users.json": "f65237e6ead656b28df1929274aeadbc147bcf4364be1d463f45261f8f01e308",
+      "tau_bench/envs/retail/rules.py": "1c94487b9ca7c9b58d3bf8af0f024829800a355594a68261ca7a8c959da80b93",
+      "tau_bench/envs/retail/tasks.py": "6abb6f392d6050f65d27936143a43b0732ad4e78c1b19a0cffd9ccb23354d765",
+      "tau_bench/envs/retail/tasks_dev.py": "7fabff58236c629d37f2fc2728c8058a89e85371c285a0f78b3808d11d179583",
+      "tau_bench/envs/retail/tasks_train.py": "1ccf1e1eafd1cfa1a97b334dafd5f9169fc862b319f67bd409af399f49ce2d62",
+      "tau_bench/envs/retail/tools/__init__.py": "bb264a46c6face7d6897e9f467250e27d5a205c8500b6462268e7e33802ac845",
+      "tau_bench/envs/retail/tools/calculate.py": "1fa02af9f033aeac801afa93c3d79322638cc52510730ecd8e617ffdf28da57e",
+      "tau_bench/envs/retail/tools/cancel_pending_order.py": "d46d23844f6d2e0e7129fc19bf526c77b0990872a5fc7f5d86e83c158e13ba96",
+      "tau_bench/envs/retail/tools/exchange_delivered_order_items.py": "d33556ce50acd496fcf13a03023f194dcc168252d6149c42a14a542099607e18",
+      "tau_bench/envs/retail/tools/find_user_id_by_email.py": "1c22c19910342fa87a74d9b2d70a2c248aed2098627580f52370f9232e95eb28",
+      "tau_bench/envs/retail/tools/find_user_id_by_name_zip.py": "606646684a9bc1167d9ef0fb642a102fd4231def2851a89a9b122b5c22c779d9",
+      "tau_bench/envs/retail/tools/get_order_details.py": "569809ccb259d36b405ce1c19d690cc93b9ec0db9d1d43c6f6e29e7dff03b2fb",
+      "tau_bench/envs/retail/tools/get_product_details.py": "ef580f722310baa465c842fc0cb77ed25322b72c2438053d91e87d1ea4c735c2",
+      "tau_bench/envs/retail/tools/get_user_details.py": "a517fae6a162a4600b2852c7ea3b90b7564e552c47e06562a028443b464a2124",
+      "tau_bench/envs/retail/tools/list_all_product_types.py": "2974d3edba2630aba91eb98e7147a12486cf4341147455749a2fc65122b18aec",
+      "tau_bench/envs/retail/tools/modify_pending_order_address.py": "0c24844aafc3d1b25ab1fe76a0bc5f1ac348c08dd91fff290ff563380b6bbca7",
+      "tau_bench/envs/retail/tools/modify_pending_order_items.py": "483c15ba8e10c8e19a558bd40919b5de43ab8a10e5faf25f3c9eb93357012522",
+      "tau_bench/envs/retail/tools/modify_pending_order_payment.py": "696456fb2456384dcfd2e204d70f5125814601b9332e5d73d2415ba0a875b620",
+      "tau_bench/envs/retail/tools/modify_user_address.py": "af81d731f2a0ad06e41e7cdc62d50e680a48a2e677e9128ba2f8780a6a1088e0",
+      "tau_bench/envs/retail/tools/return_delivered_order_items.py": "af765934681400663e49e258af5322a5ca57d989ff48bee5ce6869fe550caeaf",
+      "tau_bench/envs/retail/tools/think.py": "6f2202ed5fad6ef476c96d269ce8d4c81e07135f9893c4e752ebc7753aaefb58",
+      "tau_bench/envs/retail/tools/transfer_to_human_agents.py": "1f48503af0b5d07b7abb6f2db69f52ca4b8d8096bc6e86a9fbd697feea007826",
+      "tau_bench/envs/retail/wiki.md": "d539fd2a46a8b8dd2e934ff9ed92f43e9f6b56bc7a718db8d2803ba8ad8f6bf7",
+      "tau_bench/envs/retail/wiki.py": "ac174825a13b3b1593f049a5982a28292e3fbc6bfed3fc5dbd17b27225260f8c",
+      "tau_bench/envs/user.py": "55f9fb45cfa03243754ac7c0c37c2ea6827c140258c2265ff87c303ef72c772d"
+    },
+    "paper_audit_sha256": "748fdec0fa4f9bfb90e7a746d8510dfd51c343ede4400446bf75e530ee6110b1",
+    "experiment_scopes": [
+      {
+        "id": "table2-main-model-comparison",
+        "paper_location": "\u00a75.1, Table 2, PDF pp.5-6",
+        "domains": [
+          "tau-retail",
+          "tau-airline"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k",
+          "gpt-3.5-turbo",
+          "claude-3-opus",
+          "claude-3-sonnet",
+          "claude-3-haiku",
+          "gemini-1.5-pro-latest",
+          "gemini-1.5-flash-latest",
+          "mistral-large",
+          "open-mixtral-8x22b",
+          "meta-llama-3-70B-instruct"
+        ],
+        "methods": "FC for all profiles except Meta-Llama-3-70B-instruct, which uses text ReAct because FC is unsupported",
+        "metric": "pass^1; domain average is weighted by domains rather than task counts",
+        "repeat_requirement": "at least 3 trials per task; exact count per task not reported",
+        "nominal_model_domain_results": 24,
+        "certainty": "high for scope; exact repeats and model snapshots unknown"
+      },
+      {
+        "id": "figure3-method-comparison",
+        "paper_location": "\u00a75.1, Figure 3, PDF p.6",
+        "domains": [
+          "tau-retail"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k",
+          "gpt-3.5-turbo"
+        ],
+        "methods": [
+          "function_calling",
+          "text_ReAct",
+          "Act_only"
+        ],
+        "nominal_model_method_results": 12,
+        "repeat_requirement": "not separately stated in caption; exact counts unknown",
+        "certainty": "high for plotted dimensions; trial count unknown"
+      },
+      {
+        "id": "figure4-reliability-curves",
+        "paper_location": "\u00a75.1, Figure 4, PDF p.6",
+        "domains": [
+          "tau-retail"
+        ],
+        "model_profiles": [
+          "gpt-4o",
+          "gpt-4-turbo",
+          "gpt-4-32k-0613",
+          "claude-3-opus",
+          "gpt-3.5-turbo"
+        ],
+        "method": "main agent method (FC, except method-specific profile details are not repeated in caption)",
+        "k_values": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ],
+        "metrics": [
+          "pass^k",
+          "pass@k"
+        ],
+        "minimum_trials_implied_by_largest_k": 32,
+        "exact_per_task_trial_counts_published": false,
+        "certainty": "high for profiles, metrics and k-axis; exact sampling record unavailable"
+      },
+      {
+        "id": "table3-policy-ablation",
+        "paper_location": "\u00a75.2, Table 3, PDF p.7",
+        "domains": [
+          "tau-retail",
+          "tau-airline"
+        ],
+        "models": [
+          "gpt-4o",
+          "gpt-3.5-turbo"
+        ],
+        "conditions": [
+          "full_domain_policy_in_FC_system_prompt",
+          "domain_policy_removed_from_FC_system_prompt"
+        ],
+        "nominal_model_domain_pairs": 4,
+        "metric": "pass^1",
+        "repeat_count": null,
+        "certainty": "high for ablation definition and reported cells; repeat count not given"
+      },
+      {
+        "id": "figure5-failure-analysis",
+        "paper_location": "\u00a75.2, Figure 5, PDF p.6",
+        "domain": "tau-retail",
+        "profile": "gpt-4o FC",
+        "initial_trajectories": 115,
+        "initial_failures": 40,
+        "instruction_typos_or_ambiguities_removed_after_review": 4,
+        "agent_failures_categorized": 36,
+        "categories": [
+          "wrong_argument",
+          "wrong_info",
+          "wrong_decision",
+          "partially_resolve"
+        ],
+        "repeat_count": 1,
+        "certainty": "high for paper-reported counts; raw trajectories, original versions and annotation agreement unavailable"
+      },
+      {
+        "id": "figure6-write-count-difficulty",
+        "paper_location": "\u00a75.2, Figure 6, PDF p.7",
+        "domain": "tau-retail",
+        "models": [
+          "gpt-4-turbo",
+          "gpt-3.5-turbo"
+        ],
+        "x_variable": "number of ground-truth write API actions",
+        "metric": "task success/pass^1 as plotted",
+        "per_task_data_published": false,
+        "certainty": "high for scope; plot-level data absent"
+      },
+      {
+        "id": "figure7-task-difficulty-diagnostic",
+        "paper_location": "Appendix A, Figure 7",
+        "domain": "tau-retail",
+        "profile": "gpt-4-turbo FC",
+        "trials_per_task": "more than 40",
+        "purpose": "sort tasks by difficulty and inspect zero/low success tasks during task annotation",
+        "is_independent_test_split": false,
+        "certainty": "high"
+      }
+    ],
+    "model_profiles": [
+      {
+        "paper_label": "gpt-4o",
+        "paper_era_cli_candidate": "gpt-4o",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-4-turbo",
+        "paper_era_cli_candidates": [
+          "gpt-4-turbo",
+          "gpt-4-0125-preview",
+          "gpt-4-1106-preview"
+        ],
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-4-32k",
+        "paper_era_cli_candidate": "gpt-4-32k-0613",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gpt-3.5-turbo",
+        "paper_era_cli_candidates": [
+          "gpt-3.5-turbo",
+          "gpt-3.5-turbo-1106",
+          "gpt-3.5-turbo-0125"
+        ],
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-opus",
+        "paper_era_cli_candidate": "claude-3-opus-20240229",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-sonnet",
+        "paper_era_cli_candidate": "claude-3-sonnet-20240229",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "claude-3-haiku",
+        "paper_era_cli_candidate": "claude-3-haiku-20240307",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gemini-1.5-pro-latest",
+        "paper_era_cli_candidate": "gemini-1.5-pro-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "gemini-1.5-flash-latest",
+        "paper_era_cli_candidate": "gemini-1.5-flash-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "mistral-large",
+        "paper_era_cli_candidate": "mistral-large-latest",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "open-mixtral-8x22b",
+        "paper_era_cli_candidate": "open-mixtral-8x22b",
+        "immutable_paper_snapshot": null
+      },
+      {
+        "paper_label": "meta-llama-3-70B-instruct",
+        "paper_era_cli_candidate": "meta-llama/Meta-Llama-3-70B-Instruct",
+        "immutable_paper_snapshot": null
+      }
+    ],
+    "historical_settings": {
+      "environment": "tool-agent-user interaction; actor sees policy/tools; user simulator receives task instruction; reward checks final database state and required information in agent responses",
+      "main_method": "zero-shot function calling; FC chooses either a user response or a tool call; compared with text ReAct and Act-only",
+      "actor_action_limit": 30,
+      "agent_temperature": 0.0,
+      "user_temperature": 1.0,
+      "user_simulator_paper_label": "gpt-4-0613",
+      "user_simulator_comparison_experiment": false,
+      "user_simulator_note": "Single simulator profile is described; the reported cost breakdown is not a user-model comparison.",
+      "sampling": "paper describes i.i.d. stochastic trials from user and agent language-model sampling; exact per-episode seeds and raw logs are not supplied",
+      "pass_k_definition": "For each task with n trials and c successes, task estimate is binom(c,k)/binom(n,k); pass^k is the average across tasks. pass@k is 1 minus average binom(n-c,k)/binom(n,k). pass^1 is mean reward.",
+      "source_locations": [
+        "paper \u00a73, PDF pp.2-4",
+        "paper \u00a75, PDF p.5",
+        "paper-era run.py",
+        "paper-era tau_bench/agents/gpt_function_calling_agent.py",
+        "paper-era tau_bench/envs/user.py",
+        "paper-era tau_bench/envs/base.py"
+      ]
+    },
+    "offline_contract_grid": {
+      "strategies": [
+        "function_calling",
+        "react",
+        "act"
+      ],
+      "synthetic_scenarios": [
+        "success",
+        "missing_output",
+        "action_cutoff"
+      ],
+      "trial_indices": [
+        0
+      ]
+    },
+    "blocked_reasons": [
+      "Exact executed paper source revision is unproven",
+      "Most immutable paper model snapshots and exact per-task trial counts are unspecified",
+      "Original paper-era raw trajectories and annotation records are not released in the inspected tree",
+      "Historical model availability is separately audited; substitutes change the experiment",
+      "Paid execution is disabled in this entry point; no remaining budget is inferred"
+    ],
+    "completion_claim": "Offline implementation verification only; no paper result cell reproduced",
+    "manifest_sha256": "6b33fd206cdade0b8bc4a4bc351aba5749710223a7e68f2a6585c07f27d81372"
+  },
+  "verification_checks": {
+    "existing_primary_test_command": ".venv-native/bin/python -m unittest tests.test_native_integration.PaperEraNativeTests tests.test_native_integration.PrimaryReadinessTests",
+    "existing_primary_tests": 8,
+    "existing_primary_result": "PASS",
+    "new_contract_test_command": ".venv-native/bin/python -m unittest tests.test_full_reproduction_runner",
+    "new_contract_tests": 8,
+    "new_contract_result": "PASS",
+    "new_contract_duration_seconds": 15.77
+  },
+  "frozen_current_preservation": {
+    "reference": "reproduction/evidence/preserved-v5.json",
+    "checked_files": {
+      "native/user_simulator_v4.py": true,
+      "study/analysis_v4.py": true,
+      "study/consent_current.py": true,
+      "study/controller_current.py": true,
+      "study/controller_v4.py": true,
+      "study/gate_current.py": true,
+      "study/gate_v4.py": true,
+      "study/planning.py": true,
+      "study/runner_v4.py": true,
+      "study/visible_current.py": true,
+      "study/visible_v4.py": true
+    },
+    "all_match": true
+  }
+}

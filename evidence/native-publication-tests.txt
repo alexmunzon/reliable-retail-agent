@@ -1,0 +1,13 @@
+test_actor_trace_excludes_reference_replay_and_retains_prescore_state (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_actor_trace_excludes_reference_replay_and_retains_prescore_state) ... ok
+test_actual_original_runner_exception_zero_is_not_external_censor_zero (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_actual_original_runner_exception_zero_is_not_external_censor_zero) ... ok
+test_default_dry_plan_has_all_scopes_but_no_paid_path (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_default_dry_plan_has_all_scopes_but_no_paid_path) ... ok
+test_exclusive_output_and_no_paid_command (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_exclusive_output_and_no_paid_command) ... ok
+test_native_thirty_action_cutoff_never_invokes_scorer (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_native_thirty_action_cutoff_never_invokes_scorer) ... ok
+test_original_agents_native_methods_and_sampling (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_original_agents_native_methods_and_sampling) ... ok
+test_portable_snapshot_without_vendor_git_or_later_runtime (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_portable_snapshot_without_vendor_git_or_later_runtime) ... ok
+test_success_and_required_output_failure_use_original_scorer (test_full_reproduction_runner.OriginalOfflineReproductionTests.test_success_and_required_output_failure_use_original_scorer) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.364s
+
+OK

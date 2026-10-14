@@ -1,0 +1,377 @@
+{
+  "audit_schema_version": 1,
+  "audit_scope": "offline source audit of the original tau-bench v1 paper and two official author repository revisions; no provider requests",
+  "audit_status": "completed_offline; full_paper_reproduction_not_run",
+  "model_api_requests": 0,
+  "primary_sources": [
+    {
+      "id": "paper_v1",
+      "title": "\u03c4-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+      "authors": [
+        "Shunyu Yao",
+        "Noah Shinn",
+        "Pedram Razavi",
+        "Karthik Narasimhan"
+      ],
+      "version": "arXiv v1, submitted 2024-06-17",
+      "url_pdf": "https://arxiv.org/pdf/2406.12045",
+      "url_html": "https://arxiv.org/html/2406.12045",
+      "relevant_sections": [
+        "\u00a73",
+        "\u00a74.1",
+        "\u00a75",
+        "\u00a75.1",
+        "\u00a75.2",
+        "Appendix A"
+      ],
+      "certainty": "primary source"
+    },
+    {
+      "id": "paper_era_author_code",
+      "repository": "https://github.com/sierra-research/tau-bench",
+      "commit": "6f4b718037db619539b8b692060e6686f3f0dcc9",
+      "commit_url": "https://github.com/sierra-research/tau-bench/tree/6f4b718037db619539b8b692060e6686f3f0dcc9",
+      "selection_reason": "latest visible official ancestor preceding the paper v1 submission",
+      "exact_paper_run_snapshot_proven": false,
+      "local_manifest": "native/source_manifests/paper-era.json",
+      "verified_tracked_files": 70,
+      "certainty": "exact inspected revision; historical-run linkage not established"
+    },
+    {
+      "id": "later_author_code_comparator",
+      "repository": "https://github.com/sierra-research/tau-bench",
+      "commit": "59a200c6d575d595120f1cb70fea53cef0632f6b",
+      "commit_url": "https://github.com/sierra-research/tau-bench/tree/59a200c6d575d595120f1cb70fea53cef0632f6b",
+      "selection_reason": "user-requested later source comparator",
+      "exact_paper_run_snapshot_proven": false,
+      "local_manifest": "native/source_manifests/later.json",
+      "verified_tracked_files": 113,
+      "certainty": "exact inspected revision; later state, not treated as paper-v1 source"
+    }
+  ],
+  "benchmark": {
+    "task_split": "paper reports complete benchmark suites; paper-era source maps task_split=test to tasks.py",
+    "domains": [
+      {
+        "id": "tau-retail",
+        "tasks": 115,
+        "database": {
+          "users": 500,
+          "products": 50,
+          "orders": 1000
+        },
+        "api_counts": {
+          "write": 7,
+          "non_write": 8
+        },
+        "paper_reference": "\u00a74.1, Table 1, PDF p.4",
+        "source_reference": "paper-era tau_bench/envs/retail/__init__.py and tasks.py",
+        "certainty": "high"
+      },
+      {
+        "id": "tau-airline",
+        "tasks": 50,
+        "database": {
+          "users": 500,
+          "flights": 300,
+          "reservations": 2000
+        },
+        "api_counts": {
+          "write": 6,
+          "non_write": 7
+        },
+        "paper_reference": "\u00a74.1, Table 1, PDF p.4",
+        "source_reference": "paper-era tau_bench/envs/airline/__init__.py and tasks.py",
+        "certainty": "high"
+      }
+    ],
+    "split_caveat": "Retail has distinct train/dev files in the paper-era source; airline exposes only test in the inspected revision. The paper reports benchmark suites, not an independent random train/test sampling procedure for these results."
+  },
+  "experiment_inventory": [
+    {
+      "id": "table2-main-model-comparison",
+      "paper_location": "\u00a75.1, Table 2, PDF pp.5-6",
+      "domains": [
+        "tau-retail",
+        "tau-airline"
+      ],
+      "model_profiles": [
+        "gpt-4o",
+        "gpt-4-turbo",
+        "gpt-4-32k",
+        "gpt-3.5-turbo",
+        "claude-3-opus",
+        "claude-3-sonnet",
+        "claude-3-haiku",
+        "gemini-1.5-pro-latest",
+        "gemini-1.5-flash-latest",
+        "mistral-large",
+        "open-mixtral-8x22b",
+        "meta-llama-3-70B-instruct"
+      ],
+      "methods": "FC for all profiles except Meta-Llama-3-70B-instruct, which uses text ReAct because FC is unsupported",
+      "metric": "pass^1; domain average is weighted by domains rather than task counts",
+      "repeat_requirement": "at least 3 trials per task; exact count per task not reported",
+      "nominal_model_domain_results": 24,
+      "certainty": "high for scope; exact repeats and model snapshots unknown"
+    },
+    {
+      "id": "figure3-method-comparison",
+      "paper_location": "\u00a75.1, Figure 3, PDF p.6",
+      "domains": [
+        "tau-retail"
+      ],
+      "model_profiles": [
+        "gpt-4o",
+        "gpt-4-turbo",
+        "gpt-4-32k",
+        "gpt-3.5-turbo"
+      ],
+      "methods": [
+        "function_calling",
+        "text_ReAct",
+        "Act_only"
+      ],
+      "nominal_model_method_results": 12,
+      "repeat_requirement": "not separately stated in caption; exact counts unknown",
+      "certainty": "high for plotted dimensions; trial count unknown"
+    },
+    {
+      "id": "figure4-reliability-curves",
+      "paper_location": "\u00a75.1, Figure 4, PDF p.6",
+      "domains": [
+        "tau-retail"
+      ],
+      "model_profiles": [
+        "gpt-4o",
+        "gpt-4-turbo",
+        "gpt-4-32k-0613",
+        "claude-3-opus",
+        "gpt-3.5-turbo"
+      ],
+      "method": "main agent method (FC, except method-specific profile details are not repeated in caption)",
+      "k_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "metrics": [
+        "pass^k",
+        "pass@k"
+      ],
+      "minimum_trials_implied_by_largest_k": 32,
+      "exact_per_task_trial_counts_published": false,
+      "certainty": "high for profiles, metrics and k-axis; exact sampling record unavailable"
+    },
+    {
+      "id": "table3-policy-ablation",
+      "paper_location": "\u00a75.2, Table 3, PDF p.7",
+      "domains": [
+        "tau-retail",
+        "tau-airline"
+      ],
+      "models": [
+        "gpt-4o",
+        "gpt-3.5-turbo"
+      ],
+      "conditions": [
+        "full_domain_policy_in_FC_system_prompt",
+        "domain_policy_removed_from_FC_system_prompt"
+      ],
+      "nominal_model_domain_pairs": 4,
+      "metric": "pass^1",
+      "repeat_count": null,
+      "certainty": "high for ablation definition and reported cells; repeat count not given"
+    },
+    {
+      "id": "figure5-failure-analysis",
+      "paper_location": "\u00a75.2, Figure 5, PDF p.6",
+      "domain": "tau-retail",
+      "profile": "gpt-4o FC",
+      "initial_trajectories": 115,
+      "initial_failures": 40,
+      "instruction_typos_or_ambiguities_removed_after_review": 4,
+      "agent_failures_categorized": 36,
+      "categories": [
+        "wrong_argument",
+        "wrong_info",
+        "wrong_decision",
+        "partially_resolve"
+      ],
+      "repeat_count": 1,
+      "certainty": "high for paper-reported counts; raw trajectories, original versions and annotation agreement unavailable"
+    },
+    {
+      "id": "figure6-write-count-difficulty",
+      "paper_location": "\u00a75.2, Figure 6, PDF p.7",
+      "domain": "tau-retail",
+      "models": [
+        "gpt-4-turbo",
+        "gpt-3.5-turbo"
+      ],
+      "x_variable": "number of ground-truth write API actions",
+      "metric": "task success/pass^1 as plotted",
+      "per_task_data_published": false,
+      "certainty": "high for scope; plot-level data absent"
+    },
+    {
+      "id": "figure7-task-difficulty-diagnostic",
+      "paper_location": "Appendix A, Figure 7",
+      "domain": "tau-retail",
+      "profile": "gpt-4-turbo FC",
+      "trials_per_task": "more than 40",
+      "purpose": "sort tasks by difficulty and inspect zero/low success tasks during task annotation",
+      "is_independent_test_split": false,
+      "certainty": "high"
+    }
+  ],
+  "paper_method": {
+    "environment": "tool-agent-user interaction; actor sees policy/tools; user simulator receives task instruction; reward checks final database state and required information in agent responses",
+    "main_method": "zero-shot function calling; FC chooses either a user response or a tool call; compared with text ReAct and Act-only",
+    "actor_action_limit": 30,
+    "agent_temperature": 0.0,
+    "user_temperature": 1.0,
+    "user_simulator_paper_label": "gpt-4-0613",
+    "user_simulator_comparison_experiment": false,
+    "user_simulator_note": "Single simulator profile is described; the reported cost breakdown is not a user-model comparison.",
+    "sampling": "paper describes i.i.d. stochastic trials from user and agent language-model sampling; exact per-episode seeds and raw logs are not supplied",
+    "pass_k_definition": "For each task with n trials and c successes, task estimate is binom(c,k)/binom(n,k); pass^k is the average across tasks. pass@k is 1 minus average binom(n-c,k)/binom(n,k). pass^1 is mean reward.",
+    "source_locations": [
+      "paper \u00a73, PDF pp.2-4",
+      "paper \u00a75, PDF p.5",
+      "paper-era run.py",
+      "paper-era tau_bench/agents/gpt_function_calling_agent.py",
+      "paper-era tau_bench/envs/user.py",
+      "paper-era tau_bench/envs/base.py"
+    ]
+  },
+  "source_discrepancies_and_limitations": [
+    {
+      "id": "cli_default_trial_count",
+      "finding": "paper Table 2 requires at least 3 trials/task; paper-era run.py defaults --num_trials to 1",
+      "effect": "running documented defaults does not reproduce the main-results protocol",
+      "certainty": "high"
+    },
+    {
+      "id": "user_model_alias",
+      "finding": "paper \u00a73 names gpt-4-0613; paper-era run.py and user loader default to alias gpt-4",
+      "effect": "default source config does not prove exact simulator snapshot used for paper results",
+      "certainty": "high for discrepancy; historical run resolution unknown"
+    },
+    {
+      "id": "actor_model_pin_mapping",
+      "finding": "paper lists model names/providers but generally not dated immutable model snapshots; code offers multiple dated candidates and aliases without mapping each published table row to one exact ID",
+      "effect": "current aliases cannot be assumed to reproduce historical model behavior",
+      "certainty": "high"
+    },
+    {
+      "id": "seed_and_trial_logs",
+      "finding": "paper does not publish per-episode seeds, exact n per task, or raw run manifests; code's default Python random seed controls ordering but does not fix hosted model sampling",
+      "effect": "stochastic run records cannot be exactly replayed from public paper/source alone",
+      "certainty": "high"
+    },
+    {
+      "id": "figure5_task_edits",
+      "finding": "paper says 4 of 40 initial failures were instruction typo/ambiguity and then fixed; published artifacts do not preserve those four pre-fix task versions and complete labels",
+      "effect": "exact reproduction of the original 115-trajectory failure classification is blocked",
+      "certainty": "high"
+    },
+    {
+      "id": "deprecated_profile",
+      "finding": "gpt-4-32k profile is no longer callable from its original provider as a historic service snapshot",
+      "effect": "exact historical replication of that model profile is not presently available via the original service",
+      "certainty": "high as of 2025-06-06 provider shutoff reported by parent; current availability is not inferred for other providers"
+    },
+    {
+      "id": "source_revision_identity",
+      "finding": "6f4b718 is the nearest visible pre-submission author revision, not a proven executed-paper snapshot; 59a200c is a materially later comparator with 113 tracked files and changes across run, agent, environment, task and user code",
+      "effect": "the later tree cannot silently replace the paper-era tree or be treated as the v1 benchmark state",
+      "certainty": "high from local manifests and git diff"
+    },
+    {
+      "id": "historical_comparison_claims",
+      "finding": "the local study's v4 contains four episodes on one exposed airline test task, zero complete paired trials, and is explicitly developmental; the proposed 1,320 episode gate grid is a separate two-arm/four-repeat local extension",
+      "effect": "neither local result is evidence of full paper reproduction or paper-wide gate effect",
+      "certainty": "high from docs/POST_V4_FINDINGS.md and frozen local plans"
+    }
+  ],
+  "historical_model_profiles": [
+    {
+      "paper_label": "gpt-4o",
+      "paper_era_cli_candidate": "gpt-4o",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "gpt-4-turbo",
+      "paper_era_cli_candidates": [
+        "gpt-4-turbo",
+        "gpt-4-0125-preview",
+        "gpt-4-1106-preview"
+      ],
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "gpt-4-32k",
+      "paper_era_cli_candidate": "gpt-4-32k-0613",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "gpt-3.5-turbo",
+      "paper_era_cli_candidates": [
+        "gpt-3.5-turbo",
+        "gpt-3.5-turbo-1106",
+        "gpt-3.5-turbo-0125"
+      ],
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "claude-3-opus",
+      "paper_era_cli_candidate": "claude-3-opus-20240229",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "claude-3-sonnet",
+      "paper_era_cli_candidate": "claude-3-sonnet-20240229",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "claude-3-haiku",
+      "paper_era_cli_candidate": "claude-3-haiku-20240307",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "gemini-1.5-pro-latest",
+      "paper_era_cli_candidate": "gemini-1.5-pro-latest",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "gemini-1.5-flash-latest",
+      "paper_era_cli_candidate": "gemini-1.5-flash-latest",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "mistral-large",
+      "paper_era_cli_candidate": "mistral-large-latest",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "open-mixtral-8x22b",
+      "paper_era_cli_candidate": "open-mixtral-8x22b",
+      "immutable_paper_snapshot": null
+    },
+    {
+      "paper_label": "meta-llama-3-70B-instruct",
+      "paper_era_cli_candidate": "meta-llama/Meta-Llama-3-70B-Instruct",
+      "immutable_paper_snapshot": null
+    }
+  ],
+  "reproduction_verdict": {
+    "paper_result_cells_reproduced": 0,
+    "full_paper_reproduction_complete": false,
+    "reason": "No new paid/model episodes were run; historic model snapshots and run-level sample records are unavailable; the existing local study has a different intervention, profile, task sample, and incomplete paired results.",
+    "certainty": "high"
+  }
+}

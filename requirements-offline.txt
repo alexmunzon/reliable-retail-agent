@@ -1,0 +1,4 @@
+# Optional: original-author offline integration checks only. Demo needs no packages.
+openai==1.54.4
+tenacity==8.3.0
+termcolor==2.4.0

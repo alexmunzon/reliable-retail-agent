@@ -1,0 +1,62 @@
+{
+  "observed_at": "2026-10-14",
+  "mode": "scripted-synthetic",
+  "scenarios": [
+    {
+      "scenario": "normal-confirmation",
+      "baseline": "1",
+      "gated": "1",
+      "status": "succeeded",
+      "outcome": "1 confirmed local dispatch"
+    },
+    {
+      "scenario": "missing-confirmation",
+      "baseline": "1",
+      "gated": "0",
+      "status": "awaiting confirmation",
+      "outcome": "No gated dispatch. Fresh consent required."
+    },
+    {
+      "scenario": "changed-payload",
+      "baseline": "1",
+      "gated": "0",
+      "status": "awaiting confirmation",
+      "outcome": "No gated dispatch. Fresh consent required."
+    },
+    {
+      "scenario": "stale-consent",
+      "baseline": "1",
+      "gated": "0",
+      "status": "awaiting confirmation",
+      "outcome": "No gated dispatch. Fresh consent required."
+    },
+    {
+      "scenario": "airline-transfer",
+      "baseline": "1",
+      "gated": "1",
+      "status": "succeeded",
+      "outcome": "1 confirmed local dispatch"
+    },
+    {
+      "scenario": "rejection",
+      "baseline": "1",
+      "gated": "0",
+      "status": "rejected",
+      "outcome": "Customer rejection blocks this operation"
+    },
+    {
+      "scenario": "ambiguous-response",
+      "baseline": "1",
+      "gated": "0",
+      "status": "awaiting confirmation",
+      "outcome": "No gated dispatch. Fresh consent required."
+    },
+    {
+      "scenario": "uncertain-outcome",
+      "baseline": "1",
+      "gated": "1",
+      "status": "uncertain",
+      "outcome": "Attempt recorded. Outcome uncertain."
+    }
+  ]
+}

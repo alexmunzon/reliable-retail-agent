@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f1eb">
+  <title>Reliable Retail Agent · Research evidence</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/research.css">
+  <script src="/research.js" defer></script>
+  <style>
+    .results-scroll{overflow-x:auto;margin-top:22px;border:1px solid var(--line);border-radius:7px}.results-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;white-space:nowrap}.results-table caption{text-align:left;white-space:normal;padding:15px 18px;font-size:12px;color:var(--muted);background:#f4f5ef;line-height:1.6}.results-table th,.results-table td{padding:15px 18px;border-top:1px solid var(--line)}.results-table thead th{font:10px var(--mono);color:var(--muted);background:#f8f9f3}.results-table tbody th{font-weight:600}.results-table td:last-child{font:19px var(--mono);color:var(--teal)}.results-table td:nth-child(3){font:11px var(--mono);color:var(--muted)}.evidence-links{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--teal);line-height:1.7}.offline-status{display:inline-block;margin:8px 0 0}.research-card .lane-details summary{font-size:13px}.research-card .lane-details p{max-width:1000px}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#historical-evidence">Skip to the research evidence</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Reliable Retail Agent home"><span class="brand-mark" aria-hidden="true">r<span>r</span></span><span>Reliable Retail Agent<small>WORKING DEMO + RESEARCH EVIDENCE</small></span></a>
+    <nav class="header-nav" aria-label="Main navigation"><a href="/">Interactive demo</a><a href="/research.html" aria-current="page">Research evidence</a></nav>
+    <div class="header-badges"><span class="badge synthetic">AUTHOR ARTIFACTS</span><span class="badge">READ-ONLY</span></div>
+  </header>
+  <main>
+    <section class="intro research-intro" aria-labelledby="research-title">
+      <div><p class="eyebrow"><span class="eyebrow-rule" aria-hidden="true"></span> THE CLAIM FOLLOWS THE EVIDENCE</p><h1 id="research-title">A working boundary.<br><em>An honest</em> evidence record.</h1><p class="intro-copy">Recompute results from official saved trajectories, inspect the original-code integration, and understand where the evidence stops. The local scripted demo and the author’s released records answer different questions.</p></div>
+      <aside class="evidence-principle"><span class="eyebrow">NO FULL REPRODUCTION CLAIM</span><h2>Saved results.<br>Clearly bounded claims.</h2><p>This analysis makes no model calls. It reports later released records, not a rerun of the original paper.</p></aside>
+    </section>
+    <div class="version-boundary" aria-label="Evidence scope boundary">
+      <div><span class="version-icon" aria-hidden="true">01</span><div><span class="mini-label">Later official author release</span><h2>Recomputed offline</h2><p>Four published files. Results remain attached to their source records.</p></div><span class="version-status">READ-ONLY</span></div>
+      <div><span class="version-icon" aria-hidden="true">05</span><div><span class="mini-label">Current development · current-dev-v5</span><h2>Unevaluated</h2><p>Offline synthetic checks only. No model result or improvement claimed for this gate.</p></div><span class="version-status unevaluated">UNEVALUATED</span></div>
+    </div>
+    <nav class="evidence-nav" aria-label="Evidence resources"><a class="button primary" href="/">Explore the scripted demo <span aria-hidden="true">→</span></a><a class="button secondary" href="/research-evidence.json">Inspect exported evidence JSON <span aria-hidden="true">↗</span></a><span>Local demo · Synthetic fixtures · No API key</span></nav>
+    <section class="research-card status-card" id="historical-evidence" aria-labelledby="pilot-status">
+      <p class="eyebrow">01 / ZERO-COST AUTHOR-ARTIFACT ANALYSIS</p>
+      <h2 id="pilot-status">Loading evidence…</h2>
+      <p id="pilot-description" class="research-copy" aria-live="polite"></p>
+      <div class="measure-grid"><div><span>Official released files</span><strong id="file-count">—</strong><small>Two release labels · two domains</small></div><div><span>Saved trajectories analyzed</span><strong id="trajectory-count">—</strong><small>Complete declared task × trial grids</small></div><div><span>New provider calls for this analysis</span><strong id="provider-call-count">—</strong><small>Read-only, offline recomputation</small></div></div>
+      <p class="accounting-note"><span aria-hidden="true">↳</span>These are the authors’ later released outcomes. They are not results from the confirmation gate, new model runs, or the original paper’s full experiment set.</p>
+      <div class="results-scroll" role="region" aria-label="Later author-release results" tabindex="0"><table class="results-table"><caption>pass<sup>1</sup> is the mean recorded native reward. Percentages are rounded to two decimals; exact fractions are in the evidence JSON.</caption><thead><tr><th scope="col">Author release label</th><th scope="col">Domain</th><th scope="col">Tasks × trials</th><th scope="col">pass<sup>1</sup></th></tr></thead><tbody id="author-results"></tbody></table></div>
+      <p class="research-copy"><code>sonnet-35-new</code> is the name of a later author release, not a model in the original paper’s Table 2. These files do not supply signed provider transcripts or fully pinned run configurations; the verified evidence is the released records and their Git provenance.</p>
+      <details class="lane-details"><summary>How the reliability metrics are calculated <span class="details-indicator" aria-hidden="true">+</span></summary><p class="research-copy">For each task, let c of n recorded trials succeed. The estimator pass<sup>k</sup> averages C(c,k) / C(n,k) across tasks: all k sampled trials succeed. The distinct pass@k estimator averages 1 − C(n−c,k) / C(n,k): at least one succeeds. The reporter uses exact rational arithmetic and rejects missing trials, duplicate identities, nonbinary rewards, and censored inputs.</p><p class="research-copy">The GPT-4o files contain four trials per task and support k ≤ 4; the sonnet-35-new files contain eight and support k ≤ 8. Neither supports the paper’s reliability curves through k = 32. Equal-domain averages give half the weight to retail and half to airline.</p></details>
+    </section>
+    <section class="research-card" aria-labelledby="protocol-heading">
+      <p class="eyebrow">02 / SOURCE AND SCOPE</p><h2 id="protocol-heading">Two source revisions, distinct evidence</h2>
+      <div class="protocol-grid">
+        <div><span class="protocol-number">A</span><h3>Paper-era author code</h3><p class="research-copy">The inspected pre-paper revision is:</p><code>6f4b718037db619539b8b692060e6686f3f0dcc9</code><p class="research-copy">It contains source and tasks, but no saved run results. It is a defensible source starting point, not a proven snapshot of the authors’ executed experiments.</p></div>
+        <div><span class="protocol-number">B</span><h3>Later released trajectories</h3><p class="research-copy">Four official files were added on 22 November 2024. The inspected later revision is:</p><code>59a200c6d575d595120f1cb70fea53cef0632f6b</code><p class="research-copy">Every file has its full declared task-by-trial grid, binary native rewards, and nonempty saved trajectories. File hashes and exact results are included in the export.</p></div>
+        <div><span class="protocol-number">C</span><h3>Full-paper coverage remains open</h3><p class="research-copy">The original study covers multiple models, agent methods, policy ablations, and high-repeat reliability experiments. Those original run grids are unavailable in the pinned source. This four-file calculation does not fill those gaps or establish a benchmark-wide gain.</p></div>
+      </div>
+      <p class="evidence-links"><a href="https://arxiv.org/html/2406.12045v1" target="_blank" rel="noopener noreferrer">Original paper ↗</a><a href="https://github.com/sierra-research/tau-bench/tree/6f4b718037db619539b8b692060e6686f3f0dcc9" target="_blank" rel="noopener noreferrer">Paper-era author source ↗</a><a href="https://github.com/sierra-research/tau-bench/tree/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories" target="_blank" rel="noopener noreferrer">Later official trajectory files ↗</a></p>
+    </section>
+    <section class="research-card" aria-labelledby="checks-heading">
+      <div class="research-section-heading"><div><p class="eyebrow">03 / NATIVE OFFLINE INTEGRATION</p><h2 id="checks-heading">Executable checks, without model inference</h2></div><span class="badge">OFFLINE CHECKS ONLY</span></div>
+      <p class="research-copy">The original actor/parser and native environment are exercised through handcrafted synthetic fixtures. These checks establish how the integration behaves; they do not measure how a model performs on the benchmark.</p>
+      <ol id="offline-checks" class="attempt-list"></ol>
+    </section>
+    <section class="research-card limits-card" aria-labelledby="limits-heading">
+      <p class="eyebrow">04 / RESEARCH BOUNDARIES</p><h2 id="limits-heading">Integration evidence has a boundary.</h2>
+      <div class="limits-grid"><p class="research-copy"><strong>All original τ-bench tasks carry an outdated-task warning.</strong> No leaderboard comparison, measured gate improvement, or full paper reproduction is claimed. Later author trajectories are kept separate from the synthetic demo and local development checks.</p><p class="research-copy">The demo’s baseline is a scripted illustration, not a measured model failure. Current development <code>current-dev-v5</code> remains <strong>UNEVALUATED</strong>. Changing the interface or confirmation logic does not change the authors’ historical results.</p></div>
+    </section>
+    <footer><span class="footer-brand">Reliable Retail Agent</span><a href="/">Back to interactive demo →</a><span id="generated">Evidence export</span></footer>
+  </main>
+</body>
+</html>

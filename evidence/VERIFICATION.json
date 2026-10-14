@@ -1,0 +1,21 @@
+{
+  "date_utc": "2026-10-14",
+  "python": "3.11",
+  "demo_and_metrics": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "passed": 154,
+    "failed": 0,
+    "evidence": "evidence/publication-tests.txt"
+  },
+  "original_author_offline": {
+    "command": "python -m unittest discover -s tests_native -v",
+    "passed": 8,
+    "failed": 0,
+    "synthetic_contract_runs": 9,
+    "evidence": "evidence/native-publication-tests.txt"
+  },
+  "additional_provider_calls": 0,
+  "paper_model_experiments_reproduced": 0,
+  "browser_scenarios": 8,
+  "mode": "offline verification and retrospective author-artifact analysis"
+}
