@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-14",
+  "files_scanned": 173,
+  "matches": 0,
+  "local_tests": {
+    "demo_metrics": 154,
+    "native": 8
+  },
+  "video": {
+    "duration_seconds": 75,
+    "captures": 300,
+    "decode_frames": 1800,
+    "width": 1280,
+    "height": 1008,
+    "captions": true,
+    "audio": false
+  },
+  "additional_provider_calls": 0,
+  "ci_review": {
+    "standard_linux_jobs": 1,
+    "job_timeout_minutes": 5,
+    "install_timeout_minutes": 2,
+    "permissions": "contents: read",
+    "repository_secrets": false,
+    "artifact_or_cache_uploads": false,
+    "checkout_pinned": true,
+    "paid_runner_required": false
+  },
+  "review_scope": "workflow structure, minimal environment, synthetic-only video, README claims, credential/path scan"
+}

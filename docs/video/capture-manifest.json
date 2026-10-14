@@ -1,0 +1,132 @@
+{
+  "capture_method": "Actual Chrome project-viewport screenshots sampled during live UI interactions; 5 sequential 15-second segments. No unrelated desktop content.",
+  "duration_seconds": 75,
+  "nominal_sampling_fps": 4,
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "events": [
+    {
+      "time": 4.395,
+      "event": "Select missing confirmation and run the actual local script",
+      "observed": {
+        "baseline": "1",
+        "gated": "0",
+        "scenario": "Missing confirmation",
+        "status": "awaiting confirmation"
+      }
+    },
+    {
+      "time": 7.085,
+      "event": "Compare actual baseline and gated dispatch counts",
+      "observed": {
+        "baseline": "1",
+        "gated": "0",
+        "scenario": "Missing confirmation",
+        "status": "awaiting confirmation"
+      }
+    },
+    {
+      "time": 15.364,
+      "event": "Review full current confirmation, exact arguments and fingerprint",
+      "observed": {
+        "baseline": "1",
+        "gated": "0",
+        "scenario": "Missing confirmation",
+        "status": "awaiting confirmation"
+      }
+    },
+    {
+      "time": 22.092,
+      "event": "Give fresh assent; double click still dispatches once",
+      "observed": {
+        "baseline": "1",
+        "gated": "1",
+        "scenario": "Missing confirmation",
+        "status": "succeeded"
+      }
+    },
+    {
+      "time": 24.058,
+      "event": "Inspect one confirmed local dispatch",
+      "observed": {
+        "baseline": "1",
+        "gated": "1",
+        "scenario": "Missing confirmation",
+        "status": "succeeded"
+      }
+    },
+    {
+      "time": 30.302,
+      "event": "Run yes-but changed-payload scenario",
+      "observed": {
+        "baseline": "1",
+        "gated": "0",
+        "scenario": "Changed payload",
+        "status": "awaiting confirmation"
+      }
+    },
+    {
+      "time": 37.362,
+      "event": "Inspect the new apartment 4B prompt that needs fresh consent",
+      "observed": {
+        "baseline": "1",
+        "gated": "0",
+        "scenario": "Changed payload",
+        "status": "awaiting confirmation"
+      }
+    },
+    {
+      "time": 45.327,
+      "event": "Run uncertain tool outcome and show one attempt with no retry",
+      "observed": {
+        "baseline": "1",
+        "gated": "1",
+        "scenario": "Uncertain tool outcome",
+        "status": "uncertain"
+      }
+    },
+    {
+      "time": 53.341,
+      "event": "Show the same boundary in the synthetic airline domain",
+      "observed": {
+        "baseline": "1",
+        "gated": "1",
+        "scenario": "Airline domain transfer",
+        "status": "succeeded"
+      }
+    },
+    {
+      "time": 60.433,
+      "event": "Open the separate research evidence page",
+      "observed": {}
+    },
+    {
+      "time": 64.322,
+      "event": "Inspect retrospective author results, not gate results",
+      "observed": {}
+    },
+    {
+      "time": 71.28999999999999,
+      "event": "Show explicit outdated-task and unevaluated-gate limitations",
+      "observed": {}
+    }
+  ],
+  "frames_captured": 300,
+  "source_capture_range_seconds": [
+    0,
+    74.751
+  ],
+  "encoded_video": {
+    "filename": "reliable-retail-agent-demo.mp4",
+    "duration_seconds": 75,
+    "sha256": "ea3ba7e72bb0d5c5eedb415e5946cc427a5e846232c526ab400cc2f9b5e27c86",
+    "bytes": 1664087,
+    "codec": "H.264",
+    "playback_fps": 24,
+    "width": 1280,
+    "height": 1008,
+    "audio": false
+  }
+}

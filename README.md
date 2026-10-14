@@ -1,34 +1,54 @@
 # Reliable Retail Agent
 
-A working, no-key demonstration of confirmation at the tool-dispatch boundary, plus an honest offline audit of the original **τ-bench** paper.
+[![Offline tests](https://github.com/alexmunzon/reliable-retail-agent/actions/workflows/offline-tests.yml/badge.svg)](https://github.com/alexmunzon/reliable-retail-agent/actions/workflows/offline-tests.yml)
+
+**A working safety boundary between an agent's proposed action and tool execution.** Fresh customer confirmation authorizes one exact payload; changes, stale consent, and uncertain outcomes are handled explicitly.
+
+[Watch the 75-second demo](https://github.com/alexmunzon/reliable-retail-agent/releases/download/v0.5.2/reliable-retail-agent-demo.mp4) · [Download the release](https://github.com/alexmunzon/reliable-retail-agent/releases/tag/v0.5.2) · [Read the walkthrough](docs/CALL_WALKTHROUGH.md)
 
 ![Actual desktop demo](evidence/demo-desktop.jpg)
 
-## Run locally
+## The engineering contribution
 
-Requires Python 3.11 or later. The demo uses the standard library; no API key, installation, or cloud account is needed.
+The project turns a conversational confirmation requirement into executable state transitions at the dispatch boundary. It includes:
+
+- **Exact-action authorization:** typed mutation intents, canonical payload hashes, gate-owned complete prompts, fresh assent, and invalidation when material details change.
+- **Controlled execution:** an explicit mutating-tool registry, one dispatch per local operation, refusal/ambiguity branches, and a stop on uncertain outcomes without automatic retry.
+- **Observable behavior:** independent baseline/gated fixtures, actual local function calls, before/after state, prompt identity, and readable event traces in a responsive web UI.
+- **Reproducible verification:** 154 demo/metrics tests, eight original-author integration tests, offline CI, source hashes, and an independent provenance/scoring review.
+
+The implementation was developed with AI assistance. Original τ-bench code and published trajectories are attributed separately; the custom gate, interface, adapters, and verification are the project's additions. The design uses one actor with an enforcing gate, not multiple runtime agents.
+
+## Run in one command
+
+Python 3.11+ is sufficient for the demo. No API key, package installation, or cloud account is needed.
 
 ```bash
 python3 scripts/start.py
 ```
 
-Open **http://127.0.0.1:8765**. Stop with Ctrl+C and run the same command to restart. An alternative port is supported with `python3 scripts/start.py --port 8766`. Sessions are synthetic, in memory, and reset on restart. The service runs only while its process remains alive.
+Open **http://127.0.0.1:8765**. Stop with Ctrl+C and use the same command to restart. For another port, use `python3 scripts/start.py --port 8766`. The server must remain running; its synthetic sessions are in memory and reset on restart. Browser reload restores the active session while that server is alive.
 
-## Try it
+## A two-minute walkthrough
 
-1. Choose **Missing confirmation**, then **Run scenario**. The illustrative baseline dispatches once; the gate waits and the gated fixture stays unchanged.
-2. Review the exact payload, prompt identity, and SHA-256. Click **Yes, confirm**. One local dispatch occurs.
-3. Choose **Changed payload** and run it. A prior “yes” does not authorize the changed payload; a fresh response is required.
-4. Try **Stale consent**, **Customer rejection**, **Ambiguous response**, and **Uncertain tool outcome**. An uncertain mutation stops without retry.
-5. Try **Airline domain transfer** to inspect the same gate in a second synthetic domain. Expand the dispatch log, state, and event trace.
+1. Run **Missing confirmation**. The illustrative baseline dispatches once; the gate stays closed and its fixture remains unchanged.
+2. Review the complete prompt, operation, payload, and SHA-256. Give a fresh **Yes, confirm**: exactly one local dispatch occurs.
+3. Run **Changed payload**. The new apartment number requires new consent; the old approval cannot carry over.
+4. Run **Uncertain tool outcome**. One attempt is recorded and further execution stops. Try **Airline domain transfer** to see the same boundary in another synthetic domain.
 
-All eight scenarios are **scripted and synthetic**. The baseline illustrates an ungated dispatch; it is **not a measured ReAct failure**. No purchases, refunds, real accounts, passengers, or customer email addresses are used by the demo. Current development `current-dev-v5` is **unevaluated**.
+Eight scenarios also cover normal confirmation, stale consent, rejection, and ambiguity. Expand each lane's dispatch log, fixture state, and decision trace. The [captioned video](docs/video/README.md) records these real UI interactions.
 
-## What the code enforces
+## What the evidence establishes
 
-The gate owns the complete confirmation prompt and binds fresh customer assent to a typed operation, tool, exact canonical payload, prompt identity, and payload fingerprint. It rejects or holds ambiguous responses, invalidates consent after payload changes, prevents duplicate local dispatches, and halts on uncertain mutations. The browser reconciles every command against server state and does not automatically retry writes. Model integration is separate from the state machine.
+| Evidence | Supports | Does not establish |
+| --- | --- | --- |
+| Scripted demo and automated tests | Specified state-machine, API, idempotency, and UI behavior | Measured model failures or improvements |
+| Original FC/ReAct/Act offline checks | Unchanged author parser, environment, scorer, and trace plumbing on synthetic fixtures | A fresh benchmark run |
+| 1,980 later author trajectories | Exact retrospective metrics for the pinned released records | Original paper Table 2 reproduction or current leaderboard comparability |
 
-This is a local proof of concept, not a production transaction system. Exactly-once behavior is scoped to an in-memory local session, not distributed services or crash recovery.
+**Current gate `current-dev-v5` remains unevaluated against real models.** All demo scenarios are scripted and synthetic; the baseline is an illustration, not a measured ReAct failure. No real customer accounts, purchases, refunds, or passengers are used.
+
+Exactly-once dispatch is scoped to a local in-memory session. This proof of concept does not provide distributed transactions, durable crash recovery, authentication, or production policy completeness. Uncertain external side effects require reconciliation before any future production retry design. Native benchmark `Env.step` and reward calculation remain unchanged; the gate belongs before dispatch, and scoring replay is excluded from actual actor traces.
 
 ## Research evidence
 
@@ -41,13 +61,15 @@ This is a local proof of concept, not a production transaction system. Exactly-o
 
 The original study is [Yao et al., τ-bench (2024)](https://arxiv.org/abs/2406.12045). Official source: [sierra-research/tau-bench](https://github.com/sierra-research/tau-bench). Paper-era code: `6f4b718037db619539b8b692060e6686f3f0dcc9`. Requested later reference: `59a200c6d575d595120f1cb70fea53cef0632f6b`. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-## Verify
+## Verify and extend
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 scripts/ci.py
 python3 -m reproduction.metrics --repo-root . --output /tmp/zero-cost-results.json
 ```
 
-The published snapshot passes **154 demo/metrics tests and 8 optional native integration tests**; see [verification receipt](evidence/VERIFICATION.json) and [browser evidence](evidence/BROWSER_WALKTHROUGH.md), with an [independent provenance and scoring review](evidence/ZERO_COST_INDEPENDENT_REVIEW.md).
+For the optional original-author checks, install `requirements-offline.txt` in a virtual environment and run `python3 scripts/ci.py --native`. See the [offline runbook](docs/FULL_REPRODUCTION_RUNBOOK.md) for exact setup.
 
-The UI, core gate, HTTP API, and metrics tests are offline. The separate original-agent implementation checks use the dependencies described in the runbook. This snapshot intentionally has no paid-run command, credentials, or private account ledgers.
+[GitHub Actions](https://github.com/alexmunzon/reliable-retail-agent/actions/workflows/offline-tests.yml) runs one bounded Linux job with read-only permissions, no model secrets, and no cache/artifact uploads. Test workers drop inherited credentials and block outbound Python TCP connections. [CI details](docs/CI.md), [verification receipt](evidence/VERIFICATION.json), [browser evidence](evidence/BROWSER_WALKTHROUGH.md), and [independent review](evidence/ZERO_COST_INDEPENDENT_REVIEW.md) make the scope inspectable.
+
+Useful next work would test durable dispatch/reconciliation, broader consent language, and a prospectively frozen real-model evaluation. Those are open engineering tasks, not completed performance claims.

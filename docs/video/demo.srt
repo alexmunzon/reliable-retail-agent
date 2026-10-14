@@ -1,0 +1,40 @@
+1
+00:00:00,000 --> 00:00:04,000
+Reliable Retail Agent: actual local UI. Scripted, synthetic data; no API key.
+
+2
+00:00:04,000 --> 00:00:15,000
+Missing consent: the illustrative baseline dispatches. The gate keeps its fixture unchanged.
+
+3
+00:00:15,000 --> 00:00:22,000
+Review the complete gate-owned prompt, exact arguments, operation and payload fingerprint.
+
+4
+00:00:22,000 --> 00:00:30,000
+Fresh assent permits one local dispatch. Repeated clicks do not duplicate the operation.
+
+5
+00:00:30,000 --> 00:00:37,000
+“Yes, but…” changes the payload. Earlier approval no longer authorizes this action.
+
+6
+00:00:37,000 --> 00:00:45,000
+Apartment 4B has a new fingerprint and prompt. It needs fresh confirmation.
+
+7
+00:00:45,000 --> 00:00:53,000
+Uncertain outcome: one attempt is recorded. The gate stops without an automatic retry.
+
+8
+00:00:53,000 --> 00:01:00,000
+Airline transfer: the same confirmation boundary in a second synthetic domain.
+
+9
+00:01:00,000 --> 00:01:07,000
+Research is separate: metrics from later author-published trajectories, with no new inference.
+
+10
+00:01:07,000 --> 00:01:15,000
+162 offline tests; current gate unevaluated. No full historical paper reproduction claimed.
+
