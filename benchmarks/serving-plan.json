@@ -1,0 +1,71 @@
+{
+  "schema_version": "rra-serving-benchmark-plan-v1",
+  "declared_at": "2026-10-25",
+  "revision_note": "Before candidate/final paired measurements: correct invalid benchmark overload idempotency keys, preserve partial failures, exclude health warmup, and clarify first-event metric. First baseline and original plan retained. Numeric budgets unchanged. Added bounded live dashboard HTTP queries, diagnostic only.",
+  "evidence_class": "local_synthetic_loopback",
+  "purpose": "A reviewer and a second customer operate the local pilot while reading their streams. This is a bounded diagnostic, not a production capacity or reliability claim.",
+  "selection_basis": "Two customers follows the demo. Budgets are user-visible responsiveness limits chosen before measurements; the preserved implementation is measured first and retained even if it misses them. No previous quantitative capacity baseline exists.",
+  "baseline": "Preserved commit c0afb816d68fe2b3367c0457ffc271d163a0f793, exported into a fresh directory; no source checkout is modified.",
+  "candidate": "Immutable integrated commit 87970608892a0d130a18f9c6bc31bdfcf0e9e471 exported into a fresh directory, with exact file hashes and archive receipt.",
+  "profile": {
+    "processes": "one ASGI service, one synthetic provider, clients on same host",
+    "worker_concurrency": 4,
+    "worker_scan_seconds": 0.2,
+    "provider_profile": "success, no injected delay except explicitly identified overload probe",
+    "command_rate_per_minute": 6000,
+    "command_burst": 1000,
+    "rate_limit_caveat": "Accelerated diagnostic profile from the existing test harness. Default product rate is 60/minute and burst 20; this is not a default-profile capacity claim. A separate default-rate overload probe is included.",
+    "stream_limit_per_principal": 4,
+    "stream_limit_global": 64,
+    "sse_batch_size": 50,
+    "sse_heartbeat_seconds": 0.5,
+    "provider_timeout_seconds": 2,
+    "drain_seconds": 1,
+    "repetitions": 3,
+    "operations_per_repetition": 40,
+    "warmup_operations_per_repetition": 2,
+    "max_wall_seconds_per_invocation": 480,
+    "max_output_bytes": 10000000
+  },
+  "matrix": [
+    {"id": "idle", "concurrency": 1, "requests": 40, "description": "health/live response and startup baseline"},
+    {"id": "command_only", "concurrency": [1, 2, 8], "requests_each": 40, "description": "idempotent session-create command replay; HTTP acceptances do not imply unique effects"},
+    {"id": "pilot", "concurrency": [1, 2], "description": "full proposal, exact prompt fetch, consent, committed completion; 40 unique effects per repetition and concurrency"},
+    {"id": "mixed_streams", "concurrency": 2, "description": "40 unique effects with one live SSE reader per customer, health polling and reconnect catch-up after the first committed event"},
+    {"id": "slow_consumers", "concurrency": 2, "description": "two non-reading sockets hold a pending run while an unrelated customer completes 12 operations; small traffic does not prove kernel-buffer saturation"},
+    {"id": "stream_overload", "concurrency": [1, 2, 4, 5], "description": "hold four streams for one principal and expect typed 429 for the fifth; replay creates no provider effect"},
+    {"id": "admission_overload", "concurrency": 1, "description": "eight unapproved runs fill the configured active-run limit; ninth must be refused with no effect"},
+    {"id": "rate_overload", "concurrency": 8, "requests": 40, "description": "fresh stack with default burst20/rate60; expect bounded typed 429 refusals"},
+    {"id": "span_recorder", "iterations_per_mode": 20000, "description": "off/on/injected-failure optional recorder call; bounded capacity; separate microbenchmark, not whole-service instrumentation A/B"},
+    {"id": "live_dashboard_queries", "requests_per_route": 20, "description": "One excluded warmup then authenticated list/aggregate HTTP reads after 21 owned runs. Missing on preserved baseline is NOT_AVAILABLE, not a regression. Browser render time excluded."}
+  ],
+  "budgets": {
+    "command_response_p95_ms": 500,
+    "consent_to_completion_p95_ms": 1000,
+    "first_committed_event_p95_ms": 500,
+    "replay_catchup_p95_ms": 500,
+    "health_response_p95_ms": 250,
+    "service_rss_peak_mib": 256,
+    "startup_ready_ms": 5000,
+    "legitimate_operation_errors": 0,
+    "effects_per_completed_operation": 1,
+    "stream_overload_http_status": 429,
+    "scope": "Idle, pilot at 1/2 customers, mixed streams and slow-consumer completion. Overload refusal timing is diagnostic. Budgets are not CI gates on shared hardware."
+  },
+  "statistics": {
+    "quantile": "nearest rank ceil(q*N), no interpolation",
+    "warmup": "publish raw warmup; exclude from steady-state percentiles/throughput",
+    "small_sample": "p95 is descriptive; 40 observations per repetition and correlated local runs cannot establish a stable production tail",
+    "clock": "client monotonic elapsed only; consent-to-dispatch is client-observed dispatch_started delivery, including transport; no cross-process clock subtraction",
+    "first_event_definition": "stream-open to first existing committed event delivered; proposal and prompt delivery already finished. This is replay-first-event latency, not request-to-commit latency or model time-to-first-token.",
+    "throughput": "accepted consent HTTP requests and observed succeeded operations separately over the same measured phase wall interval",
+    "rss_cpu": "sample service/provider ps RSS and cumulative CPU every 100ms; sampling may miss transient peaks",
+    "event_loop": "health/live HTTP response is an external responsiveness proxy, not a direct event-loop lag instrument",
+    "db_growth": "app/provider database plus WAL/SHM sizes before/after and sampled peak; local scratch deleted after final observation"
+  },
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 <serving-python> -B scripts/serving_bench.py --source <frozen-source> --plan benchmarks/serving-plan.json --output <new-output-dir> --label baseline",
+    "PYTHONDONTWRITEBYTECODE=1 <serving-python> -B scripts/serving_bench.py --source <frozen-source> --plan benchmarks/serving-plan.json --output <new-output-dir> --label candidate"
+  ],
+  "limits": ["No model/provider paid calls, dependency installation, outbound network, UI or canonical source writes.", "Hard correctness gates remain in the serving/evaluation suites; this harness independently counts synthetic provider effects but is not a replacement.", "Preserve all first-run failures. Output directories are exclusive. Stop after one final run per source; repairs require a new output directory and explanation."]
+}

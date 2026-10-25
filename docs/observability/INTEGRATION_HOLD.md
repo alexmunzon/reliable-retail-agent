@@ -1,3 +1,14 @@
+# Historical integration hold — original fixture checkpoint
+
+This report is preserved below as written at the original `claude/trace-dashboard` checkpoint.
+Its “NOT INTEGRATED” state described that checkpoint. Explicit later user approval permitted local
+consolidation, and the verified source was preserved before integration. An authenticated local
+adapter now exists; see [current integration state and verification](../INTEGRATION.md) and the
+[runbook](README.md). This supersession does not erase the original hold or turn preliminary tests
+into final verification. Unresolved restore-history, measurement and production limitations remain.
+
+---
+
 # Integration hold report: live serving is NOT INTEGRATED
 
 **Date:** 2026-10-25. **Branch:** `claude/trace-dashboard` at base `86caf2e`.

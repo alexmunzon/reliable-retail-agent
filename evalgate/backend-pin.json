@@ -1,10 +1,10 @@
 {
  "pin_version": "evalgate-backend-pin-v1",
  "repository": "alexmunzon/reliable-retail-agent",
- "branch": "claude/durable-backend",
- "commit": null,
+ "branch": "claude/backend-adapter-6b82f6",
+ "commit": "87970608892a0d130a18f9c6bc31bdfcf0e9e471",
  "lock_file": "requirements-serving.lock",
- "lock_sha256": null,
+ "lock_sha256": "dfcd019606601a0ffc97421d21b8b86722a9a289611c1c0c912dc6c4678d62e6",
  "python": "3.11",
- "status": "awaiting the backend owner's finalized commit; until it is set, the pinned backend evaluation is NOT_RUN and the CI check fails"
+ "status": "Frozen integrated backend; 91 serving tests and all 24 backend-v1 r4 gating cases passed locally. Hosted verification is recorded separately."
 }

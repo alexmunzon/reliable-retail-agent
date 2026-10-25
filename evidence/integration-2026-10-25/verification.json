@@ -1,0 +1,378 @@
+{
+  "schema_version": "retail-integration-verification-v1",
+  "date": "2026-10-25",
+  "runtime_commit": "87970608892a0d130a18f9c6bc31bdfcf0e9e471",
+  "lock_sha256": "dfcd019606601a0ffc97421d21b8b86722a9a289611c1c0c912dc6c4678d62e6",
+  "evidence_class": "scripted_synthetic_regression",
+  "untouched_holdout": false,
+  "scope": "Local synthetic provider only; zero paid model/provider calls; no production reliability or billing claim.",
+  "commands": {
+    "offline": "python3 -B scripts/ci.py",
+    "native": "<native-python> -B scripts/ci.py --native",
+    "serving": "<serving-python> -B scripts/ci_serving.py",
+    "backend": "python3 -B -m evalgate backend --pinned --backend-git . --backend-python <serving-python> --out <new-dir>",
+    "core_mutants": "python3 -B scripts/mutation_proof.py --receipts <new-dir>",
+    "backend_mutants": "python3 -B scripts/backend_mutation_proof.py --backend . --backend-python <serving-python> --receipts <new-dir>",
+    "cleanroom": "git archive 8797060; uv venv --offline; uv pip sync --offline --require-hashes -r requirements-serving.lock; <fresh-python> -B scripts/ci_serving.py tests_serving.test_http_api tests_serving.test_observability_live"
+  },
+  "local_lanes": {
+    "offline": {
+      "result": "PASS",
+      "tests_or_mutants": 338,
+      "seconds": 21.377,
+      "log": "offline.log",
+      "original_log_sha256": "20ed37ceabc533336668bb2353fdadba9c5bf4cdedc3bb143c0fd25c6206a9ad",
+      "published_log_sha256": "20ed37ceabc533336668bb2353fdadba9c5bf4cdedc3bb143c0fd25c6206a9ad"
+    },
+    "serving": {
+      "result": "PASS",
+      "tests_or_mutants": 91,
+      "seconds": 97.962,
+      "log": "serving.log",
+      "original_log_sha256": "c951e9f4e590de9b3382741ed2185d045c2018d9b45824adc51481d9f51167ab",
+      "published_log_sha256": "c951e9f4e590de9b3382741ed2185d045c2018d9b45824adc51481d9f51167ab"
+    },
+    "native": {
+      "result": "PASS",
+      "tests_or_mutants": 8,
+      "seconds": 3.717,
+      "log": "native.log",
+      "original_log_sha256": "60dcb73ee26430b95db29069f7243a02d9a0270ae9ac79636f27078f222a42cc",
+      "published_log_sha256": "60dcb73ee26430b95db29069f7243a02d9a0270ae9ac79636f27078f222a42cc"
+    },
+    "cleanroom": {
+      "result": "PASS",
+      "tests_or_mutants": 22,
+      "seconds": 18.282,
+      "log": "cleanroom.log",
+      "original_log_sha256": "ae702c7d341daca992f7d477bcd4bbf029ef0b87ba1b9896f4143a4fc70d5788",
+      "published_log_sha256": "ae702c7d341daca992f7d477bcd4bbf029ef0b87ba1b9896f4143a4fc70d5788"
+    },
+    "evaluation-mutants": {
+      "result": "PASS",
+      "tests_or_mutants": 33,
+      "seconds": null,
+      "log": "evaluation-mutants.log",
+      "original_log_sha256": "f6917113f1ce3d3cf12ab8b0bac5d97637bf7c04ead129a15adba8c6fde59857",
+      "published_log_sha256": "3da008e900f8b1fe42b3213c84629143692bdbcbbfba2489b11c2fe1443660fe"
+    },
+    "backend-mutants": {
+      "result": "PASS",
+      "tests_or_mutants": 11,
+      "seconds": null,
+      "log": "backend-mutants.log",
+      "original_log_sha256": "324121b84eda0abd2dbafa386abdce1c3ea8f9a9fbf15c093c381c4efddb1351",
+      "published_log_sha256": "6d008ba15a15007fa36345a3ac608401f241d6f2ef6ec66247f5c9dbbb5be96e"
+    }
+  },
+  "backend": {
+    "decision": "PASS",
+    "gating_passed": 24,
+    "gating_total": 24,
+    "exploratory_failed": [
+      "bk-x-restore-backup-before-approval"
+    ],
+    "raw_evidence": "20261025T072223Z-backend-babb43f7/manifest.json",
+    "pin_mode": "pinned-commit"
+  },
+  "backend_mutants": {
+    "unmutated": "PASS",
+    "killed": 11,
+    "total": 11,
+    "source_files_sha256": "713e13df58b1530de18cf0647f7acdc2110c74a5c880375db531f9d60dbb56fb",
+    "checks": {
+      "all_checks": {
+        "test_accepted_second_instance_is_caught": true,
+        "test_approval_admitted_while_degraded_is_caught": true,
+        "test_crash_that_did_not_happen_is_invalid_evidence": true,
+        "test_duplicate_provider_request_is_caught": true,
+        "test_effect_beyond_the_label_is_unsafe": true,
+        "test_failed_operator_command_is_an_interface_error": true,
+        "test_failure_reported_despite_effect_is_misreported": true,
+        "test_missing_execution_is_caught": true,
+        "test_prompt_naming_another_operation_is_caught": true,
+        "test_provider_request_without_recorded_start_is_misreported": true,
+        "test_refusal_code_with_success_status_is_caught": true,
+        "test_refusal_status_with_authorized_decision_is_caught": true,
+        "test_request_without_consent_is_unauthorized_and_unsafe": true,
+        "test_resend_after_a_lost_request_is_caught": true,
+        "test_scenario_that_did_not_happen_is_invalid_evidence": true,
+        "test_server_error_and_harness_exception_are_interface_errors": true,
+        "test_step_script_mismatch_is_invalid_evidence": true,
+        "test_success_reported_without_effect_is_misreported": true,
+        "test_superseded_approval_reaching_provider_is_unauthorized": true,
+        "test_trace_confirming_absent_effect_is_misreported": true,
+        "test_trace_denying_applied_effect_is_misreported": true,
+        "test_truncated_trace_of_finished_run_is_invalid": true,
+        "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught": true,
+        "test_unknown_reported_as_success_without_evidence_is_caught": true,
+        "test_unproposed_payload_is_wrong_payload": true,
+        "test_wrong_principal_consent_accepted_without_effect_is_caught": true,
+        "test_wrong_prompt_text_is_caught": true
+      },
+      "no_checks": {
+        "test_accepted_second_instance_is_caught": false,
+        "test_approval_admitted_while_degraded_is_caught": false,
+        "test_crash_that_did_not_happen_is_invalid_evidence": false,
+        "test_duplicate_provider_request_is_caught": false,
+        "test_effect_beyond_the_label_is_unsafe": false,
+        "test_failed_operator_command_is_an_interface_error": false,
+        "test_failure_reported_despite_effect_is_misreported": false,
+        "test_missing_execution_is_caught": false,
+        "test_prompt_naming_another_operation_is_caught": false,
+        "test_provider_request_without_recorded_start_is_misreported": false,
+        "test_refusal_code_with_success_status_is_caught": false,
+        "test_refusal_status_with_authorized_decision_is_caught": false,
+        "test_request_without_consent_is_unauthorized_and_unsafe": false,
+        "test_resend_after_a_lost_request_is_caught": false,
+        "test_scenario_that_did_not_happen_is_invalid_evidence": false,
+        "test_server_error_and_harness_exception_are_interface_errors": false,
+        "test_step_script_mismatch_is_invalid_evidence": false,
+        "test_success_reported_without_effect_is_misreported": false,
+        "test_superseded_approval_reaching_provider_is_unauthorized": false,
+        "test_trace_confirming_absent_effect_is_misreported": false,
+        "test_trace_denying_applied_effect_is_misreported": false,
+        "test_truncated_trace_of_finished_run_is_invalid": false,
+        "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught": false,
+        "test_unknown_reported_as_success_without_evidence_is_caught": false,
+        "test_unproposed_payload_is_wrong_payload": false,
+        "test_wrong_principal_consent_accepted_without_effect_is_caught": false,
+        "test_wrong_prompt_text_is_caught": false
+      },
+      "without check_attempts": [
+        "test_approval_admitted_while_degraded_is_caught",
+        "test_duplicate_provider_request_is_caught",
+        "test_effect_beyond_the_label_is_unsafe",
+        "test_missing_execution_is_caught",
+        "test_request_without_consent_is_unauthorized_and_unsafe",
+        "test_resend_after_a_lost_request_is_caught",
+        "test_superseded_approval_reaching_provider_is_unauthorized",
+        "test_unproposed_payload_is_wrong_payload"
+      ],
+      "without check_interface": [
+        "test_crash_that_did_not_happen_is_invalid_evidence",
+        "test_failed_operator_command_is_an_interface_error",
+        "test_refusal_code_with_success_status_is_caught",
+        "test_refusal_status_with_authorized_decision_is_caught",
+        "test_scenario_that_did_not_happen_is_invalid_evidence",
+        "test_server_error_and_harness_exception_are_interface_errors",
+        "test_step_script_mismatch_is_invalid_evidence",
+        "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught",
+        "test_wrong_principal_consent_accepted_without_effect_is_caught"
+      ],
+      "without check_prompts": [
+        "test_prompt_naming_another_operation_is_caught",
+        "test_wrong_prompt_text_is_caught"
+      ],
+      "without check_reported_states": [
+        "test_failure_reported_despite_effect_is_misreported",
+        "test_success_reported_without_effect_is_misreported",
+        "test_unknown_reported_as_success_without_evidence_is_caught"
+      ],
+      "without check_topology": [
+        "test_accepted_second_instance_is_caught"
+      ],
+      "without check_trace": [
+        "test_duplicate_provider_request_is_caught",
+        "test_provider_request_without_recorded_start_is_misreported",
+        "test_trace_confirming_absent_effect_is_misreported",
+        "test_trace_denying_applied_effect_is_misreported",
+        "test_truncated_trace_of_finished_run_is_invalid"
+      ]
+    },
+    "mutants": [
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-unknown-effect-reconciled"
+        ],
+        "decision": "FAIL",
+        "description": "Resend the mutation once (same provider key) when the outcome is unknown.",
+        "id": "B1-retry-after-unknown",
+        "notes": [
+          "bk-unknown-effect-reconciled: ['duplicate_effect', 'misreported_outcome'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/worker.py"
+      },
+      {
+        "cases": [
+          "bk-crash-after-claim",
+          "bk-positive-once",
+          "bk-unknown-no-effect-then-new"
+        ],
+        "decision": "FAIL",
+        "description": "Reconciliation treats a fenced not_found as applied.",
+        "id": "B2-not-found-means-success",
+        "notes": [
+          "bk-crash-after-claim: ['misreported_outcome', 'unexpected_run_state'] (named reason present)",
+          "bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/provider.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-stale-binding"
+        ],
+        "decision": "FAIL",
+        "description": "Accept an approval that names a different prompt, version or payload.",
+        "id": "B3-accept-stale-binding",
+        "notes": [
+          "bk-stale-binding: ['unauthorized_dispatch', 'unexpected_run_state', 'unsafe_effect'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/service.py"
+      },
+      {
+        "cases": [
+          "bk-ambiguous",
+          "bk-positive-once"
+        ],
+        "decision": "FAIL",
+        "description": "Treat every non-refusal reply as approval.",
+        "id": "B4-accept-ambiguous",
+        "notes": [
+          "bk-ambiguous: ['unauthorized_dispatch', 'unexpected_run_state', 'unsafe_effect'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/service.py"
+      },
+      {
+        "cases": [
+          "bk-other-principal",
+          "bk-positive-once"
+        ],
+        "decision": "FAIL",
+        "description": "Look runs up by id only, so another scoped principal can act on them.",
+        "id": "B5-no-ownership-check",
+        "notes": [
+          "bk-other-principal: ['uncontrolled_refusal', 'unexpected_run_state'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/service.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-superseded-revision"
+        ],
+        "decision": "FAIL",
+        "description": "Dispatch an approval made against an order revision that has since changed.",
+        "id": "B6-ignore-superseded-revision",
+        "notes": [
+          "bk-superseded-revision: ['unauthorized_dispatch'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/service.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-unknown-unresolved-hold"
+        ],
+        "decision": "FAIL",
+        "description": "Release the order's hold when an outcome becomes unknown, so new changes are not blocked.",
+        "id": "B7-release-hold-on-unknown",
+        "notes": [
+          "bk-unknown-unresolved-hold: ['unauthorized_dispatch', 'unsafe_effect'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/service.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once"
+        ],
+        "decision": "FAIL",
+        "description": "The worker claims operations but never calls the provider.",
+        "id": "B8-never-dispatch",
+        "notes": [
+          "bk-positive-once: ['missed_legitimate_execution', 'unexpected_run_state'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/worker.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-unknown-no-effect-then-new"
+        ],
+        "decision": "FAIL",
+        "description": "Record an unknown provider outcome as succeeded.",
+        "id": "B9-report-unknown-as-success",
+        "notes": [
+          "bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/provider.py"
+      },
+      {
+        "cases": [
+          "bk-positive-once",
+          "bk-second-instance-refused"
+        ],
+        "decision": "FAIL",
+        "description": "Start without taking the one-process-per-data-directory lock.",
+        "id": "B10-no-instance-lock",
+        "notes": [
+          "bk-second-instance-refused: ['second_instance_accepted'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "scripts/serving.py"
+      },
+      {
+        "cases": [
+          "bk-persistence-failure-after-effect",
+          "bk-positive-once"
+        ],
+        "decision": "FAIL",
+        "description": "Keep authorizing new approvals while outcomes cannot be recorded.",
+        "id": "B11-admit-while-degraded",
+        "notes": [
+          "bk-persistence-failure-after-effect: ['uncontrolled_refusal'] (named reason present)"
+        ],
+        "result": "KILLED",
+        "target": "serving/api.py"
+      }
+    ],
+    "raw_receipt_sha256": "df612123d3b36cdc9708fb7603c5ca00a1f780928bf9a930dd62ad2c09be4968"
+  },
+  "core_mutants": {
+    "all_ok": true,
+    "working_tree_unchanged": true,
+    "count": 33,
+    "raw_receipt_sha256": "b217642c4c450f28a8767873ce5322d18cb4cbd9d4f70975663e5dc4a704f249"
+  },
+  "headless_ui": {
+    "checks": 28,
+    "receipt": "headless-ui.json",
+    "external_requests": 0,
+    "business_state_unchanged": true
+  },
+  "review": {
+    "final_runtime_review": "No remaining concrete high-signal issue found; read-only source review. Shared context/filesystem; no sealed holdout claim."
+  },
+  "delivery": {
+    "local_verified": true,
+    "ci_executed": "See the exact current head checks on draft PR #2; this receipt records local verification before publication.",
+    "merge_enforced": {
+      "main": [
+        "evaluation-gate",
+        "test"
+      ],
+      "draft_pr_base_claude_evaluation_gate": [],
+      "backend_evaluation_required": false
+    },
+    "settings_changes": "Not authorized; no changes made."
+  },
+  "performance": {
+    "report": "PERFORMANCE.md",
+    "comparison": "performance-comparison.json",
+    "measured_operations_per_source": 360,
+    "effects_per_source": 360,
+    "candidate_two_customer_completion_p95_ms": 34.43,
+    "candidate_service_peak_rss_mib": 61.02
+  }
+}
