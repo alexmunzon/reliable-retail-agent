@@ -1,0 +1,43 @@
+test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history) ... ERROR
+test_old_sse_cursor_rejected_even_when_sequence_exists (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_old_sse_cursor_rejected_even_when_sequence_exists) ... FAIL
+test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt) ... FAIL
+
+======================================================================
+ERROR: test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 54, in test_dashboard_discloses_recovered_effect_and_missing_history
+    key = next(item["key"] for item in listing["requests"] if item["run_id"] == run["run_id"])
+                                       ~~~~~~~^^^^^^^^^^^^
+KeyError: 'requests'
+
+======================================================================
+FAIL: test_old_sse_cursor_rejected_even_when_sequence_exists (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_old_sse_cursor_rejected_even_when_sequence_exists)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 48, in test_old_sse_cursor_rejected_even_when_sequence_exists
+    self.assertEqual(r.status_code, 410, r.text)
+AssertionError: 200 != 410 : retry: 2000
+
+id: evt_run_c4e0f54778a94e1776a45fa70429b45e_00000003
+event: serving.reconciled
+data: {"event_id":"evt_run_c4e0f54778a94e1776a45fa70429b45e_00000003","event_type":"serving.reconciled","evidence_class":"serving_observation_synthetic_provider","occurred_at":"2026-10-25T23:30:45.140Z","operation_id":"op_517f7072dad2b3b0ff8a5aa81042ec79","payload":{"method":"restore_provider_status_lookup","resolved_state":"succeeded","title":"Outcome established after restore"},"payload_hash":"700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3","prompt_id":"prm_bbdd708997926461b0d7697f6c11ff03","run_id":"run_c4e0f54778a94e1776a45fa70429b45e","schema_version":"rra-serving-event-v0-provisional","sequence":3,"session_id":"ses_64df55ef487533370b7fd3d082b2ecc2","source":"serving-restore","trace_id":"trc_1678e4d1677e7abb40dca0ff2a1fc1a4"}
+
+id: evt_run_c4e0f54778a94e1776a45fa70429b45e_00000004
+event: serving.run_finished
+data: {"event_id":"evt_run_c4e0f54778a94e1776a45fa70429b45e_00000004","event_type":"serving.run_finished","evidence_class":"serving_observation_synthetic_provider","occurred_at":"2026-10-25T23:30:45.140Z","operation_id":null,"payload":{"state":"succeeded","title":"Run finished"},"payload_hash":null,"prompt_id":null,"run_id":"run_c4e0f54778a94e1776a45fa70429b45e","schema_version":"rra-serving-event-v0-provisional","sequence":4,"session_id":"ses_64df55ef487533370b7fd3d082b2ecc2","source":"serving-restore","trace_id":"trc_1678e4d1677e7abb40dca0ff2a1fc1a4"}
+
+
+
+======================================================================
+FAIL: test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 36, in test_v3_explicit_recovery_without_invented_attempt
+    self.assertEqual(r.status_code, 200, r.text)
+AssertionError: 422 != 200 : {"code":"validation_error","message":"Request failed validation.","request_id":"req_282e5d9525934d2aa5deebc3d121f926","retryable":false,"errors":[{"loc":["query","contract"],"type":"literal_error"}]}
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.342s
+
+FAILED (failures=2, errors=1)

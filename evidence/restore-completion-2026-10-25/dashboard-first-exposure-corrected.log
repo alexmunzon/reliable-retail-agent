@@ -1,0 +1,17 @@
+test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history) ... FAIL
+
+======================================================================
+FAIL: test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 57, in test_dashboard_discloses_recovered_effect_and_missing_history
+    self.assertEqual(op["outcome"], "effect_observed_after_restore")
+AssertionError: 'not_attempted' != 'effect_observed_after_restore'
+- not_attempted
++ effect_observed_after_restore
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.549s
+
+FAILED (failures=1)
