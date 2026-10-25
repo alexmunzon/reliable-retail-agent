@@ -1,6 +1,6 @@
 # Evaluation gate (milestone 1)
 
-**Status: `LOCAL_VERIFIED`.** Not `CI_EXECUTED` (nothing has been pushed) and not `MERGE_ENFORCED` (no required-check rule has been configured). All results below are deterministic scripted fixtures with no model calls.
+**Status: `CI_EXECUTED`** on draft PR [#1](https://github.com/alexmunzon/reliable-retail-agent/pull/1), head `311b2dd`: hosted [`evaluation-gate`](https://github.com/alexmunzon/reliable-retail-agent/actions/runs/40155951054) and [`test`](https://github.com/alexmunzon/reliable-retail-agent/actions/runs/40155950952) both passed. Not `MERGE_ENFORCED` (no required-check rule has been configured). All results below are deterministic scripted fixtures with no model calls.
 
 ## The claim, and its limits
 
@@ -112,7 +112,7 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 - `.github/workflows/evaluation-gate.yml`, job **`evaluation-gate`**: every PR (no path filters) plus pushes to main. Read-only token, no secrets, `persist-credentials: false`, pinned checkout SHA, 10-minute limit, no artifacts or caches. On a PR it checks out the merge revision with full history, uses the base SHA's harness when present (otherwise warns "bootstrap"), runs `check`, and writes the comparison and summary to the job summary.
 - `offline-tests.yml`: the `**.md` path filters are removed, so a required check cannot stay pending on Markdown-only PRs. Cost: Markdown-only PRs now use about 1 runner-minute each.
 - **Locally simulated, not hosted:** the workflow's own shell steps were executed against a throwaway clone. Results: bootstrap PR → PASS with warning; a PR planting M1, judged by the base harness → FAIL naming the forged/unbound/stale cases; the repair → PASS. See `evidence/evaluation-gate/ci-simulation/`.
-- **To reach `CI_EXECUTED`:** Alex authorizes pushing the branch and opening a draft PR, then the hosted run's logs are inspected on the exact head.
+- **Hosted (`CI_EXECUTED`):** on draft PR #1, the first run (head `f81a207`) passed `evaluation-gate` but failed `test`: its shallow checkout lacked the approved baseline commit, which the unit tests export by SHA. `offline-tests.yml` now fetches full history (`311b2dd`), and both checks passed on that head. No test or assertion was changed.
 - **To reach `MERGE_ENFORCED`:** Alex adds a branch ruleset or protection on `main` requiring the status checks `evaluation-gate` and `test`. Optionally add CODEOWNERS for `evalgate/`, `contracts/` and `.github/`. I have not changed any repository settings.
 
 ## Runbook
