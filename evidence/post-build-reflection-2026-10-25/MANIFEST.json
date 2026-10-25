@@ -276,5 +276,25 @@
   "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/manifest.json": {
     "sha256": "64d3f057faf7e4df43c63ebd43cf6f8862c127bdc16cecc6a6d554175d1a8c4c",
     "derivative": "byte-identical raw receipt"
+  },
+  "ci-first-failure.txt": {
+    "sha256": "a7ebf1078bca9692637110b4b006a1b1ae976cb878ffd6cedd917fa0e97d0e16",
+    "original_sha256": "1d4e8b48711161507fa18e586d16fd1a7ff77ffcae077895268564ca1bc7fdb8",
+    "derivative": "CI transcript with trailing whitespace normalized; original preserved locally"
+  },
+  "parser-portability-before-py312.txt": {
+    "sha256": "88e195760e73c86bb1a8dd16744722147497e760ff0e8b23458f623f655e8ac5",
+    "original_sha256": "dee13db894fd83f30f6e2012ae12b09b2f604509cbc237b2818effce043bd181",
+    "derivative": "host paths redacted"
+  },
+  "parser-portability-after-py311.txt": {
+    "sha256": "ca721653f3e1f805ca24fdf1e2c0f0a29554197ad1728c68d1c9b5a17cd68bda",
+    "original_sha256": "ca721653f3e1f805ca24fdf1e2c0f0a29554197ad1728c68d1c9b5a17cd68bda",
+    "derivative": "byte-identical"
+  },
+  "parser-portability-after-py312.txt": {
+    "sha256": "da2e65fae12830e8a1d28eeba862ebec0cc983a89c017dffbeb647f03fcd0b70",
+    "original_sha256": "da2e65fae12830e8a1d28eeba862ebec0cc983a89c017dffbeb647f03fcd0b70",
+    "derivative": "byte-identical"
   }
 }

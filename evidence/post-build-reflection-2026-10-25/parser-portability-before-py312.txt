@@ -1,0 +1,16 @@
+test_excessive_json_nesting_is_invalid_without_traceback (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_excessive_json_nesting_is_invalid_without_traceback) ... FAIL
+
+======================================================================
+FAIL: test_excessive_json_nesting_is_invalid_without_traceback (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_excessive_json_nesting_is_invalid_without_traceback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-path>", line 125, in test_excessive_json_nesting_is_invalid_without_traceback
+    self.assert_invalid("manifest unreadable")
+  File "<local-path>", line 46, in assert_invalid
+    self.assertIn(fragment, " ".join(problems))
+AssertionError: 'manifest unreadable' not found in 'manifest must be an object'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.637s
+
+FAILED (failures=1)

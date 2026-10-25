@@ -122,7 +122,17 @@ class ReceiptIntegrityTests(unittest.TestCase):
         self.replace_output("traces.jsonl", nested + "\n")
         self.assert_invalid()
         (self.folder / "manifest.json").write_text(nested)
-        self.assert_invalid("manifest unreadable")
+        # Parser recursion thresholds vary by Python build. Either rejecting the JSON
+        # or parsing its invalid top-level shape must preserve the same CLI contract.
+        self.assert_invalid()
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(2, backend.main_validate(SimpleNamespace(run_dir=str(self.folder))))
+        self.assertIn("INVALID", output.getvalue())
+        self.assertNotIn("Traceback", output.getvalue())
+        # Exercise the parser-error path explicitly even where this input parses.
+        with mock.patch.object(backend, "strict_json", side_effect=RecursionError("synthetic parser depth")):
+            self.assert_invalid("manifest unreadable")
 
     def test_unexpected_output_path_is_not_opened(self):
         changed = self.manifest()

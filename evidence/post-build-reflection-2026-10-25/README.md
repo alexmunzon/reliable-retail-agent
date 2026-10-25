@@ -80,3 +80,13 @@ python3 -m evalgate backend-validate evidence/integration-2026-10-25-followup/20
 
 Do not rewrite old manifests to make them appear newly executed. Hosted status must be verified
 against the exact publication head separately; no required-check settings or remote merge are implied.
+
+## Hosted portability repair
+
+The first post-reflection offline CI run on `75bce3d` failed one test because its parser-depth
+assertion expected `manifest unreadable`; the runner instead parsed the nested array and returned
+`manifest must be an object`. Both runtime paths correctly return INVALID. The same failure was
+reproduced with local Python 3.12. The regression now requires INVALID, CLI exit 2 and no traceback,
+and explicitly exercises RecursionError handling. All 14 integrity tests pass on Python 3.11
+(1.928s) and 3.12 (1.634s). Separate review confirms the runtime, pin, labels and thresholds did not
+change. Original failed CI and local receipts are preserved above.
