@@ -39,7 +39,7 @@ class LiveDataset(Dataset):
                     if len(events) >= MAX_EVENTS or total_bytes > self.limits.max_artifact_bytes:
                         limited = True
                         break
-                    events.append(to_trace(json.loads(event[0]), "trace-v2"))
+                    events.append(to_trace(json.loads(event[0]), "trace-v3"))
                 output.append((dict(row), events, limited))
             return output, len(rows) > MAX_RUNS
         runs, limited = service._read(read)

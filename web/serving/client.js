@@ -23,6 +23,10 @@ let refreshTimer = null;
 let busy = false;           // One command in flight at a time: no double submission.
 let pending = null;         // {label, runId, attempt()}: the last command, retried with the SAME keys.
 let snapshot = null;
+let authGen = 0;            // Also distinguishes A -> B -> A credential changes.
+let refreshGen = 0;         // Only the latest snapshot request can update the current view.
+let commandTicket = null;  // An old command cannot release a newer identity's busy guard.
+let resumeAfterSnapshot = null;  // A selected run must pass a current ownership read before streaming.
 
 const $ = (id) => document.getElementById(id);
 
@@ -40,6 +44,7 @@ function newKey() {
 // Returns {status, data}, or {status: 0} when no answer arrived (it may or may not have landed).
 async function request(method, path, body, key) {
   const used = token;
+  const generation = authGen;
   if (!used) return { status: -1, data: { code: "no_token" } };
   const init = { method, headers: { Authorization: `Bearer ${used}` }, credentials: "omit", cache: "no-store",
                  redirect: "error" };
@@ -52,15 +57,18 @@ async function request(method, path, body, key) {
   try {
     response = await fetch(path, init);
   } catch (error) {
+    if (generation !== authGen) return { status: -2, data: { code: "superseded" } };
     return { status: 0, data: { code: "no_answer", message: error.message } };
   }
   let data = null;
   try { data = await response.json(); } catch { /* Non-JSON error body. */ }
-  if (response.status === 401 && token === used) forget("Token rejected (revoked, rotated or wrong). Paste a current one.");
+  if (generation !== authGen) return { status: -2, data: { code: "superseded" } };
+  if (response.status === 401) forget("Token rejected (revoked, rotated or wrong). Paste a current one.");
   return { status: response.status, data: data || {} };
 }
 
 function report(label, { status, data }) {
+  if (status === -2) return;
   if (status === -1) return say(`${label}: set a bearer token first.`, "bad");
   if (status === 0) {
     return say(`${label}: no answer (${data.message}). It may or may not have landed; ` +
@@ -75,25 +83,54 @@ function report(label, { status, data }) {
 
 // Runs `attempt` with the busy guard. The same `pending` object (same keys) is what Retry resends.
 async function run(cmd) {
+  if (cmd.authGen !== authGen) return;
   if (busy) return say("Wait for the previous command to finish.", "warn");
+  const ticket = {};
+  commandTicket = ticket;
   busy = true;
   pending = cmd;
   try {
     await cmd.attempt();
   } finally {
-    busy = false;
+    if (commandTicket === ticket) {
+      busy = false;
+      commandTicket = null;
+    }
   }
 }
 
 function keyed(label, method, path, body, forRun = runId) {
   const key = newKey();
-  return { label, runId: forRun, attempt: async () => {
-    report(label, await request(method, path, body, key));
-    if (runId === forRun) scheduleRefresh(0);
+  const generation = authGen;
+  return { label, runId: forRun, authGen: generation, attempt: async () => {
+    if (generation !== authGen || runId !== forRun) return;
+    const result = await request(method, path, body, key);
+    if (generation !== authGen || runId !== forRun) return;
+    report(label, result);
+    scheduleRefresh(0);
   } };
 }
 
 // ------------------------------------------------------------------ token
+function clearIdentityView() {
+  authGen += 1;
+  refreshGen += 1;
+  closeStream();
+  clearTimeout(refreshTimer);
+  refreshTimer = null;
+  runId = cursor = snapshot = pending = null;
+  resumeAfterSnapshot = null;
+  busy = false;
+  commandTicket = null;
+  $("events").replaceChildren();
+  $("log").replaceChildren();
+  $("snapshot").textContent = "";
+  $("prompt").textContent = "No run selected.";
+  $("answer").value = "";
+  $("token").value = "";
+  $("request-form").reset();
+}
+
 $("token-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const value = $("token").value.trim();
@@ -102,14 +139,20 @@ $("token-form").addEventListener("submit", (event) => {
     $("token-state").textContent = "That does not look like an rra_ token.";
     return;
   }
+  const previousRun = runId;
+  const changed = value !== token;
+  if (changed) clearIdentityView();
   token = value;
   $("token-state").textContent = "Token held in memory for this page only.";
-  if (runId) openStream();
+  // Clear prior identity's data first. Reusing a selected run requires a fresh ownership-checked
+  // snapshot under this credential, preserving same-owner credential rotation without stale data.
+  if (changed && previousRun) adoptRun(previousRun);
+  else if (runId) openStream();
 });
 
 function forget(reason = "No token.") {
   token = null;
-  closeStream();
+  clearIdentityView();
   $("token-state").textContent = reason;
   setStreamState("Closed: no token.");
 }
@@ -126,12 +169,16 @@ $("request-form").addEventListener("submit", (event) => {
   const address = {};
   for (const name of ["street", "apartment", "city", "state", "postal_code", "country"]) address[name] = field(name);
   const sessionKey = newKey(), runKey = newKey(), resource = field("resource_id");
-  run({ label: "Create session and run", runId: null, attempt: async () => {
+  const generation = authGen;
+  run({ label: "Create session and run", runId: null, authGen: generation, attempt: async () => {
+    if (generation !== authGen) return;
     const session = await request("POST", "/api/v1/sessions", { resource_id: resource }, sessionKey);
+    if (generation !== authGen) return;
     report("Create session", session);
     if (session.status !== 201) return;
     const created = await request("POST", `/api/v1/sessions/${session.data.session_id}/runs`,
                                   { request: { type: "change_order_address", address } }, runKey);
+    if (generation !== authGen) return;
     report("Create run", created);
     if (created.status === 202 && created.data.run_id) adoptRun(created.data.run_id);
   } });
@@ -143,10 +190,14 @@ function adoptRun(id) {
   closeStream();
   runId = id;
   cursor = snapshot = null;
+  refreshGen += 1;
   if (pending && pending.runId !== null) pending = null;  // Never retry an old run's command on this one.
   $("events").replaceChildren();
+  $("snapshot").textContent = "";
+  $("answer").value = "";
   $("prompt").textContent = "Loading the prompt...";
-  refresh().then((ok) => { if (ok) openStream(); });
+  resumeAfterSnapshot = id;
+  refresh();
 }
 
 $("consent-form").addEventListener("submit", (event) => {
@@ -173,9 +224,11 @@ $("retry").addEventListener("click", () => {
 // Applies a snapshot only if it is still for the run on screen. Returns true on success.
 async function refresh() {
   const forRun = runId;
+  const generation = authGen;
+  const revision = ++refreshGen;
   if (!forRun || !token) return false;
   const result = await request("GET", `/api/v1/runs/${forRun}`);
-  if (runId !== forRun) return false;
+  if (generation !== authGen || revision !== refreshGen || runId !== forRun) return false;
   if (result.status !== 200) {
     report("Snapshot", result);
     return false;
@@ -187,6 +240,13 @@ async function refresh() {
     ? `${proposal.prompt}\n\nprompt_id ${proposal.prompt_id} · version ${proposal.proposal_version}\n` +
       `payload_hash ${proposal.payload_hash}`
     : `No prompt is awaiting an answer (proposal state: ${proposal.state}; run state: ${snapshot.state}).`;
+  if (snapshot.operation?.dispatch_history === "missing_after_restore") {
+    $("prompt").textContent += "\nProvider observed an effect after restore. Local dispatch history is missing; this does not establish original consent.";
+  }
+  if (resumeAfterSnapshot === forRun) {
+    resumeAfterSnapshot = null;
+    openStream();
+  }
   return true;
 }
 $("refresh").addEventListener("click", () => refresh());
@@ -244,7 +304,7 @@ async function openStream() {
     try { data = await response.json(); } catch { /* ignore */ }
     if (gen !== streamGen) return;
     if (response.status === 401) return forget("Stream refused: token rejected. Paste a current one.");
-    if (response.status === 410) return recoverFromSnapshot(gen, "Cursor past retention (HTTP 410).");
+    if (response.status === 410) return recoverFromSnapshot(gen, data.message || "Cursor history unavailable (HTTP 410).");
     if (response.status === 429) {
       return scheduleReconnect(gen, (data.retry_after_seconds || 5) * 1000, "Too many streams.");
     }
@@ -279,6 +339,7 @@ async function recoverFromSnapshot(gen, why) {
   if (gen !== streamGen || !token) return;
   if (!ok) return setStreamState(`${why} Snapshot unavailable; press Resume to try again.`);
   cursor = snapshot.last_event_id;
+  $("events").replaceChildren();  // Prior-generation rows must not appear to be this restored history.
   say(`${why} Earlier events are no longer retained; recovered from the snapshot, tailing after ${cursor}.`, "warn");
   if (TERMINAL.has(snapshot.state)) return setStreamState(`${why} Run ${snapshot.state}.`);
   scheduleReconnect(gen, retryMs, why);

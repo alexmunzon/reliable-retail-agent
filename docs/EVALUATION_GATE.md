@@ -325,3 +325,12 @@ Reviewer pass: a sequential, adversarial re-read in the same Opus 5.5 session. T
 - **Deliberately kept:** all `study/*` historical and experimental versions, `native/`, `vendor/`, `reproduction/` and their evidence (provenance). The r1 failing run and the run-1 mutation receipts (honest history). Both adapters, because they cover different boundaries: direct gate versus actor dispatch with reads and user channel.
 - **Measured** (Apple Silicon Mac, Python 3.11.1): `check` 1.3 s cold, about 165 MiB peak RSS per `/usr/bin/time -l`. `scripts/ci.py` runs 215 tests in about 18 s, including a real 3-second driver timeout, real driver crashes and malformed driver output. `check` takes about 2 s. The mutation proof takes about 51 s (it was 181 before the Astra reviews). No new dependencies. Hosted CI duration is unmeasured.
 - **Not done:** the native suite (`--native`) is `NOT_RUN` because its pinned packages aren't installed. The prospective model lane is `NOT_RUN`, awaiting approval (see `evalgate/prospective-plan-v1.json` for the worst-case call and token ceilings). There is no sealed challenge set.
+
+
+## Additive restore evidence follow-up
+
+The explicit [trace-v3 restore contract](../contracts/RESTORE_EVIDENCE.md) adds a separately versioned
+recovery comparison against an independent synthetic effect ledger. The original backend-v1
+exploratory stale-restore case still uses its frozen v2 expectations and remains exposed historical
+failure evidence. No threshold or old case label is changed. New malformed/forged/repeated recovery
+checks are regression evidence, not untouched holdout or proof that missing consent was recovered.

@@ -17,7 +17,7 @@ from anyio import to_thread
 from starlette.responses import StreamingResponse
 from starlette.types import Send
 
-from .service import TERMINAL_RUN_STATES, Service, event_id
+from .service import TERMINAL_RUN_STATES, Service, stream_cursor
 from .config import Settings
 from .telemetry import Telemetry
 
@@ -95,9 +95,9 @@ class SSEResponse(StreamingResponse):
             await self.body_iterator.aclose()
 
 
-def frame(sequence: int, run_id: str, event_type: str, envelope: str) -> bytes:
+def frame(sequence: int, run_id: str, event_type: str, envelope: str, generation: str | None = None) -> bytes:
     # Envelope is compact JSON (no raw newlines), so one data line is valid framing.
-    return f"id: {event_id(run_id, sequence)}\nevent: {event_type}\ndata: {envelope}\n\n".encode("utf-8")
+    return f"id: {stream_cursor(run_id, sequence, generation)}\nevent: {event_type}\ndata: {envelope}\n\n".encode("utf-8")
 
 
 def replay_expired_frame(run_id: str) -> bytes:
@@ -111,6 +111,7 @@ async def event_stream(*, service: Service, settings: Settings, notifier: Notifi
     started = time.monotonic()
     last_auth_check = started
     cursor = after
+    generation = await to_thread.run_sync(service.stream_generation)
     telemetry.count("streams_opened")
     yield b"retry: 2000\n\n"
     while True:
@@ -131,7 +132,7 @@ async def event_stream(*, service: Service, settings: Settings, notifier: Notifi
             yield replay_expired_frame(run_id)  # Never end a replay "successfully" with a gap.
             return
         for sequence, event_type, envelope in rows:
-            yield frame(sequence, run_id, event_type, envelope)
+            yield frame(sequence, run_id, event_type, envelope, generation)
             cursor = sequence
         if len(rows) == settings.sse_batch_size:
             continue

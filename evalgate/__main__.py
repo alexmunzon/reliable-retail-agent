@@ -82,6 +82,9 @@ def cmd_trace_check(args) -> int:
     versions = "/".join(sorted({e.get("schema_version") for e in events}))
     print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow {versions} and its ordering rules. "
           "This is not a PASS: the trace is the system's own account, and effects need independent evidence (see contracts/HANDOFF.md).")
+    restored = sum(e.get("schema_version") == "trace-v3" and e.get("event_type") == "serving.restore_observed" for e in events)
+    if restored:
+        print(f"INCOMPLETE AUDIT HISTORY: {restored} effect observation(s) after restore; original consent/dispatch history is not reconstructed.")
     return 0
 
 
@@ -125,7 +128,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("validate", help="validate one run directory from raw evidence")
     p.add_argument("run_dir")
     p.set_defaults(func=cmd_validate)
-    p = sub.add_parser("trace-check", help="check a service-generated trace-v1 JSON Lines file (never reports PASS)")
+    p = sub.add_parser("trace-check", help="check a versioned service trace JSON Lines file (never reports PASS)")
     p.add_argument("trace_file")
     p.set_defaults(func=cmd_trace_check)
     p = sub.add_parser("backend", parents=[common], help="opt-in: evaluate the durable backend's real effects (NOT_RUN if absent)")

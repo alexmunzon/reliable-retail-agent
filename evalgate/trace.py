@@ -18,7 +18,7 @@ CORE_EVENT_TYPES = ("prompt", "invalidated", "authorized", "blocked", "rejected"
                     "dispatch_started", "dispatch_succeeded", "dispatch_uncertain")
 # trace-v2 (contracts/trace-v2.schema.json) is trace-v1 plus one core outcome: the provider definitively refused
 # the attempt and nothing happened. trace-v1 events are checked exactly as before; a stream uses one version.
-SCHEMA_VERSIONS = ("trace-v1", "trace-v2")
+SCHEMA_VERSIONS = ("trace-v1", "trace-v2", "trace-v3")
 V2_CORE_EVENT_TYPES = CORE_EVENT_TYPES + ("dispatch_rejected",)
 BLOCKED_REASONS = ("unknown_tool", "stale_consent", "ambiguous_response", "unconfirmed_dispatch", "repeat_dispatch",
                    "halted_after_uncertain", "wrong_source", "unclassified_tool", "unmapped_legacy_reason")
@@ -97,7 +97,7 @@ def validate_event(event: dict) -> list[str]:
         return problems
     if event["schema_version"] not in SCHEMA_VERSIONS:
         problems.append("unknown schema_version")
-    core = V2_CORE_EVENT_TYPES if event["schema_version"] == "trace-v2" else CORE_EVENT_TYPES
+    core = V2_CORE_EVENT_TYPES if event["schema_version"] in ("trace-v2", "trace-v3") else CORE_EVENT_TYPES
     for key in ("event_id", "session_id", "run_id", "trace_id", "operation_id", "prompt_id"):
         if key in event and not (isinstance(event[key], str) and _ID.fullmatch(event[key])):
             problems.append(f"invalid {key}")
@@ -159,6 +159,9 @@ def validate_event(event: dict) -> list[str]:
             problems.append("serving.reconciled requires operation_id and payload_hash")
         if set(payload) - {"outcome", "by"} or payload.get("outcome") not in RECONCILED_OUTCOMES or not _short_string(payload, "by", 64):
             problems.append(f"serving.reconciled requires payload.outcome in {list(RECONCILED_OUTCOMES)} and at most a short payload.by")
+    if kind == "serving.restore_observed" and event["schema_version"] == "trace-v3":
+        from .recovery import validate_observation
+        problems.extend(validate_observation(event))
     for key, limit in (("classifier_version", 96), ("consent_binding_version", 64), ("error_class", 96)):
         if kind in core and not _short_string(payload, key, limit):
             problems.append(f"invalid payload.{key}")
@@ -182,6 +185,7 @@ def check_semantics(events: list[dict]) -> list[str]:
         streams.setdefault((event["run_id"], event["trace_id"]), []).append(event)
     for stream in streams.values():
         current, consent, open_attempts, attempted, unknown, tools = {}, {}, {}, set(), {}, {}
+        recovered = set()
         for event in stream:
             kind, operation, hashed = event["event_type"], event.get("operation_id"), event.get("payload_hash")
             key, where, prompt_id = operation or hashed, event["event_id"], event.get("prompt_id")
@@ -209,6 +213,8 @@ def check_semantics(events: list[dict]) -> list[str]:
             elif kind == "dispatch_started":
                 if any(unknown.values()):
                     problems.append(f"{where}: attempt started while an earlier outcome is unknown and unreconciled")
+                if operation in recovered:
+                    problems.append(f"{where}: attempt after recovered effect; restore observation grants no authorization")
                 if operation and operation in attempted:
                     problems.append(f"{where}: second attempt for operation {operation}")
                 if consent.get(key) != hashed:
@@ -225,6 +231,14 @@ def check_semantics(events: list[dict]) -> list[str]:
                     problems.append(f"{where}: outcome without a matching started attempt")
                 if kind == "dispatch_uncertain":
                     unknown[key] = hashed
+            elif kind == "serving.restore_observed" and event["schema_version"] == "trace-v3":
+                if key in recovered or key in attempted or key in open_attempts or key in unknown:
+                    problems.append(f"{where}: duplicate or contradictory restore observation")
+                if key in current and current[key][1] != hashed:
+                    problems.append(f"{where}: restore observation payload differs from retained proposal")
+                recovered.add(key)
+                consent.pop(key, None)  # Observation can never authorize a later attempt.
+                current.pop(key, None)
             elif kind == "serving.reconciled":
                 if not unknown.get(key) or unknown[key] != hashed:
                     problems.append(f"{where}: reconciliation of an outcome that was not unknown for this operation and payload")

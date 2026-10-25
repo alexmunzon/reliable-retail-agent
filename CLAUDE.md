@@ -28,6 +28,8 @@ The project coordinator is the sole shared-contract and integration owner. Prese
 and trace-v2 as explicitly versioned frozen contracts. Serving defaults to the v1 compatibility
 export; consumers needing a definite no-effect dispatch outcome explicitly request trace-v2.
 Never reinterpret v1 or turn incomplete restored history into a valid trace by inventing events.
+Explicit trace-v3 restore observations follow [RESTORE_EVIDENCE.md](contracts/RESTORE_EVIDENCE.md):
+provider-observed effects and missing local history stay distinct; legacy exports and cases stay frozen.
 Restore-before-approval history remains an exploratory limitation. Freeze and test the exact
 backend revision before pinning it; a mutable path is not a pinned CI result.
 

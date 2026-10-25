@@ -232,14 +232,15 @@ function operationsTable(request) {
       el("td", { class: "mono", text: op.operation_id }),
       el("td", { text: op.tool_name || "—" }),
       el("td", { text: `${op.prompts} prompt(s), ${op.distinct_payloads} payload(s)` }),
-      el("td", { text: op.authorized ? "yes (not execution)" : "no" }),
-      el("td", { class: "op-attempts", text: `${op.mutation_attempts}${op.attempts_across_runs > op.mutation_attempts ? ` (${op.attempts_across_runs} across runs)` : ""}` }),
-      el("td", { class: `op-outcome o-${op.outcome}`, text: OUTCOME_TEXT[op.outcome] || op.outcome }),
+      el("td", { text: op.authorized ? "yes (not execution)" : op.history_incomplete ? "not recorded in restored history" : "no" }),
+      el("td", { class: "op-attempts", text: `${op.mutation_attempts}${op.history_incomplete ? " recorded (history incomplete)" : ""}${op.attempts_across_runs > op.mutation_attempts ? ` (${op.attempts_across_runs} across runs)` : ""}` }),
+      el("td", { class: `op-outcome o-${op.outcome}`, text: (op.outcome === "effect_observed_after_restore" ? "Effect observed after restore" : OUTCOME_TEXT[op.outcome]) || op.outcome }),
       el("td", { text: op.confirmed_by || "—" }),
       el("td", { text: [
         op.terminal ? `terminal: ${op.terminal}` : null,
         op.invalidations ? `${op.invalidations} invalidation(s)` : null,
         op.history_has_unknown ? "was unknown" : null,
+        op.history_incomplete ? "local consent/dispatch history may be missing; provider observation is not authorization proof" : null,
         op.reconciliations.length ? `reconciliations: ${op.reconciliations.join(" → ")}` : null,
         op.cancellation ? `cancel ${op.cancellation.replace("_", " ")}${op.cancellation === "after_claim" ? " (does not undo an effect)" : ""}` : null,
       ].filter(Boolean).join("; ") || "—" }))))));
