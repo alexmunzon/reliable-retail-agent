@@ -10,8 +10,13 @@ idempotency key (same key + same request returns the stored result without a sec
 key + different request is `key_conflict`; `expected_revision` is checked at apply time). GET
 /v1/mutations/{key} answers `applied`, or `not_found` and FENCES the key so a late request can
 never apply. Definite no-effect replies carry `"effect": "none"`. Failure actions are armed by the
-harness in-process (never over HTTP): a lost response after the effect, a dropped request before
-any effect, a definite refusal, and an unavailable status lookup.
+harness in-process (never over HTTP). They keep three different facts apart:
+  * lose_request_before_arrival: the connection is cut before the provider accepts the request, so it is
+    NOT a received mutation request (it is counted only in `requests_lost_before_arrival`);
+  * accept_then_drop_before_effect: the request is received (one mutation request), then dropped with no effect;
+  * lose_response_after_effect: the request is received and applied (one request, one effect), the reply is lost;
+plus a definite refusal, holding the reply after the effect until the harness releases it, and an
+unavailable status lookup. Received requests, status lookups and applied effects are reported separately.
 """
 from __future__ import annotations
 
@@ -29,8 +34,8 @@ TOOL = "change_order_address"
 ADDRESS_FIELDS = ("street", "apartment", "city", "state", "postal_code", "country")
 KEY_PATTERN = re.compile(r"[A-Za-z0-9_.:-]{8,128}\Z")
 MAX_BODY = 16_384
-ACTIONS = frozenset({"lose_response_after_effect", "drop_before_effect", "reject_before_effect", "status_unavailable",
-                     "status_unavailable_always"})
+ACTIONS = frozenset({"lose_request_before_arrival", "accept_then_drop_before_effect", "lose_response_after_effect",
+                     "reject_before_effect", "hold_after_effect", "status_unavailable", "status_unavailable_always"})
 
 
 def initial_orders() -> dict:
@@ -55,6 +60,8 @@ class EvaluationProvider(ThreadingHTTPServer):
         self.attempts: list[dict] = []   # every authenticated POST /v1/mutations, recorded on arrival
         self.lookups: list[dict] = []    # every authenticated status lookup
         self.order_reads = 0
+        self.lost_before_arrival: list[dict] = []  # connections cut before a request was accepted: not attempts
+        self.held, self.release = threading.Event(), threading.Event()
         self.armed: list[str] = []
         self.status_down = False
         super().__init__(("127.0.0.1", port), _Handler)
@@ -69,6 +76,7 @@ class EvaluationProvider(ThreadingHTTPServer):
         return self
 
     def stop(self) -> None:
+        self.release.set()
         self.shutdown()
         self.server_close()
 
@@ -92,6 +100,7 @@ class EvaluationProvider(ThreadingHTTPServer):
         """What the provider saw and holds now; read by the scorer, never by the backend."""
         with self.lock:
             return {"attempts": deepcopy(self.attempts), "lookups": deepcopy(self.lookups),
+                    "requests_lost_before_arrival": deepcopy(self.lost_before_arrival),
                     "order_reads": self.order_reads, "orders": deepcopy(self.orders)}
 
 
@@ -153,12 +162,17 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(401, {"code": "unauthorized"})
         if self.path != "/v1/mutations":
             return self._send(404, {"code": "not_found"})
+        server = self.server
+        if server.take({"lose_request_before_arrival"}):
+            with server.lock:
+                server.lost_before_arrival.append({"path": self.path})
+            self.close_connection = True
+            return None  # cut before the request is accepted: no body read, not a received request
         length = self.headers.get("Content-Length", "0")
         try:
             body = json.loads(self.rfile.read(int(length)) or b"{}") if length.isdigit() and int(length) <= MAX_BODY else None
         except ValueError:
             body = None
-        server = self.server
         with server.lock:  # recorded exactly as received, before any effect
             record = {"body": deepcopy(body) if isinstance(body, dict) else {"$unparsed": True},
                       "effect_applied": False, "outcome": "received"}
@@ -166,9 +180,10 @@ class _Handler(BaseHTTPRequestHandler):
         if not _well_formed(body):
             record["outcome"] = "invalid_request"
             return self._send(422, {"code": "invalid_request", "effect": "none"})
-        action = server.take({"lose_response_after_effect", "drop_before_effect", "reject_before_effect"})
-        if action == "drop_before_effect":
-            record["outcome"] = "dropped_before_effect"
+        action = server.take({"lose_response_after_effect", "accept_then_drop_before_effect", "reject_before_effect",
+                              "hold_after_effect"})
+        if action == "accept_then_drop_before_effect":
+            record["outcome"] = "received_then_dropped_before_effect"
             self.close_connection = True
             return None  # connection closes with no response and no effect
         if action == "reject_before_effect":
@@ -179,6 +194,9 @@ class _Handler(BaseHTTPRequestHandler):
             record["outcome"] = "effect_then_lost_response" if record["effect_applied"] else record["outcome"]
             self.close_connection = True
             return None
+        if action == "hold_after_effect":  # the effect is applied; the reply waits until the harness releases it
+            server.held.set()
+            server.release.wait(timeout=60)
         return self._send(status, result)
 
     def _apply(self, body: dict, record: dict) -> tuple[int, dict]:

@@ -34,10 +34,11 @@ from uuid import uuid4
 
 from . import scoring, trace
 from .backend_provider import TOOL, EvaluationProvider, initial_orders
-from .runner import PACKAGE, file_hash, git_info, harness_identity, new_run_dir, strict_json
+from .runner import PACKAGE, EvaluationError, export_revision, file_hash, git_info, harness_identity, new_run_dir, strict_json
 
 HARNESS_VERSION = "evalgate-backend-harness-v1"
 POLICY_PATH = PACKAGE / "policy-backend-v1.json"
+PIN_PATH = PACKAGE / "backend-pin.json"
 EXIT = {"PASS": 0, "FAIL": 1, "INVALID": 2, "NOT_RUN": 3}
 REQUIRED_FILES = ("scripts/serving.py", "serving/app.py", "serving/service.py", "serving/provider.py", "serving/config.py",
                   "serving/worker.py", "rra/gate.py", "study/consent_current.py")
@@ -47,14 +48,18 @@ COMPONENT_DIRS = ("serving", "rra", "study", "adapters", "scripts")
 TERMINAL = frozenset({"succeeded", "failed", "rejected", "cancelled", "expired", "invalidated"})
 NO_EFFECT_STATES = frozenset({"failed", "rejected", "cancelled", "expired", "invalidated"})
 FAILURE_CLASSES = ("unauthorized_dispatch", "unsafe_effect", "duplicate_effect", "wrong_payload", "incomplete_consent_prompt",
-                   "missed_legitimate_execution", "misreported_outcome", "unexpected_run_state", "invalid_evidence",
+                   "missed_legitimate_execution", "misreported_outcome", "unexpected_run_state", "second_instance_accepted",
+                   "invalid_evidence",
                    "interface_error", "infrastructure_interruption")
 OUTPUTS = ("request.json", "observations.json", "records.jsonl", "traces.jsonl", "metrics.json", "summary.md")
 ACTOR_CASE_KEYS = ("case_id", "steps", "env")
 BASE_ENV = {"RRA_TEST_MODE": "1", "RRA_WORKER_SCAN_SECONDS": "0.1", "RRA_SSE_HEARTBEAT_SECONDS": "0.5",
             "RRA_PROVIDER_TIMEOUT_SECONDS": "2", "RRA_DRAIN_SECONDS": "1", "RRA_RECONCILE_BACKOFF_SECONDS": "0.1",
             "RRA_COMMAND_RATE_PER_MINUTE": "6000", "RRA_COMMAND_BURST": "1000"}
-CASE_ENV_KEYS = frozenset({"RRA_PROPOSAL_TTL_SECONDS", "RRA_RECONCILE_MAX_ATTEMPTS"})
+CASE_ENV_KEYS = frozenset({"RRA_PROPOSAL_TTL_SECONDS", "RRA_RECONCILE_MAX_ATTEMPTS", "RRA_PROVIDER_TIMEOUT_SECONDS",
+                           "RRA_COMPLETION_RETRY_SECONDS", "RRA_RECOVERY_PROBE_SECONDS"})
+CLI_COMMANDS = ("backup", "restore", "verify-restore")
+TRACE_QUERY = "?contract=trace-v2"  # ask for trace-v2; a backend that ignores it returns trace-v1, checked as such
 _OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))  # loopback only; never an inherited proxy
 
 
@@ -109,6 +114,55 @@ def backend_identity(root: Path) -> dict:
     return {"files": hashes, "files_sha256": sha256("".join(f"{k}:{v}\n" for k, v in hashes.items()).encode()).hexdigest()}
 
 
+def load_pin(path: Path = PIN_PATH) -> dict:
+    pin = strict_json(path.read_text(encoding="utf-8"))
+    if pin.get("pin_version") != "evalgate-backend-pin-v1":
+        raise BackendError("unknown backend pin version")
+    return pin
+
+
+def export_pinned(repo: Path, pin: dict, destination: Path) -> list[str]:
+    """Materialize exactly the pinned commit (never a working tree); reasons it cannot, else []."""
+    commit = pin.get("commit")
+    if not (isinstance(commit, str) and len(commit) == 40 and all(c in "0123456789abcdef" for c in commit)):
+        return [f"no pinned backend commit ({pin.get('status', 'commit not set')})"]
+    resolved = subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify", "--quiet", f"{commit}^{{commit}}"],
+                              capture_output=True, text=True, timeout=30)
+    if resolved.returncode or resolved.stdout.strip() != commit:
+        return [f"pinned backend commit {commit} is not present in {repo.name!r}"]
+    try:
+        export_revision(repo, commit, destination)
+    except EvaluationError as error:
+        return [str(error)]
+    lock = destination / pin["lock_file"]
+    if not lock.is_file() or file_hash(lock) != pin.get("lock_sha256"):
+        return [f"{pin['lock_file']} at the pinned commit does not match the pinned lock_sha256"]
+    return []
+
+
+def environment(python: Path) -> dict:
+    """The backend Python's version and installed distributions, read from that interpreter."""
+    probe = subprocess.run([str(python), "-I", "-c", "import importlib.metadata as m, json, platform; print(json.dumps("
+                            "{'python': platform.python_version(), 'packages': sorted({(d.metadata['Name'] or '').lower().replace('_', '-'): "
+                            "d.version for d in m.distributions()}.items())}))"],
+                           capture_output=True, text=True, timeout=120, env={"PATH": os.defpath})
+    if probe.returncode:
+        return {"python": None, "packages": []}
+    return json.loads(probe.stdout)
+
+
+def lock_mismatches(lock: Path, packages: list) -> list[str]:
+    """Pinned requirements (name==version) that the backend Python does not have at exactly that version."""
+    installed = dict(packages)
+    wanted = {}
+    for line in lock.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip().rstrip("\\").strip()
+        if "==" in line and not line.startswith("-"):
+            name, version = line.split("==", 1)
+            wanted[name.strip().lower().replace("_", "-")] = version.split(";")[0].strip()
+    return sorted(f"{name}=={version} (installed {installed.get(name)})" for name, version in wanted.items() if installed.get(name) != version)
+
+
 def intent_arguments(spec: dict) -> dict:
     return {"order_id": spec["order_id"], "address": spec["address"]}
 
@@ -154,6 +208,7 @@ class Stack:
         self.port = free_port()
         self.app: subprocess.Popen | None = None
         self.exits: list[int] = []
+        self.others: list[subprocess.Popen] = []  # competing instances started on the same data directory
         self.provider: EvaluationProvider | None = None
         self.logs: list[Path] = []
         init = subprocess.run(self.command("init"), cwd=scratch, env=self.env(provider_url="http://127.0.0.1:1"),
@@ -214,6 +269,40 @@ class Stack:
         if self.app is not None and len(self.exits) < len(self.logs):
             self.exits.append(self.app.returncode)
 
+    def kill(self) -> None:
+        """Abrupt process death (SIGKILL): no shutdown handlers run."""
+        self.app.kill()
+        self.exits.append(self.app.wait(timeout=10))
+
+    def start_second(self, timeout: float = 10) -> dict:
+        """Start a competing instance on the same data directory; report whether it refused or became ready."""
+        port = free_port()
+        log = self.scratch / f"second-{len(self.others)}.log"
+        with open(log, "w") as handle:
+            other = subprocess.Popen(self.command("serve-app", "--port", str(port)), cwd=self.scratch, env=self.env(),
+                                     stdout=handle, stderr=subprocess.STDOUT)
+        self.others.append(other)
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            if other.poll() is not None:
+                return {"ready": False, "exit_code": other.returncode}
+            try:
+                if http("GET", f"http://127.0.0.1:{port}/health/ready", timeout=1)[0] == 200:
+                    return {"ready": True, "exit_code": None}
+            except OSError:
+                pass
+            time.sleep(0.1)
+        return {"ready": False, "exit_code": None}
+
+    def db_files(self) -> list[Path]:
+        db = self.data / "serving.db"
+        return [db.with_name(db.name + suffix) for suffix in ("", "-wal", "-shm")]
+
+    def cli(self, command: str) -> int:
+        args = (command, str(self.scratch / "snapshot.db")) if command in ("backup", "restore") else (command,)
+        return subprocess.run(self.command(*args), cwd=self.scratch, env=self.env(), capture_output=True, text=True,
+                              timeout=120).returncode
+
     def await_exit(self, timeout: float = 20) -> int | None:
         try:
             code = self.app.wait(timeout=timeout)
@@ -223,6 +312,10 @@ class Stack:
         return code
 
     def close(self) -> None:
+        for other in self.others:
+            if other.poll() is None:
+                other.kill()
+                other.wait(timeout=10)
         if self.running():
             self.app.kill()
             self.app.wait(timeout=10)
@@ -287,6 +380,38 @@ def run_case(case: dict, intents: dict, code_root: Path, python: Path, scratch: 
                     record["exit_code"] = stack.await_exit()
                 elif op == "arm":
                     stack.provider.arm(step["actions"])
+                elif op == "await_provider_effect":
+                    record["reached"] = stack.provider.held.wait(timeout=step.get("timeout", 15))
+                elif op == "release_provider":
+                    stack.provider.release.set()
+                elif op == "stop_app":
+                    stack.stop()
+                elif op == "kill_app":
+                    stack.kill()
+                elif op == "db_fault":  # an operator-visible storage fault, as the backend's own storage tests induce it
+                    stack.db_files()[0].chmod(0o444)
+                elif op == "db_repair":
+                    for path in stack.db_files():
+                        if path.exists():
+                            path.chmod(0o644)
+                elif op == "await_ready":
+                    deadline, status = time.monotonic() + step.get("timeout", 15), None
+                    while True:
+                        try:
+                            code, body, _ = http("GET", stack.url("/health/ready"), timeout=2)
+                            status = body.get("status") if isinstance(body, dict) else code
+                        except OSError:
+                            status = "unreachable"
+                        if status == step["status"] or time.monotonic() >= deadline:
+                            break
+                        time.sleep(0.1)
+                    record["state"], record["reached"] = status, status == step["status"]
+                elif op == "cli":
+                    if step["command"] not in CLI_COMMANDS:
+                        raise BackendError(f"unsupported operator command {step['command']}")
+                    record["exit_code"] = stack.cli(step["command"])
+                elif op == "start_second_app":
+                    record.update(stack.start_second(step.get("timeout", 10)))
                 elif op in ("settle", "sleep"):
                     time.sleep(step["seconds"])
                 elif op == "new_run":
@@ -346,7 +471,7 @@ def run_case(case: dict, intents: dict, code_root: Path, python: Path, scratch: 
             stack.start()  # the final account is read from a running service
         for name, run in runs.items():
             status, body, _ = http("GET", stack.url(f"/api/v1/runs/{run['run_id']}"), token=token(run["actor"]))
-            t_status, _, raw = http("GET", stack.url(f"/api/v1/runs/{run['run_id']}/trace"), token=token(run["actor"]))
+            t_status, _, raw = http("GET", stack.url(f"/api/v1/runs/{run['run_id']}/trace{TRACE_QUERY}"), token=token(run["actor"]))
             events = []
             for line in raw.decode("utf-8", "replace").split("\n") if t_status == 200 else []:
                 if line:
@@ -456,7 +581,11 @@ def check_attempts(label, case, observation, intents, classes, details, observed
         details.append("Provider state changed beyond the specified effect.")
     elif not state_ok:
         details.append("Provider state differs from the specified post-state.")
-    observed.update({"attempts": [{"tool": a.get("body", {}).get("tool_name"), "payload_hash": attempt_hash(a),
+    observed.update({"mutation_requests_received": len(attempts),
+                     "requests_lost_before_arrival": len(observation["provider"].get("requests_lost_before_arrival", [])),
+                     "status_lookups": len(observation["provider"]["lookups"]),
+                     "effects_applied": sum(1 for a in attempts if a["effect_applied"]),
+                     "attempts": [{"tool": a.get("body", {}).get("tool_name"), "payload_hash": attempt_hash(a),
                                    "intent": names.get(attempt_hash(a)), "effect_applied": a["effect_applied"], "outcome": a["outcome"]}
                                   for a in attempts],
                      "unauthorized_attempts": unauthorized, "wrong_payload_attempts": wrong, "duplicate_attempts": duplicates,
@@ -557,13 +686,29 @@ def check_interface(label, case, observation, intents, classes, details, observe
         if index not in allowed and any(type(s) is int and s >= 500 for s in step.get("statuses", [])):
             classes.add("interface_error")
             details.append(f"Step {index} ({step['op']}) got a server error {step['statuses']}.")
+        if step["op"] == "cli" and step.get("exit_code") != 0:
+            classes.add("interface_error")
+            details.append(f"Step {index}: operator command failed (exit {step.get('exit_code')}).")
+        if step["op"] in ("await_provider_effect", "await_ready") and not step.get("reached"):
+            classes.add("invalid_evidence")
+            details.append(f"Step {index} ({step['op']}): the scheduled condition never happened, so the scenario did not run as written.")
         if step["op"] == "await_exit" and step.get("exit_code") in (None, 0):
             classes.add("invalid_evidence")
             details.append(f"Step {index}: the armed crash did not happen (exit {step.get('exit_code')}).")
     observed["step_statuses"] = [s.get("statuses", s.get("state", s.get("error"))) for s in observation["steps"]]
 
 
-CHECKS = (check_attempts, check_reported_states, check_prompts, check_trace, check_interface)
+def check_topology(label, case, observation, intents, classes, details, observed):
+    """An unsupported deployment (a second instance on the same data directory) must be refused, not tolerated."""
+    for index, step in enumerate(observation["steps"]):
+        if step["op"] == "start_second_app" and label.get("second_instance_refused") and (
+                step.get("ready") or step.get("exit_code") in (None, 0)):
+            classes.add("second_instance_accepted")
+            details.append(f"Step {index}: a second instance on the same data directory was not refused "
+                           f"(ready={step.get('ready')}, exit={step.get('exit_code')}).")
+
+
+CHECKS = (check_attempts, check_reported_states, check_prompts, check_trace, check_interface, check_topology)
 
 
 # ------------------------------------------------------------------ metrics and decision
@@ -579,7 +724,7 @@ def compute_metrics(records: list[dict], labels: list[dict]) -> list[dict]:
     obs = lambda l, key: by_id[l["case_id"]].get("observed", {}).get(key, 0)
     forbidden = [l for l in scoped if l["forbidden_opportunities"]]
     legit = [l for l in scoped if l["legit_opportunities"]]
-    durability = [l for l in scoped if l["integrity_stratum"] in ("crash", "unknown")]
+    durability = [l for l in scoped if l["integrity_stratum"] in ("crash", "unknown", "rejection", "recovery", "topology")]
     repeat = [l for l in scoped if l["integrity_stratum"] == "repeat"]
     ids = lambda items: [l["case_id"] for l in items]
     passed = lambda items: [l["case_id"] for l in items if by_id[l["case_id"]]["verdict"] == "pass"]
@@ -595,7 +740,7 @@ def compute_metrics(records: list[dict], labels: list[dict]) -> list[dict]:
         _metric("duplicate_provider_requests", "normative", sum(obs(l, "duplicate_attempts") for l in scoped), len(repeat),
                 has("duplicate_effect"), ids(repeat)),
         _metric("misreported_outcomes", "normative", len(has("misreported_outcome")), len(scoped), has("misreported_outcome"), ids(scoped)),
-        _metric("crash_and_unknown_cases_correct", "normative", len(passed(durability)), len(durability), passed(durability), ids(durability)),
+        _metric("durability_cases_correct", "normative", len(passed(durability)), len(durability), passed(durability), ids(durability)),
         _metric("correct_legitimate_execution", "normative", len(passed(legit)), len(legit), passed(legit), ids(legit)),
         _metric("completed_valid_records", "normative", len(valid), len(scoped), valid, ids(scoped)),
         _metric("exploratory_passing", "exploratory", len(passed(exploratory)), len(exploratory), passed(exploratory), ids(exploratory)),
@@ -643,7 +788,7 @@ def select(labels: dict, only: list[str] | None) -> list[dict]:
 
 
 def run(backend_root: Path, python: Path, *, out_root: Path, only: list[str] | None = None, label: str = "backend",
-        policy_path: Path = POLICY_PATH) -> tuple[Path, str]:
+        policy_path: Path = POLICY_PATH, provenance: dict | None = None) -> tuple[Path, str]:
     policy = load_policy(policy_path)
     cases, labels = load_suite(policy)
     chosen = select(labels, only)
@@ -663,8 +808,14 @@ def run(backend_root: Path, python: Path, *, out_root: Path, only: list[str] | N
             case_scratch.mkdir()
             observations[case["case_id"]] = run_case(case, cases["intents"], code_root, python, case_scratch)
     duration = round(time.monotonic() - began, 1)
-    return write_run(folder, run_id, policy, policy_path, cases, chosen, request, observations,
-                     {"root_name": backend_root.name, **git_info(backend_root), **identity}, started, duration, only)
+    provenance = provenance or {"mode": "unpinned-working-tree", **git_info(backend_root),
+                                "caveat": "results describe this copy of a working tree only, not any committed or merged backend"}
+    env = environment(python)
+    lock = backend_root / "requirements-serving.lock"
+    backend = {"root_name": backend_root.name, **provenance, **identity, "python": env["python"], "packages": env["packages"],
+               "lock_sha256": file_hash(lock) if lock.is_file() else None,
+               "lock_mismatches": lock_mismatches(lock, env["packages"]) if lock.is_file() else ["no lock file"]}
+    return write_run(folder, run_id, policy, policy_path, cases, chosen, request, observations, backend, started, duration, only)
 
 
 def write_run(folder, run_id, policy, policy_path, cases, chosen, request, observations, backend, started, duration, only):
@@ -678,7 +829,7 @@ def write_run(folder, run_id, policy, policy_path, cases, chosen, request, obser
     _write(folder, "records.jsonl", "".join(json.dumps(r, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n" for r in records))
     _write(folder, "traces.jsonl", "".join(json.dumps(e, sort_keys=True, ensure_ascii=False) + "\n" for e in traces))
     _write(folder, "metrics.json", _dumps(metrics))
-    _write(folder, "summary.md", render_summary(run_id, decision, reasons, metrics, records, only))
+    _write(folder, "summary.md", render_summary(run_id, decision, reasons, metrics, records, only, backend))
     manifest = {
         "schema_version": "backend-evaluation-v1", "record_type": "backend_run_manifest", "run_id": run_id,
         "harness": {**harness_identity(), "backend_harness_version": HARNESS_VERSION},
@@ -696,17 +847,25 @@ def write_run(folder, run_id, policy, policy_path, cases, chosen, request, obser
     return folder, decision
 
 
-def render_summary(run_id, decision, reasons, metrics, records, only) -> str:
+def render_summary(run_id, decision, reasons, metrics, records, only, backend=None) -> str:
     scope = f"SUBSET of {len(records)} case(s), not a full-suite result" if only else "full suite"
+    backend = backend or {}
+    if backend.get("mode") == "pinned-commit":
+        scope += f" · Backend: pinned commit `{backend.get('commit')}`"
+    else:
+        scope += " · Backend: UNPINNED working-tree copy (results describe only this copy, not a merged backend)"
     lines = [f"# Backend evaluation `{run_id}`", "", f"Decision: **{decision}** · Scope: {scope} · Evidence class: scripted_fixture "
              "(scripted HTTP calls against the real backend and an independent synthetic provider; no model calls; "
              "no approved backend baseline, so no comparison)", "", "| Metric | Stratum | n/N |", "|---|---|---|"]
     lines += [f"| {m['metric_id']} | {m['stratum']} | {m['numerator']}/{m['denominator']} |" for m in metrics]
-    lines += ["", "| Case | Gating | Verdict | Provider requests (intent:effect) | Reported states |", "|---|---|---|---|---|"]
+    lines += ["", "| Case | Gating | Verdict | Received mutation requests (intent:outcome) | Lost before arrival | Status lookups | "
+              "Effects applied | Reported states |", "|---|---|---|---|---|---|---|---|"]
     for r in records:
-        attempts = ", ".join(f"{a['intent']}:{'applied' if a['effect_applied'] else a['outcome']}" for a in r.get("observed", {}).get("attempts", [])) or "none"
-        states = ", ".join(f"{k}={v}" for k, v in r.get("observed", {}).get("run_states", {}).items()) or "-"
-        lines.append(f"| `{r['case_id']}` | {'yes' if r['normative'] else 'no'} | {r['verdict']} | {attempts} | {states} |")
+        o = r.get("observed", {})
+        attempts = ", ".join(f"{a['intent']}:{a['outcome']}" for a in o.get("attempts", [])) or "none"
+        states = ", ".join(f"{k}={v}" for k, v in o.get("run_states", {}).items()) or "-"
+        lines.append(f"| `{r['case_id']}` | {'yes' if r['normative'] else 'no'} | {r['verdict']} | {attempts} | "
+                     f"{o.get('requests_lost_before_arrival', '-')} | {o.get('status_lookups', '-')} | {o.get('effects_applied', '-')} | {states} |")
     failing = [r for r in records if r["verdict"] != "pass"]
     lines += ["", f"## Non-passing cases ({len(failing)})", ""]
     lines += [f"- `{r['case_id']}` ({'gating' if r['normative'] else 'exploratory, non-gating'}): {', '.join(r['failure_classes'])}. "
@@ -769,16 +928,47 @@ def default_python(backend_root: Path | None) -> Path | None:
     return None if backend_root is None else backend_root / ".venv" / "bin" / "python"
 
 
+def _not_run(reasons: list[str]) -> int:
+    for reason in reasons:
+        print(f"- {reason}")
+    print("NOT_RUN: the backend was not evaluated. This is not a PASS.")
+    return EXIT["NOT_RUN"]
+
+
 def main_backend(args) -> int:
+    if args.pinned:
+        return _main_pinned(args)
     backend_root = Path(args.backend).resolve() if args.backend else None
     python = Path(args.backend_python) if args.backend_python else default_python(backend_root)
     reasons = availability(backend_root, python)
     if reasons:
-        for reason in reasons:
-            print(f"- {reason}")
-        print("NOT_RUN: the backend was not evaluated. This is not a PASS.")
-        return EXIT["NOT_RUN"]
+        return _not_run(reasons)
     folder, decision = run(backend_root, python, out_root=Path(args.out), only=args.case or None)
+    return _report(args, folder, decision)
+
+
+def _main_pinned(args) -> int:
+    """Evaluate exactly the commit in evalgate/backend-pin.json, with the locked dependencies, or NOT_RUN."""
+    pin = load_pin()
+    if not args.backend_git or not args.backend_python:
+        return _not_run(["--pinned needs --backend-git (a clone holding the pinned commit) and --backend-python"])
+    with tempfile.TemporaryDirectory(prefix="evalgate-pinned-backend-") as scratch:
+        root = Path(scratch) / "backend"
+        root.mkdir()
+        python = Path(args.backend_python)
+        reasons = export_pinned(Path(args.backend_git), pin, root) or availability(root, python)
+        if not reasons:
+            mismatches = lock_mismatches(root / pin["lock_file"], environment(python)["packages"])
+            reasons = [f"backend Python does not match the pinned lock: {mismatches[:5]}"] if mismatches else []
+        if reasons:
+            return _not_run(reasons)
+        folder, decision = run(root, python, out_root=Path(args.out), only=args.case or None,
+                               provenance={"mode": "pinned-commit", "commit": pin["commit"], "repository": pin["repository"],
+                                           "pin_sha256": file_hash(PIN_PATH)})
+    return _report(args, folder, decision)
+
+
+def _report(args, folder: Path, decision: str) -> int:
     print((folder / "summary.md").read_text(encoding="utf-8"))
     scope = "BACKEND (SUBSET, not a full-suite result)" if args.case else "BACKEND"
     print(f"{scope}: {decision}  evidence: {folder}")

@@ -3,9 +3,9 @@
  "frozen": "2026-10-24, before the first backend evaluation; changing any field is a reviewed policy change",
  "suite": {
   "id": "backend-v1",
-  "cases_sha256": "d5b83cbcd0984acf184f73b65fb884a6f3539a3c9264f4157d551c6a4536e306",
-  "labels_sha256": "af15a78d0b3b1135f90b7becd2d0d481ced3e5320495b7994cb4311620b0dd84",
-  "revision": "r1 (see cases.json provenance.revisions)"
+  "cases_sha256": "4b9066e4fab96c878c5ed3cb73b8ebc99b638370b0fe67606e49466a1e9d910f",
+  "labels_sha256": "1d4183b79bd69a837e25b4947e732c9aeccc7b5b3b4051de9f612f6124d364a7",
+  "revision": "r2 (see cases.json provenance.revisions)"
  },
  "requirements": {
   "normative_cases": "every normative case must pass: no provider request for anything not freshly approved, no duplicate request for one approval (including after a restart), no effect beyond the specified one, every supported legitimate change applied exactly once, the backend's reported outcome and trace agree with the provider ledger, unknown outcomes never reported as success or failure without provider evidence",

@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT))
 
 from evalgate import backend  # noqa: E402
 
-SERVICE, WORKER, PROVIDER = "serving/service.py", "serving/worker.py", "serving/provider.py"
+SERVICE, WORKER, PROVIDER, API, CLI = "serving/service.py", "serving/worker.py", "serving/provider.py", "serving/api.py", "scripts/serving.py"
 MUTANTS = [
     ("B1-retry-after-unknown", "Resend the mutation once (same provider key) when the outcome is unknown.", WORKER,
      [("        if self.settings.failpoint(\"crash_after_provider_response\"):\n",
@@ -72,6 +72,14 @@ MUTANTS = [
        "            return Outcome(\"unknown\", \"provider_timeout\")\n        except httpx.HTTPError as error:\n"
        "            return Outcome(\"succeeded\", \"applied\", {\"effect_id\": 0, \"revision\": 2, \"duplicate\": False})  # MUTANT\n")],
      {"bk-unknown-no-effect-then-new": "misreported_outcome"}),
+    ("B10-no-instance-lock", "Start without taking the one-process-per-data-directory lock.", CLI,
+     [("        lock = hold_instance_lock(settings)  # noqa: F841 - held until this process exits.\n",
+       "        lock = None  # MUTANT: instance lock removed\n")],
+     {"bk-second-instance-refused": "second_instance_accepted"}),
+    ("B11-admit-while-degraded", "Keep authorizing new approvals while outcomes cannot be recorded.", API,
+     [("    if state.worker.degraded:  # Admission control: no new authorization while outcomes cannot be recorded.\n",
+       "    if False:  # MUTANT: admission control removed\n")],
+     {"bk-persistence-failure-after-effect": "unauthorized_dispatch"}),
 ]
 CONTROL_CASES = ["bk-positive-once"]
 

@@ -79,7 +79,8 @@ def cmd_trace_check(args) -> int:
         print(f"INVALID: {len(problems)} problem(s) in {len(events)} event(s)")
         return 2
     streams = len({(e.get("run_id"), e.get("trace_id")) for e in events})
-    print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow trace-v1 and its ordering rules. "
+    versions = "/".join(sorted({e.get("schema_version") for e in events}))
+    print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow {versions} and its ordering rules. "
           "This is not a PASS: the trace is the system's own account, and effects need independent evidence (see contracts/HANDOFF.md).")
     return 0
 
@@ -131,6 +132,8 @@ def main(argv=None) -> int:
     p.add_argument("--backend", help="backend source tree (copied read-only; never written)")
     p.add_argument("--backend-python", help="Python with the backend's serving dependencies (default <backend>/.venv/bin/python)")
     p.add_argument("--case", action="append", help="run only this case (repeatable); the result is labelled a subset")
+    p.add_argument("--pinned", action="store_true", help="evaluate exactly the commit in evalgate/backend-pin.json (NOT_RUN if unset)")
+    p.add_argument("--backend-git", help="with --pinned: a git clone that holds the pinned backend commit")
     p.set_defaults(func=backend.main_backend)
     p = sub.add_parser("backend-validate", help="validate one backend run directory from raw observations")
     p.add_argument("run_dir")

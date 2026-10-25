@@ -66,5 +66,21 @@
  "empty.jsonl": {
   "expected_problem": "no events",
   "why": "Missing evidence is never consistent."
+ },
+ "v2-rejected-in-v1-stream.jsonl": {
+  "expected_problem": "unknown event_type 'dispatch_rejected'",
+  "why": "dispatch_rejected exists only in trace-v2; a trace-v1 stream cannot use it."
+ },
+ "v2-mixed-versions.jsonl": {
+  "expected_problem": "mixes trace contract versions",
+  "why": "One stream must use one contract version."
+ },
+ "v2-rejected-without-effect-none.jsonl": {
+  "expected_problem": "dispatch_rejected requires payload.effect",
+  "why": "A rejection must state that the provider confirmed no effect."
+ },
+ "v2-reconciled-after-rejection.jsonl": {
+  "expected_problem": "reconciliation of an outcome that was not unknown",
+  "why": "A definite rejection is not an unknown outcome; nothing is left to reconcile."
  }
 }

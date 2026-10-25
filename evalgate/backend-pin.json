@@ -1,0 +1,10 @@
+{
+ "pin_version": "evalgate-backend-pin-v1",
+ "repository": "alexmunzon/reliable-retail-agent",
+ "branch": "claude/durable-backend",
+ "commit": null,
+ "lock_file": "requirements-serving.lock",
+ "lock_sha256": null,
+ "python": "3.11",
+ "status": "awaiting the backend owner's finalized commit; until it is set, the pinned backend evaluation is NOT_RUN and the CI check fails"
+}

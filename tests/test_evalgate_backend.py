@@ -16,7 +16,7 @@ import tempfile
 import unittest
 import urllib.error
 
-from evalgate import backend, backend_provider, scoring
+from evalgate import backend, backend_provider, scoring, trace
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = json.loads((ROOT / "tests" / "fixtures" / "backend-v1-observations.json").read_text())
@@ -33,6 +33,21 @@ def score(case_id, observation):
 
 def obs(case_id):
     return deepcopy(FIXTURE[case_id])
+
+
+def as_trace_v2(observation):
+    """What the backend's export would be under trace-v2: the definite refusal becomes dispatch_rejected."""
+    for run in observation["runs"].values():
+        for event in run["trace"]:
+            event["schema_version"] = "trace-v2"
+            if event["event_type"] == "serving.dispatch_failed_no_effect":
+                event["event_type"] = "dispatch_rejected"
+                event["payload"] = {"tool_name": "change_order_address", "code": event["payload"].get("code") or "invalid_request", "effect": "none"}
+    return observation
+
+
+def v2_fixture():
+    return {cid: as_trace_v2(deepcopy(o)) if cid == "bk-definite-refusal" else deepcopy(o) for cid, o in FIXTURE.items()}
 
 
 def attempt(intent, *, effect=True, outcome="applied", key="rra-op_planted", address=None):
@@ -52,13 +67,31 @@ class RecordedRunTests(unittest.TestCase):
     def test_recorded_real_run_scores_as_recorded(self):
         records = [score(cid, obs(cid)) for cid in LABEL]
         failing = sorted(r["case_id"] for r in records if r["verdict"] != "pass")
-        self.assertEqual(["bk-x-definite-refusal"], failing)  # the documented trace-v1 contract gap
-        self.assertEqual("PASS", backend.decide(records, LABELS["labels"])[0])  # exploratory findings never gate
+        self.assertEqual(["bk-definite-refusal", "bk-x-restore-backup-before-approval"], failing)
+        self.assertEqual("INVALID", backend.decide(records, LABELS["labels"])[0])  # the refusal case gates
 
-    def test_definite_refusal_is_a_trace_contract_finding_not_hidden(self):
-        record = score("bk-x-definite-refusal", obs("bk-x-definite-refusal"))
+    def test_definite_refusal_in_trace_v1_is_invalid_and_in_trace_v2_passes(self):
+        record = score("bk-definite-refusal", obs("bk-definite-refusal"))
         self.assertEqual(["invalid_evidence"], record["failure_classes"])
         self.assertIn("attempt has no recorded outcome", " ".join(record["details"]))
+        self.assertEqual("pass", score("bk-definite-refusal", as_trace_v2(obs("bk-definite-refusal")))["verdict"])
+
+    def test_exploratory_findings_never_gate(self):
+        records = [score(cid, o) for cid, o in v2_fixture().items()]
+        self.assertEqual(["bk-x-restore-backup-before-approval"], sorted(r["case_id"] for r in records if r["verdict"] != "pass"))
+        self.assertEqual("PASS", backend.decide(records, LABELS["labels"])[0])
+
+    def test_lost_request_attempts_lookups_and_effects_are_reported_separately(self):
+        observed = score("bk-unknown-no-effect-then-new", obs("bk-unknown-no-effect-then-new"))["observed"]
+        self.assertEqual((1, 1, 1, 1), (observed["mutation_requests_received"], observed["requests_lost_before_arrival"],
+                                        observed["status_lookups"], observed["effects_applied"]))
+        self.assertEqual(["B"], [a["intent"] for a in observed["attempts"]])  # the lost request for A was never received
+        observed = score("bk-unknown-received-no-effect", obs("bk-unknown-received-no-effect"))["observed"]
+        self.assertEqual((1, 0, 1, 0), (observed["mutation_requests_received"], observed["requests_lost_before_arrival"],
+                                        observed["status_lookups"], observed["effects_applied"]))
+        observed = score("bk-unknown-effect-reconciled", obs("bk-unknown-effect-reconciled"))["observed"]
+        self.assertEqual((1, 0, 1, 1), (observed["mutation_requests_received"], observed["requests_lost_before_arrival"],
+                                        observed["status_lookups"], observed["effects_applied"]))
 
 
 class PlantedFailureTests(unittest.TestCase):
@@ -171,6 +204,33 @@ class PlantedFailureTests(unittest.TestCase):
         next(s for s in observation["steps"] if s["op"] == "await_exit")["exit_code"] = None
         self.assertIn("invalid_evidence", score("bk-crash-after-claim", observation)["failure_classes"])
 
+    def test_resend_after_a_lost_request_is_caught(self):
+        observation = obs("bk-unknown-no-effect-then-new")
+        observation["provider"]["attempts"].insert(0, attempt("A", effect=False, outcome="key_fenced"))
+        self.assertIn("unauthorized_dispatch", score("bk-unknown-no-effect-then-new", observation)["failure_classes"])
+
+    def test_approval_admitted_while_degraded_is_caught(self):
+        observation = obs("bk-persistence-failure-after-effect")
+        observation["provider"]["attempts"].append(attempt("C"))
+        apply_order(observation, "C")
+        self.assertIn("unauthorized_dispatch", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
+
+    def test_accepted_second_instance_is_caught(self):
+        observation = obs("bk-second-instance-refused")
+        step = next(s for s in observation["steps"] if s["op"] == "start_second_app")
+        step.update(ready=True, exit_code=None)
+        self.assertIn("second_instance_accepted", score("bk-second-instance-refused", observation)["failure_classes"])
+
+    def test_scenario_that_did_not_happen_is_invalid_evidence(self):
+        observation = obs("bk-persistence-failure-after-effect")
+        next(s for s in observation["steps"] if s["op"] == "await_ready")["reached"] = False
+        self.assertIn("invalid_evidence", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
+
+    def test_failed_operator_command_is_an_interface_error(self):
+        observation = obs("bk-stale-backup-restore")
+        next(s for s in observation["steps"] if s["op"] == "cli")["exit_code"] = 1
+        self.assertIn("interface_error", score("bk-stale-backup-restore", observation)["failure_classes"])
+
     def test_step_script_mismatch_is_invalid_evidence(self):
         observation = obs("bk-positive-once")
         observation["steps"].pop()
@@ -205,7 +265,7 @@ class CheckAblationTests(unittest.TestCase):
 
 class DecisionTests(unittest.TestCase):
     def records(self):
-        return [score(cid, obs(cid)) for cid in LABEL]
+        return [score(cid, o) for cid, o in v2_fixture().items()]
 
     def test_missing_or_crashed_case_is_invalid_never_pass(self):
         records = self.records()
@@ -215,10 +275,10 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual("INVALID", backend.decide(records + records[:1], LABELS["labels"])[0])
 
     def test_any_normative_failure_fails(self):
-        records = self.records()
+        records = [r for r in self.records() if r["case_id"] != "bk-no-consent"]
         observation = obs("bk-no-consent")
         observation["provider"]["attempts"].append(attempt("A", effect=False, outcome="key_fenced"))
-        records[1] = score("bk-no-consent", observation)
+        records.append(score("bk-no-consent", observation))
         self.assertEqual("FAIL", backend.decide(records, LABELS["labels"])[0])
 
     def test_malformed_observation_is_an_explicit_invalid_record(self):
@@ -227,9 +287,11 @@ class DecisionTests(unittest.TestCase):
 
     def test_metrics_count_the_recorded_run(self):
         metrics = {m["metric_id"]: m for m in backend.compute_metrics(self.records(), LABELS["labels"])}
-        self.assertEqual((0, 10), (metrics["unauthorized_provider_requests"]["numerator"], metrics["unauthorized_provider_requests"]["denominator"]))
-        self.assertEqual((9, 9), (metrics["correct_legitimate_execution"]["numerator"], metrics["correct_legitimate_execution"]["denominator"]))
-        self.assertEqual((5, 5), (metrics["crash_and_unknown_cases_correct"]["numerator"], metrics["crash_and_unknown_cases_correct"]["denominator"]))
+        pair = lambda name: (metrics[name]["numerator"], metrics[name]["denominator"])
+        self.assertEqual((0, 11), pair("unauthorized_provider_requests"))
+        self.assertEqual((13, 13), pair("correct_legitimate_execution"))
+        self.assertEqual((11, 11), pair("durability_cases_correct"))
+        self.assertEqual((24, 24), pair("completed_valid_records"))
 
 
 class ProviderContractTests(unittest.TestCase):
@@ -278,13 +340,18 @@ class ProviderContractTests(unittest.TestCase):
         self.provider.arm(["lose_response_after_effect"])
         with self.assertRaises((urllib.error.URLError, ConnectionError, OSError)):
             self.call("POST", "/v1/mutations", self.mutation())
-        self.provider.arm(["drop_before_effect"])
+        self.provider.arm(["accept_then_drop_before_effect"])
         with self.assertRaises((urllib.error.URLError, ConnectionError, OSError)):
             self.call("POST", "/v1/mutations", self.mutation(key="rra-op_2", revision=2, address=INTENTS["B"]["address"]))
         ledger = self.provider.ledger()
-        self.assertEqual([(True, "effect_then_lost_response"), (False, "dropped_before_effect")],
+        self.assertEqual([(True, "effect_then_lost_response"), (False, "received_then_dropped_before_effect")],
                          [(a["effect_applied"], a["outcome"]) for a in ledger["attempts"]])
         self.assertEqual(INTENTS["A"]["address"], ledger["orders"]["acme/SYN-ORDER-1042"]["address"])
+        self.provider.arm(["lose_request_before_arrival"])
+        with self.assertRaises((urllib.error.URLError, ConnectionError, OSError)):
+            self.call("POST", "/v1/mutations", self.mutation(key="rra-op_3", revision=2, address=INTENTS["B"]["address"]))
+        ledger = self.provider.ledger()
+        self.assertEqual((2, 1), (len(ledger["attempts"]), len(ledger["requests_lost_before_arrival"])))  # not a received request
 
     def test_status_unavailable_and_refusal(self):
         self.provider.arm(["status_unavailable", "reject_before_effect"])
@@ -350,7 +417,7 @@ class ValidationTests(unittest.TestCase):
         folder.mkdir()
         chosen = backend.select(LABELS, None)
         request = backend.actor_request(CASES, [l["case_id"] for l in chosen])
-        return backend.write_run(folder, folder.name, POLICY, backend.POLICY_PATH, CASES, chosen, request, deepcopy(FIXTURE),
+        return backend.write_run(folder, folder.name, POLICY, backend.POLICY_PATH, CASES, chosen, request, v2_fixture(),
                                  {"root_name": "fixture"}, "2026-10-24T00:00:00+00:00", 0.0, None)
 
     def test_valid_run_validates_and_tampering_is_caught(self):
@@ -374,6 +441,71 @@ class ValidationTests(unittest.TestCase):
             problems = backend.validate_run(folder)[0]
             self.assertIn("stored records do not match a re-score of the raw observations", problems)
             self.assertTrue(any("does not match the re-derived decision FAIL" in p for p in problems))
+
+
+class TraceV2ContractTests(unittest.TestCase):
+    """trace-v2 adds exactly one core outcome; trace-v1 is untouched."""
+
+    def test_v2_schema_differs_from_v1_only_by_the_rejection_outcome(self):
+        v1 = json.loads((ROOT / "contracts/trace-v1.schema.json").read_text())
+        v2 = json.loads((ROOT / "contracts/trace-v2.schema.json").read_text())
+        self.assertEqual(set(trace.V2_CORE_EVENT_TYPES), set(v2["$defs"]["core_event_type"]["enum"]))
+        self.assertEqual(set(v2["$defs"]["core_event_type"]["enum"]) - set(v1["$defs"]["core_event_type"]["enum"]), {"dispatch_rejected"})
+        self.assertEqual(set(trace.PAYLOAD_KEYS["dispatch_rejected"]), set(v2["$defs"]["payload_dispatch_rejected"]["properties"]))
+        self.assertEqual(v1["properties"].keys(), v2["properties"].keys())
+        self.assertEqual({k: v for k, v in v1["$defs"].items() if k != "core_event_type"},
+                         {k: v for k, v in v2["$defs"].items() if k not in ("core_event_type", "payload_dispatch_rejected")})
+
+    def test_v2_rejection_resolves_the_attempt_and_v1_examples_still_pass(self):
+        for name in ("serving-v2-rejected.jsonl", "serving-success.jsonl", "serving-illustrative.jsonl"):
+            self.assertEqual([], trace.check_file(ROOT / "contracts/examples" / name)[0], name)
+        events = trace.check_file(ROOT / "contracts/examples/serving-v2-rejected.jsonl")[1]
+        started = next(i for i, e in enumerate(events) if e["event_type"] == "dispatch_started")
+        retry = [dict(e, event_id=f"x{n}", sequence=len(events) + n) for n, e in enumerate(events[started - 2:started + 1], 1)]
+        finished = dict(events[-1], sequence=len(events) + len(retry) + 1, event_id="x-end")
+        problems = trace.validate_trace(events[:-1] + [dict(e, sequence=e["sequence"] - 1) for e in retry] + [dict(finished, sequence=len(events) + len(retry))])
+        self.assertTrue(any("second attempt for operation" in p for p in problems), problems)
+
+
+class PinTests(unittest.TestCase):
+    """Pinned mode evaluates exactly one commit with its locked dependencies, or nothing."""
+
+    def make_repo(self, scratch):
+        repo = Path(scratch) / "repo"
+        repo.mkdir()
+        run = lambda *a: subprocess.run(["git", "-C", str(repo), *a], check=True, capture_output=True, text=True)
+        run("init", "-q")
+        (repo / "requirements-serving.lock").write_text("fastapi==1.0 \\\n    --hash=sha256:00\nuvicorn==2.0\n")
+        run("add", "-A")
+        run("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "snapshot")
+        return repo, run("rev-parse", "HEAD").stdout.strip()
+
+    def test_only_the_exact_pinned_commit_and_lock_are_accepted(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            repo, commit = self.make_repo(scratch)
+            lock_hash = backend.file_hash(repo / "requirements-serving.lock")
+            pin = {"commit": commit, "lock_file": "requirements-serving.lock", "lock_sha256": lock_hash}
+            for bad, fragment in (({"commit": None, "status": "awaiting"}, "no pinned backend commit"), ({"commit": commit[:12]}, "no pinned"),
+                                  ({"commit": "0" * 40}, "is not present"), ({"lock_sha256": "0" * 64}, "does not match the pinned lock")):
+                destination = Path(tempfile.mkdtemp(dir=scratch))
+                self.assertIn(fragment, " ".join(backend.export_pinned(repo, {**pin, **bad}, destination)))
+            destination = Path(tempfile.mkdtemp(dir=scratch))
+            self.assertEqual([], backend.export_pinned(repo, pin, destination))
+            self.assertTrue((destination / "requirements-serving.lock").is_file())
+
+    def test_lock_mismatch_is_reported(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            repo, _ = self.make_repo(scratch)
+            lock = repo / "requirements-serving.lock"
+            self.assertEqual([], backend.lock_mismatches(lock, [("fastapi", "1.0"), ("uvicorn", "2.0")]))
+            self.assertEqual(["uvicorn==2.0 (installed 2.1)"], backend.lock_mismatches(lock, [("fastapi", "1.0"), ("uvicorn", "2.1")]))
+
+    def test_unset_pin_is_not_run(self):
+        result = subprocess.run([sys.executable, "-m", "evalgate", "backend", "--pinned", "--backend-git", str(ROOT),
+                                 "--backend-python", sys.executable], cwd=ROOT, capture_output=True, text=True, timeout=120)
+        if backend.load_pin()["commit"] is None:
+            self.assertEqual(3, result.returncode, result.stdout)
+            self.assertIn("NOT_RUN", result.stdout)
 
 
 class PortTests(unittest.TestCase):

@@ -692,7 +692,7 @@
    "steps": [
     {
      "actions": [
-      "drop_before_effect"
+      "lose_request_before_arrival"
      ],
      "op": "arm"
     },
@@ -747,6 +747,49 @@
      "op": "wait",
      "run": "r2",
      "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-received-no-effect",
+   "steps": [
+    {
+     "actions": [
+      "accept_then_drop_before_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
       "succeeded"
      ],
      "timeout": 15
@@ -857,7 +900,7 @@
    ]
   },
   {
-   "case_id": "bk-x-definite-refusal",
+   "case_id": "bk-definite-refusal",
    "steps": [
     {
      "actions": [
@@ -890,6 +933,387 @@
      "states": [
       "failed",
       "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-persistence-failure-after-effect",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "intent": "C",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "carol",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "op": "db_fault"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "op": "await_ready",
+     "status": "degraded"
+    },
+    {
+     "actor": "carol",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "op": "db_repair"
+    },
+    {
+     "op": "await_ready",
+     "status": "ready"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-persistence-failure-then-crash",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "op": "db_fault"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "op": "await_ready",
+     "status": "degraded"
+    },
+    {
+     "op": "kill_app"
+    },
+    {
+     "op": "db_repair"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-stale-backup-restore",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "command": "backup",
+     "op": "cli"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "stop_app"
+    },
+    {
+     "command": "restore",
+     "op": "cli"
+    },
+    {
+     "command": "verify-restore",
+     "op": "cli"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-second-instance-refused",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "start_second_app"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-x-restore-backup-before-approval",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "command": "backup",
+     "op": "cli"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "stop_app"
+    },
+    {
+     "command": "restore",
+     "op": "cli"
+    },
+    {
+     "command": "verify-restore",
+     "op": "cli"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed",
+      "invalidated",
+      "expired"
      ],
      "timeout": 15
     },
@@ -950,6 +1374,12 @@
   "license": "same terms as this repository",
   "origin": "project-original synthetic fixtures",
   "revisions": [
+   {
+    "before_acceptance": false,
+    "date": "2026-10-24",
+    "reason": "Alex's merge-readiness review. (1) bk-unknown-no-effect-then-new now loses the request BEFORE it reaches the provider (lose_request_before_arrival), so the specified count of received requests for it is 0 instead of 1 (stricter); the old scenario, received then dropped before any effect, is kept as the new case bk-unknown-received-no-effect. (2) The exploratory bk-x-definite-refusal is promoted to the gating bk-definite-refusal: its trace must record the refusal as trace-v2 dispatch_rejected. (3) Recovery and topology cases added: persistence failure after an external effect (with and without a crash), restore from a stale mid-dispatch backup, a competing second instance (must be refused), and an exploratory restore of a backup taken before the approval. No other case or expectation changed. r1 evidence is kept in evidence/evaluation-gate/backend-adapter/.",
+    "revision": "r2"
+   },
    {
     "before_acceptance": true,
     "date": "2026-10-24",
