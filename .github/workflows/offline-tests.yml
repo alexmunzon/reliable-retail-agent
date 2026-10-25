@@ -23,6 +23,7 @@ jobs:
       - name: Check out the exact revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0 # evalgate tests export the pinned approved baseline commit by SHA
           persist-credentials: false
       - name: Create isolated Python environment
         timeout-minutes: 2
