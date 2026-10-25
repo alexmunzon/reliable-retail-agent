@@ -674,12 +674,16 @@ def check_trace(label, case, observation, intents, classes, details, observed):
 
 def check_interface(label, case, observation, intents, classes, details, observed):
     allowed = set(label["allowed_5xx_steps"])
-    for index, code in label.get("expected_refusals", {}).items():  # a step that must be refused with this exact code
+    for index, expected in label.get("expected_refusals", {}).items():
+        # Original labels name a code; post-exposure regressions can also require exact HTTP statuses.
+        code = expected["code"] if isinstance(expected, dict) else expected
+        statuses = expected.get("statuses") if isinstance(expected, dict) else None
         step = observation["steps"][int(index)]
-        if step.get("decision") != code:
+        if step.get("decision") != code or (statuses is not None and step.get("statuses") != statuses):
             classes.add("uncontrolled_refusal")
+            required = f"{statuses} {code!r}" if statuses is not None else repr(code)
             details.append(f"Step {index} ({step['op']}) was answered {step.get('statuses')} {step.get('decision')!r}; "
-                           f"specified a controlled refusal {code!r}.")
+                           f"specified a controlled refusal {required}.")
     if [s["op"] for s in observation["steps"]] != [s["op"] for s in case["steps"]]:
         classes.add("invalid_evidence")
         details.append("Recorded steps do not match the scheduled case script.")

@@ -223,6 +223,34 @@ class PlantedFailureTests(unittest.TestCase):
         step.update(statuses=[500], decision="internal_error")
         self.assertIn("uncontrolled_refusal", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
 
+    def test_wrong_principal_consent_accepted_without_effect_is_caught(self):
+        # Post-exposure B5 regression: credential binding may prevent the eventual effect,
+        # but accepting another principal's consent is independently a boundary violation.
+        for index in (2, 3, 4):
+            with self.subTest(step=index):
+                observation = obs("bk-other-principal")
+                observation["steps"][index].update(statuses=[202], decision="authorized")
+                self.assertEqual([], observation["provider"]["attempts"])
+                record = score("bk-other-principal", observation)
+                self.assertIn("uncontrolled_refusal", record["failure_classes"])
+                self.assertEqual("fail", record["verdict"])
+
+    def test_refusal_code_with_success_status_is_caught(self):
+        # The refusal-shaped body alone must not disguise a successful HTTP response.
+        for index in (2, 3, 4):
+            with self.subTest(step=index):
+                observation = obs("bk-other-principal")
+                observation["steps"][index]["statuses"] = [202]
+                self.assertIn("uncontrolled_refusal", score("bk-other-principal", observation)["failure_classes"])
+
+    def test_refusal_status_with_authorized_decision_is_caught(self):
+        # The status alone must not disguise an authorization-shaped body either.
+        for index in (2, 3, 4):
+            with self.subTest(step=index):
+                observation = obs("bk-other-principal")
+                observation["steps"][index]["decision"] = "authorized"
+                self.assertIn("uncontrolled_refusal", score("bk-other-principal", observation)["failure_classes"])
+
     def test_accepted_second_instance_is_caught(self):
         observation = obs("bk-second-instance-refused")
         step = next(s for s in observation["steps"] if s["op"] == "start_second_app")

@@ -48,11 +48,14 @@ MUTANTS = [
      [("        classification = classify_response(body[\"response\"])\n",
        "        classification = \"AFFIRM\" if classify_response(body[\"response\"]) != \"REJECT\" else \"REJECT\"  # MUTANT\n")],
      {"bk-ambiguous": "unauthorized_dispatch"}),
-    ("B5-no-ownership-check", "Look runs up by id only, so any authenticated caller can act on them.", SERVICE,
-     [("        row = conn.execute(\"SELECT * FROM runs WHERE run_id=? AND tenant_id=? AND actor_id=?\",\n"
+    ("B5-no-ownership-check", "Look runs up by id only, so another scoped principal can act on them.", SERVICE,
+     [("        row = conn.execute(\"SELECT r.* FROM runs r JOIN sessions s ON s.session_id=r.session_id \"\n"
+       "                           \"JOIN resources res ON res.tenant_id=s.tenant_id AND res.resource_id=s.resource_id \"\n"
+       "                           \"WHERE r.run_id=? AND r.tenant_id=? AND r.actor_id=? \"\n"
+       "                           \"AND s.tenant_id=r.tenant_id AND s.actor_id=r.actor_id AND res.owner_actor_id=r.actor_id\",\n"
        "                           (run_id, principal.tenant_id, principal.actor_id)).fetchone()\n",
        "        row = conn.execute(\"SELECT * FROM runs WHERE run_id=?\", (run_id,)).fetchone()  # MUTANT\n")],
-     {"bk-other-principal": "unauthorized_dispatch"}),
+     {"bk-other-principal": "uncontrolled_refusal"}),
     ("B6-ignore-superseded-revision", "Dispatch an approval made against an order revision that has since changed.", SERVICE,
      [("            elif row[\"known_revision\"] is not None and row[\"known_revision\"] != row[\"resource_revision\"]:\n",
        "            elif False:  # MUTANT: revision check removed\n")],
@@ -63,8 +66,10 @@ MUTANTS = [
        "            self._run_state(conn, run_id, \"outcome_unknown\", from_states, now)\n")],
      {"bk-unknown-unresolved-hold": "unauthorized_dispatch"}),
     ("B8-never-dispatch", "The worker claims operations but never calls the provider.", WORKER,
-     [("        started = time.monotonic()\n        self.telemetry.count(\"provider_attempts\")\n",
-       "        return  # MUTANT: dispatch disabled\n        started = time.monotonic()\n        self.telemetry.count(\"provider_attempts\")\n")],
+     [("        started = time.monotonic()\n        provider_start_ns = time.monotonic_ns()\n"
+       "        self.telemetry.count(\"provider_attempts\")\n",
+       "        return  # MUTANT: dispatch disabled\n        started = time.monotonic()\n"
+       "        provider_start_ns = time.monotonic_ns()\n        self.telemetry.count(\"provider_attempts\")\n")],
      {"bk-positive-once": "missed_legitimate_execution"}),
     ("B9-report-unknown-as-success", "Record an unknown provider outcome as succeeded.", PROVIDER,
      [("            return Outcome(\"unknown\", \"provider_timeout\")\n        except httpx.HTTPError as error:\n"

@@ -94,6 +94,11 @@
    "allowed_5xx_steps": [],
    "case_id": "bk-other-principal",
    "expected_attempts": [],
+   "expected_refusals": {
+    "2": {"code": "not_found", "statuses": [404]},
+    "3": {"code": "insufficient_scope", "statuses": [403]},
+    "4": {"code": "not_found", "statuses": [404]}
+   },
    "expected_run_states": {
     "r1": [
      "awaiting_consent"
