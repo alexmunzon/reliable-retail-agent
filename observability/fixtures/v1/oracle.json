@@ -1,0 +1,168 @@
+{
+  "oracle_version": "obs-oracle-v1",
+  "authored": "By hand from the fixture generator's explicit facts (scripts/observability_fixtures.py) and evalgate.simulator effects; never from dashboard output. Frozen before projection code was written.",
+  "units": {"duration": "milliseconds, exact", "money": "decimal string, compared exactly as Decimal"},
+  "visible_to": {
+    "tenant-a": {"requests": 53, "pages_at_20": [20, 20, 13]},
+    "tenant-b": {"requests": 1}
+  },
+  "fixture_set": {
+    "artifact_redeliveries": 1,
+    "file_problems": {"oversize-line": "line_too_large", "malformed-line": "unparseable_line"}
+  },
+  "requests": {
+    "healthy/run-healthy": {
+      "status": "completed", "contract": "CONSISTENT", "completeness": [],
+      "operations": {"op-healthy-1": {"authorized": true, "mutation_attempts": 1, "outcome": "effect_confirmed", "confirmed_by": "dispatch_succeeded"}},
+      "duration_ms": 1450, "duration_kind": "measured", "command_response_ms": 12, "first_event_ms": 655,
+      "by_class_ms": {"queue_wait": 28, "model_call": 600, "user_wait": 440, "authorization": 8, "local_persistence": 7, "dispatch_provider": 275, "sse_delivery": 60},
+      "children_overlap": true,
+      "estimated_charge": "0.0075", "confirmed_charge": "0.0074", "currency": "USD"
+    },
+    "consent-rejected/run-consent-rejected": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-rejected-1": {"authorized": false, "mutation_attempts": 0, "outcome": "not_attempted", "terminal": "rejected"}},
+      "duration_ms": 4260, "estimated_charge": null, "cost_reason": "no_usage_records"
+    },
+    "consent-ambiguous/run-consent-ambiguous": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-ambiguous-1": {"authorized": false, "mutation_attempts": 0, "outcome": "not_attempted", "terminal": "blocked:ambiguous_response"}},
+      "duration_ms": 3050
+    },
+    "changed-intent/run-changed-intent": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-change-1": {"authorized": true, "prompts": 2, "distinct_payloads": 2, "invalidations": 1, "mutation_attempts": 1, "outcome": "effect_confirmed"}},
+      "duration_ms": 3840
+    },
+    "race-claim/run-race-winner": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-race-1": {"authorized": true, "mutation_attempts": 1, "outcome": "effect_confirmed"}},
+      "duration_ms": 1120
+    },
+    "race-claim/run-race-loser": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-race-1": {"authorized": true, "mutation_attempts": 0, "outcome": "not_attempted", "terminal": "blocked:repeat_dispatch"}},
+      "duration_ms": 930, "flags_absent": ["repeated_attempt_across_runs"]
+    },
+    "lost-response/run-lost-response": {
+      "status": "unknown_outcome", "contract": "CONSISTENT",
+      "operations": {"op-lost-1": {"authorized": true, "mutation_attempts": 1, "outcome": "unknown"}},
+      "duration_ms": 31230, "estimated_charge": "0.0075", "confirmed_charge": null, "cost_uncertain_outcome": true
+    },
+    "process-restart/run-restart": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-restart-1": {"mutation_attempts": 1, "outcome": "effect_confirmed", "confirmed_by": "reconciled", "history_has_unknown": true}},
+      "duration_ms": null, "duration_kind": "lower_bound", "lower_bound_ms": 280,
+      "clock_domains": ["proc-a:boot-1", "proc-a:boot-2"], "reconciliation_lookups": 1
+    },
+    "reconcile-confirmed/run-recon-confirmed": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-recon-ok-1": {"mutation_attempts": 1, "outcome": "effect_confirmed", "confirmed_by": "reconciled"}},
+      "duration_ms": 12920, "reconciliation_lookups": 2, "reconciliation_lookup_errors": 1
+    },
+    "reconcile-no-effect/run-recon-no-effect": {
+      "status": "failed", "contract": "CONSISTENT",
+      "operations": {"op-recon-none-1": {"mutation_attempts": 1, "outcome": "no_effect_confirmed"}},
+      "duration_ms": 11520
+    },
+    "reconcile-unavailable/run-recon-unavailable": {
+      "status": "unknown_outcome", "contract": "CONSISTENT",
+      "operations": {"op-recon-down-1": {"mutation_attempts": 1, "outcome": "unknown"}},
+      "duration_ms": 14020, "reconciliation_lookups": 3, "reconciliation_lookup_errors": 3
+    },
+    "unknown-then-confirmed/run-unknown-then-confirmed": {
+      "status": "completed", "contract": "CONSISTENT",
+      "operations": {"op-late-confirm-1": {"mutation_attempts": 1, "outcome": "effect_confirmed", "confirmed_by": "reconciled", "history_has_unknown": true, "reconciliations": ["still_unknown", "effect_confirmed"]}},
+      "duration_ms": 30020, "reconciliation_lookups": 2
+    },
+    "duplicate-line/run-duplicate-line": {
+      "status": "invalid_evidence", "contract": "INVALID", "completeness": [],
+      "operations": {"op-dupline-1": {"mutation_attempts": 1, "outcome": "effect_confirmed"}},
+      "duplicate_lines_in_artifact": 1, "duration_ms": 1450, "latency_excluded_reason": "invalid_evidence"
+    },
+    "cancel-before-claim/run-cancel-before-claim": {
+      "status": "cancelled", "contract": "CONSISTENT",
+      "operations": {"op-cancel-early-1": {"authorized": true, "mutation_attempts": 0, "outcome": "not_attempted", "cancellation": "before_claim"}},
+      "duration_ms": 960
+    },
+    "cancel-after-claim/run-cancel-after-claim": {
+      "status": "cancelled", "contract": "CONSISTENT",
+      "operations": {"op-cancel-late-1": {"authorized": true, "mutation_attempts": 1, "outcome": "effect_confirmed", "cancellation": "after_claim"}},
+      "duration_ms": 1210
+    },
+    "sequence-gap/run-sequence-gap": {
+      "status": "incomplete", "contract": "INVALID", "completeness": ["sequence_gap"],
+      "duration_ms": 1450, "latency_excluded_reason": "incomplete_evidence"
+    },
+    "truncated/run-truncated": {
+      "status": "incomplete", "contract": "INVALID", "completeness": ["attempt_without_outcome", "missing_run_finished"],
+      "operations": {"op-trunc-1": {"mutation_attempts": 1, "outcome": "outcome_missing"}},
+      "duration_ms": null, "duration_kind": "lower_bound", "lower_bound_ms": 600,
+      "estimated_charge": "0.0075"
+    },
+    "out-of-order/run-out-of-order": {
+      "status": "invalid_evidence", "contract": "INVALID", "completeness": [],
+      "operations": {"op-ooo-1": {"mutation_attempts": 1, "outcome": "effect_confirmed"}},
+      "reordered_lines": 1, "duration_ms": 1450, "latency_excluded_reason": "invalid_evidence"
+    },
+    "clock-skew/run-clock-skew": {
+      "status": "completed", "contract": "CONSISTENT", "caveats": ["wall_clock_disagrees_with_sequence"],
+      "duration_ms": 1720, "clock_domains": ["proc-a:boot-1", "proc-b:boot-1"]
+    },
+    "malformed-spans/run-malformed-spans": {
+      "status": "completed", "contract": "CONSISTENT",
+      "spans_accepted": 2, "spans_rejected": 4, "duration_ms": 800
+    },
+    "overlap/run-overlap": {
+      "status": "completed", "contract": "CONSISTENT", "duration_ms": 1000,
+      "estimated_charge": "0.01725", "duplicate_usage_identities": 1,
+      "span_rollup_charge": {"plan": "0.01725", "m1": "0.0045", "m2": "0.0105"},
+      "children_overlap": true
+    },
+    "missing-tokens/run-missing-tokens": {
+      "status": "completed", "duration_ms": 900,
+      "estimated_charge": null, "cost_reason": "token_category_not_supplied",
+      "estimated_charge_from_estimated_tokens": "0.0105"
+    },
+    "dated-prices/run-dated-prices": {
+      "status": "completed", "duration_ms": 120000,
+      "estimated_charge": "5.50", "pricing_tables": ["synthetic-2026-01-01", "synthetic-2026-11-01"]
+    },
+    "zero-vs-unknown-price/run-zero-vs-unknown-price": {
+      "status": "completed", "duration_ms": 1500,
+      "estimated_charge": null, "known_subtotal": "0", "unknown_usage_records": 1, "cost_reason": "model_not_priced"
+    },
+    "redaction/run-redaction": {
+      "status": "unknown_outcome", "contract": "CONSISTENT",
+      "operations": {"op-redact-1": {"mutation_attempts": 1, "outcome": "unknown"}},
+      "duration_ms": 1930, "redacted_payload_fields": 2, "redacted_error_class": 1, "sidecar_rejected": 2,
+      "export_must_not_contain": ["sam@example.invalid", "Original Road", "SYNTHETIC full prompt", "copied into telemetry"]
+    },
+    "restart-redispatch/run-redispatch-first": {
+      "status": "unknown_outcome", "contract": "CONSISTENT", "flags": ["repeated_attempt_across_runs"],
+      "operations": {"op-redispatch-1": {"mutation_attempts": 1, "outcome": "unknown", "attempts_across_runs": 2}}
+    },
+    "restart-redispatch/run-redispatch-second": {
+      "status": "completed", "contract": "CONSISTENT", "flags": ["repeated_attempt_across_runs"],
+      "operations": {"op-redispatch-1": {"mutation_attempts": 1, "outcome": "effect_confirmed", "attempts_across_runs": 2}}
+    },
+    "tenant-b/run-tenant-b-private": {"status": "completed", "owner": "tenant-b"},
+    "large/run-large": {
+      "status": "completed", "duration_ms": 60500, "spans_accepted": 601, "telemetry_dropped": 37
+    },
+    "malformed-line/run-malformed-file": {
+      "status": "incomplete", "contract": "INVALID", "completeness": ["missing_run_finished", "unattributable_line_in_artifact"]
+    },
+    "load/run-load-01": {"status": "completed", "duration_ms": 110, "estimated_charge": "0.006003"},
+    "load/run-load-12": {"status": "completed", "duration_ms": 220},
+    "load/run-load-23": {"status": "failed", "duration_ms": 330}
+  },
+  "aggregates": {
+    "synthetic_fixture/serving_observation/load_probe": {
+      "requests": 24, "status_counts": {"completed": 21, "failed": 3},
+      "latency": {"eligible": 24, "excluded": {}, "method": "nearest_rank", "p50_ms": 220, "p95_ms": 330, "p95_rank": 23},
+      "estimated_charge": {"USD": "0.1449"}, "confirmed_charge": {}, "usage_records_unknown": 0,
+      "if_failed_hidden_p95_ms": 300
+    }
+  }
+}

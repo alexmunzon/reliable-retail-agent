@@ -1,0 +1,2 @@
+{"event_id": "run-malformed-file:e1", "event_type": "serving.run_accepted", "evidence_class": "serving_observation", "occurred_at": "2026-10-02T15:00:00.000Z", "payload": {}, "run_id": "run-malformed-file", "schema_version": "trace-v1", "sequence": 1, "session_id": "sess-run-malformed-file", "source": {"component": "backend.service", "mapping_version": "obs-fixture-map-v1"}, "trace_id": "run-malformed-file"}
+{"event_id": "run-malformed-file:e1", "event_type": "serv

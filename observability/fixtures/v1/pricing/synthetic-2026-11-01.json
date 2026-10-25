@@ -1,0 +1,30 @@
+{
+  "assumptions": [
+    "Input price change demonstrates dated selection only"
+  ],
+  "currency": "USD",
+  "effective_from": "2026-11-01",
+  "models": {
+    "synthetic-free-tier-model": {
+      "cache_read": "0",
+      "cache_write": "0",
+      "input": "0",
+      "output": "0",
+      "provider": "synthetic-provider",
+      "reasoning": "0"
+    },
+    "synthetic-model-a": {
+      "cache_read": "0.30",
+      "cache_write": "3.75",
+      "input": "2.50",
+      "output": "15.00",
+      "provider": "synthetic-provider",
+      "reasoning": "15.00"
+    }
+  },
+  "pricing_version": "obs-pricing-v1",
+  "source": "SYNTHETIC user-supplied demonstration table; not a current or real provider price list",
+  "synthetic": true,
+  "table_id": "synthetic-2026-11-01",
+  "unit": "per_1m_tokens"
+}

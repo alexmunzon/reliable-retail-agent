@@ -1,0 +1,228 @@
+{
+  "fixture_set": "obs-fixtures-v1",
+  "data_origin": "synthetic_fixture",
+  "cases": [
+    {
+      "case_id": "healthy",
+      "trace": "traces/healthy.jsonl",
+      "trace_sha256": "8eec7bc887682373b80464cacc821a376a846570ec91d80a1fb8857e0970688a",
+      "sidecar": "sidecar/healthy.jsonl",
+      "sidecar_sha256": "e21f36232cfd9d85697bb8fd1f4c90d59682a72e1d0d0cd19e476bb9c1f056ab"
+    },
+    {
+      "case_id": "consent-rejected",
+      "trace": "traces/consent-rejected.jsonl",
+      "trace_sha256": "475332140605c7c156f68d020a8798a0e8def668e995867dc705615d56db494b",
+      "sidecar": "sidecar/consent-rejected.jsonl",
+      "sidecar_sha256": "977d634e09f3d4fdb1aeb830008c8bc7c8449178909412e98e29f4a3739cad64"
+    },
+    {
+      "case_id": "consent-ambiguous",
+      "trace": "traces/consent-ambiguous.jsonl",
+      "trace_sha256": "ae9269d1f6bea1c09c75dace25cd20ea9c76d15aadf9a17bfe04b7a6a3959d71",
+      "sidecar": "sidecar/consent-ambiguous.jsonl",
+      "sidecar_sha256": "e1eb02438fdc47724dbed63e0ef8d7618c9ac1a9fe48b1b1509743fa09f55ad7"
+    },
+    {
+      "case_id": "changed-intent",
+      "trace": "traces/changed-intent.jsonl",
+      "trace_sha256": "b3ed9935e9d8118afd929191905b8ab52de88b042119d349a6258d930c0e2dc5",
+      "sidecar": "sidecar/changed-intent.jsonl",
+      "sidecar_sha256": "437d15b87b79e83ac9bc0c5dff63946aef17fe446c0b2740ef0762c90c5da8ea"
+    },
+    {
+      "case_id": "race-claim",
+      "trace": "traces/race-claim.jsonl",
+      "trace_sha256": "0ec90fe49926370e3ccebda56138f841f34a3c08a34878eb8fe19ffdecf064d7",
+      "sidecar": "sidecar/race-claim.jsonl",
+      "sidecar_sha256": "a6d4eae378d58d041f94e9680b4f2c8a70fe2cfe7d935db3876c90a95e20f69a"
+    },
+    {
+      "case_id": "lost-response",
+      "trace": "traces/lost-response.jsonl",
+      "trace_sha256": "65977b906cabcc3bc76c8a359caeee70088eb09d1fc7bb28380a7b7ddf734952",
+      "sidecar": "sidecar/lost-response.jsonl",
+      "sidecar_sha256": "5abd864a2b985657e1ec5b90619dc2e3a0731b37322bfdbb7602715651f82a43"
+    },
+    {
+      "case_id": "process-restart",
+      "trace": "traces/process-restart.jsonl",
+      "trace_sha256": "105466b812fb0b177a39e23c77697d97fbe8a7a147641c99e61d567a7c4f06e1",
+      "sidecar": "sidecar/process-restart.jsonl",
+      "sidecar_sha256": "00159f9421efbda42643304ff79a3825eba85b8e154fb349dba68b94952daa2e"
+    },
+    {
+      "case_id": "reconcile-confirmed",
+      "trace": "traces/reconcile-confirmed.jsonl",
+      "trace_sha256": "77b55b65ad912d419896cb549525b7c282529ade5871ee16a229c3a6797bf76a",
+      "sidecar": "sidecar/reconcile-confirmed.jsonl",
+      "sidecar_sha256": "37ca80a1f8213c743c394fa5b3b0ea1cf43fc1bbec5a65e309b233bea9895c18"
+    },
+    {
+      "case_id": "reconcile-no-effect",
+      "trace": "traces/reconcile-no-effect.jsonl",
+      "trace_sha256": "cdec9a1adad85a40eff34265850fdd5c671aa7e95d719675926cf024fc7f0fbc",
+      "sidecar": "sidecar/reconcile-no-effect.jsonl",
+      "sidecar_sha256": "01a2a9f26fe7bf8f46486bc448ea321517ea8c01b4cd800cfad1f4dc2ab8ee4c"
+    },
+    {
+      "case_id": "reconcile-unavailable",
+      "trace": "traces/reconcile-unavailable.jsonl",
+      "trace_sha256": "985249abb429c3e5d7dd6dae217ffc7f6e9d2e359f53ed4ae8db94b4572f970b",
+      "sidecar": "sidecar/reconcile-unavailable.jsonl",
+      "sidecar_sha256": "03506d63039e519b20cc6ab0c6ede1fef293d6505934e77cdcfaa6df6e3ea07d"
+    },
+    {
+      "case_id": "unknown-then-confirmed",
+      "trace": "traces/unknown-then-confirmed.jsonl",
+      "trace_sha256": "1cc1d2f8aee7a3394796c887b8e9d041dfa468649d50b9fdcc68574ffde8b284",
+      "sidecar": "sidecar/unknown-then-confirmed.jsonl",
+      "sidecar_sha256": "f787be6373703fc1ec12ebbf43b0612c64cae0dd41b09f8a8175d52af6abd1ea"
+    },
+    {
+      "case_id": "duplicate-line",
+      "trace": "traces/duplicate-line.jsonl",
+      "trace_sha256": "303a948cc3dad99a0bda5451058dda31a12fa2afe86c6f6f4fcb7a14fc7e174c",
+      "sidecar": "sidecar/duplicate-line.jsonl",
+      "sidecar_sha256": "e14dd349e8c0ec2fbfb00c7f66cad275fd798e5964a4316b2211e92cff6e79ec"
+    },
+    {
+      "case_id": "cancel-before-claim",
+      "trace": "traces/cancel-before-claim.jsonl",
+      "trace_sha256": "b013dacc45400e8d2f84d92749d7975ddf8f8c1255e156391fa47ab52afc6108",
+      "sidecar": "sidecar/cancel-before-claim.jsonl",
+      "sidecar_sha256": "87ca06b124892ffb0d6a3cace7918bc750dfe784e0ac19d11e9572219645a00a"
+    },
+    {
+      "case_id": "cancel-after-claim",
+      "trace": "traces/cancel-after-claim.jsonl",
+      "trace_sha256": "d506488bb07a9da989dcaa265d8861a8ad95890c51a8c3ad869fe5cdaa5e2b27",
+      "sidecar": "sidecar/cancel-after-claim.jsonl",
+      "sidecar_sha256": "8889cb3b15c990a5f9dc72a1b99b92f63a31dada5a2cb3bb788516de7ed989ba"
+    },
+    {
+      "case_id": "sequence-gap",
+      "trace": "traces/sequence-gap.jsonl",
+      "trace_sha256": "c8998e5e04334fb401166ea1627533939792de2c14d5b97bb603b5d921fe579d",
+      "sidecar": "sidecar/sequence-gap.jsonl",
+      "sidecar_sha256": "c8e4785af2ba8203cba2476cbd3486c3b60c8ba917343d505d2760b5abc9bfb4"
+    },
+    {
+      "case_id": "truncated",
+      "trace": "traces/truncated.jsonl",
+      "trace_sha256": "337db0f96a371034f13532c751b107829ccf3bfbd29cc9c1622a61049dc841f5",
+      "sidecar": "sidecar/truncated.jsonl",
+      "sidecar_sha256": "434ae921d68bcdce8e68bfe125c71867e78c63eacfd8d53fb9b0acd94d62fffc"
+    },
+    {
+      "case_id": "out-of-order",
+      "trace": "traces/out-of-order.jsonl",
+      "trace_sha256": "8b30dddbb10599b3e79e880781bd3cb78f863a9158db770aabe95d4704c4786b",
+      "sidecar": "sidecar/out-of-order.jsonl",
+      "sidecar_sha256": "c0a00ce59b4bcb0911494fb26facc3aa646cc3593209c90bc544288c3a0ea04e"
+    },
+    {
+      "case_id": "clock-skew",
+      "trace": "traces/clock-skew.jsonl",
+      "trace_sha256": "3ce819a69791be9bc5364fe3e4b8006dc4a0a61994fe85dedc83e531906fb07e",
+      "sidecar": "sidecar/clock-skew.jsonl",
+      "sidecar_sha256": "6705d1e35499b595f04477497959a12bd84af9aff11f0f5edbbb5ebd9b33b623"
+    },
+    {
+      "case_id": "malformed-spans",
+      "trace": "traces/malformed-spans.jsonl",
+      "trace_sha256": "6d4139457667798bfb7864bf8c91a44ada26a85c5cc88830d384b43dedde6da6",
+      "sidecar": "sidecar/malformed-spans.jsonl",
+      "sidecar_sha256": "9296d52b143fe62aa3170fecc561da3455ea7ad57097e5cf7a6d072ad83aa059"
+    },
+    {
+      "case_id": "overlap",
+      "trace": "traces/overlap.jsonl",
+      "trace_sha256": "8671eb4484e208998c1dbf88d254d77cb8760396ca37b95376856872887ef3b5",
+      "sidecar": "sidecar/overlap.jsonl",
+      "sidecar_sha256": "dbe425589a5ac570c1c5c2a200fed8367a568cb94bd0113a8ddcfb69c428c42c"
+    },
+    {
+      "case_id": "missing-tokens",
+      "trace": "traces/missing-tokens.jsonl",
+      "trace_sha256": "c3980fe1ff360b28140cc666aac3f6f338174222e6e9bf42b7465c79fbdf2d74",
+      "sidecar": "sidecar/missing-tokens.jsonl",
+      "sidecar_sha256": "c0b5d431a0ccab627a2f06b44db2fe20597c5527d828b8f535eab55bc96e4c84"
+    },
+    {
+      "case_id": "dated-prices",
+      "trace": "traces/dated-prices.jsonl",
+      "trace_sha256": "30a921cba2f6a6054587e9d50d59c54c2f80f5c51164122d63291921196ffbc1",
+      "sidecar": "sidecar/dated-prices.jsonl",
+      "sidecar_sha256": "baa01304d5894d0f39212ea2e071ef3fbfd602260f4aee0545273a4398d53d78"
+    },
+    {
+      "case_id": "zero-vs-unknown-price",
+      "trace": "traces/zero-vs-unknown-price.jsonl",
+      "trace_sha256": "80e2814a24a9382e8e7927ff4ef1045f3c7c993ec69174584fc53f7d1bfcdf8f",
+      "sidecar": "sidecar/zero-vs-unknown-price.jsonl",
+      "sidecar_sha256": "53c274073df8c2b3d64b5ffc45478c7bb42145a36e8f7416a018df1f2d543805"
+    },
+    {
+      "case_id": "redaction",
+      "trace": "traces/redaction.jsonl",
+      "trace_sha256": "ca42b59c8d2fbbd5aa6784754cc6e1308fe5751fa01104ab012dbf6bc2b6caf5",
+      "sidecar": "sidecar/redaction.jsonl",
+      "sidecar_sha256": "78e232cf3e6442312b44ade6e172a1dfeda5308e2ad29fd9d53caec4063230ba"
+    },
+    {
+      "case_id": "restart-redispatch",
+      "trace": "traces/restart-redispatch.jsonl",
+      "trace_sha256": "cac5aa5cb47ed019f618a9e595ecdeadbaff940d6fd60e614fd65bff87a1fae8",
+      "sidecar": "sidecar/restart-redispatch.jsonl",
+      "sidecar_sha256": "40cd4bd69d307180cf78bc377e5a76a4c6f0cdd281347280a5dc26440c271920"
+    },
+    {
+      "case_id": "tenant-b",
+      "trace": "traces/tenant-b.jsonl",
+      "trace_sha256": "41af6576e3c909ab575dd1af1b742de5989f375194c713e08818815e2ca7a024",
+      "sidecar": "sidecar/tenant-b.jsonl",
+      "sidecar_sha256": "c6bf8bb338d8d73739f82b22b5faa1d36afea336393e5557e45de68d5dafbd9d"
+    },
+    {
+      "case_id": "large",
+      "trace": "traces/large.jsonl",
+      "trace_sha256": "f0c1d016c62a0e94d0ee9fba59e63076354cbc6052786cb7d685af1a1fbd22a3",
+      "sidecar": "sidecar/large.jsonl",
+      "sidecar_sha256": "851f48c8db58c86a2a91d08f318d17b0d1b19e17ad66c4c181e1c7ff46f2ec51"
+    },
+    {
+      "case_id": "load",
+      "trace": "traces/load.jsonl",
+      "trace_sha256": "af08d17106b50424e82f8762d97589e7d08431239c380c65460322a1ffb0a743",
+      "sidecar": "sidecar/load.jsonl",
+      "sidecar_sha256": "2d993e96b0c2c68bcc02a0b49636a91d5a771db52b0252a239af5cce2c368161"
+    },
+    {
+      "case_id": "malformed-line",
+      "trace": "traces/malformed-line.jsonl",
+      "trace_sha256": "84595801bff3d2e3f81169d9c550c6791b44f04105ecee2fbf59aca387562302",
+      "sidecar": "sidecar/malformed-line.jsonl",
+      "sidecar_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case_id": "oversize-line",
+      "trace": "traces/oversize-line.jsonl",
+      "trace_sha256": "d4fa44ab578dfd606b2b35e8d99d2eaf49f69930fa003075332ed7871e47ba9c",
+      "sidecar": "sidecar/oversize-line.jsonl",
+      "sidecar_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case_id": "healthy-redelivered",
+      "trace": "traces/healthy.jsonl",
+      "trace_sha256": "8eec7bc887682373b80464cacc821a376a846570ec91d80a1fb8857e0970688a",
+      "sidecar": "sidecar/healthy.jsonl",
+      "sidecar_sha256": "e21f36232cfd9d85697bb8fd1f4c90d59682a72e1d0d0cd19e476bb9c1f056ab"
+    }
+  ],
+  "pricing": [
+    "pricing/synthetic-2026-01-01.json",
+    "pricing/synthetic-2026-11-01.json"
+  ],
+  "access": "access.json"
+}
