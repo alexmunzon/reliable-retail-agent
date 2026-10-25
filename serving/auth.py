@@ -1,7 +1,7 @@
 """Opaque bearer tokens for the local pilot: random secret, stored only as a SHA-256 verifier."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from hashlib import sha256
 import hmac
 import json
@@ -31,6 +31,9 @@ class Principal:
     actor_id: str
     tenant_id: str
     scopes: frozenset[str]
+    # Internal request identity: rotation changes this even when wall clocks repeat or move backward.
+    # Never include the verifier in logs, public responses, or exported traces.
+    credential_verifier: str = field(default="", repr=False)
 
     def has(self, scope: str) -> bool:
         return scope in self.scopes
@@ -59,12 +62,25 @@ def resolve(conn: sqlite3.Connection, token: str) -> Principal | None:
                        (digest,)).fetchone()
     if row is None or row["status"] != "active" or not hmac.compare_digest(row["token_hash"], digest):
         return None
-    return Principal(row["actor_id"], row["tenant_id"], frozenset(json.loads(row["scopes"])))
+    return Principal(row["actor_id"], row["tenant_id"], frozenset(json.loads(row["scopes"])), digest)
+
+
+def refresh(conn: sqlite3.Connection, principal: Principal) -> Principal | None:
+    """Revalidate a previously resolved caller within the transaction using it."""
+    row = conn.execute("SELECT actor_id, tenant_id, scopes, status, token_hash FROM principals WHERE actor_id=?",
+                       (principal.actor_id,)).fetchone()
+    if (row is None or row["status"] != "active" or row["tenant_id"] != principal.tenant_id
+            or not principal.credential_verifier
+            or not hmac.compare_digest(row["token_hash"], principal.credential_verifier)):
+        return None
+    return Principal(row["actor_id"], row["tenant_id"], frozenset(json.loads(row["scopes"])), row["token_hash"])
 
 
 def is_active(conn: sqlite3.Connection, principal: Principal, token: str) -> bool:
     current = resolve(conn, token)
-    return current is not None and current.actor_id == principal.actor_id
+    return (current is not None and current.actor_id == principal.actor_id
+            and current.tenant_id == principal.tenant_id and current.scopes == principal.scopes
+            and hmac.compare_digest(current.credential_verifier, principal.credential_verifier))
 
 
 def write_credentials(path: Path, tokens: dict[str, str]) -> None:

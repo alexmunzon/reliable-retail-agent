@@ -36,6 +36,7 @@ class ServiceCase(unittest.TestCase):
         conn = storage.connect(self.settings.db_path)
         with storage.write_tx(conn):
             self.tokens = auth.seed(conn)
+        self.alice = auth.resolve(conn, self.tokens["alice"])
         conn.close()
         self.service = Service(self.settings)
         self.counter = 0
@@ -48,15 +49,15 @@ class ServiceCase(unittest.TestCase):
         return f"{prefix}-{self.counter:06d}"
 
     def new_run(self, body=RUN_BODY, revision=1):
-        _, session = self.service.create_session(ALICE, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
-        _, run = self.service.create_run(ALICE, session["session_id"], self.key("run"), body, dict(ORDER, revision=revision))
-        return self.service.snapshot(ALICE, run["run_id"])
+        _, session = self.service.create_session(self.alice, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
+        _, run = self.service.create_run(self.alice, session["session_id"], self.key("run"), body, dict(ORDER, revision=revision))
+        return self.service.snapshot(self.alice, run["run_id"])
 
     def consent(self, snapshot, response="yes", **overrides):
         proposal = snapshot["proposal"]
         body = {"response": response, "prompt_id": proposal["prompt_id"],
                 "proposal_version": proposal["proposal_version"], "payload_hash": proposal["payload_hash"], **overrides}
-        return self.service.consent(ALICE, snapshot["run_id"], self.key("consent"), body)
+        return self.service.consent(self.alice, snapshot["run_id"], self.key("consent"), body)
 
     def sql(self, statement, params=()):
         conn = sqlite3.connect(str(self.settings.db_path))
@@ -117,8 +118,8 @@ class GateParityTests(ServiceCase):
                 self.sql("UPDATE runs SET state='cancelled' WHERE run_id=?", (body["run_id"],))
 
     def test_prompt_is_recorded_once_when_shown_and_consent_requires_it(self):
-        _, session = self.service.create_session(ALICE, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
-        _, run = self.service.create_run(ALICE, session["session_id"], self.key("run"), RUN_BODY, ORDER)
+        _, session = self.service.create_session(self.alice, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
+        _, run = self.service.create_run(self.alice, session["session_id"], self.key("run"), RUN_BODY, ORDER)
         prompts = lambda: self.sql("SELECT COUNT(*) FROM events WHERE run_id=? AND event_type='prompt'", (run["run_id"],))[0][0]
         self.assertEqual(prompts(), 0)  # Generated, not yet shown to anyone.
         proposal = self.sql("SELECT prompt_id, payload_hash FROM proposals WHERE run_id=?", (run["run_id"],))[0]
@@ -126,7 +127,7 @@ class GateParityTests(ServiceCase):
         status, refused = self.consent(blind)
         self.assertEqual((status, refused["decision"]), (409, "prompt_not_delivered"))
         for _ in range(3):
-            shown = self.service.snapshot(ALICE, run["run_id"])
+            shown = self.service.snapshot(self.alice, run["run_id"])
         self.assertEqual(prompts(), 1)
         self.assertNotIn("_prompt_delivered", shown)
         self.assertEqual(self.consent(shown)[1]["decision"], "authorized")
@@ -135,10 +136,11 @@ class GateParityTests(ServiceCase):
         base = {"actor_id": "alice", "tenant_id": "acme", "session_id": "s", "operation_id": "o", "resource_id": "r",
                 "resource_revision": 1, "payload_hash": "p", "prompt_id": "q", "proposal_version": 1,
                 "canonical_schema_version": "c", "policy_version": "v", "classifier_version": "k"}
-        hashes = {consent_binding_hash(base)}
+        hashes = {consent_binding_hash(base, "credential-epoch")}
         for field in base:
-            hashes.add(consent_binding_hash(dict(base, **{field: base[field] + 1 if isinstance(base[field], int) else "x"})))
-        self.assertEqual(len(hashes), len(base) + 1)
+            hashes.add(consent_binding_hash(dict(base, **{field: base[field] + 1 if isinstance(base[field], int) else "x"}), "credential-epoch"))
+        hashes.add(consent_binding_hash(base, "another-epoch"))
+        self.assertEqual(len(hashes), len(base) + 2)
 
 
 class TransactionTests(ServiceCase):
@@ -165,7 +167,7 @@ class TransactionTests(ServiceCase):
         def respond(index):
             barrier.wait()
             for repeat in range(5):
-                Service(self.settings).consent(ALICE, snapshot["run_id"], f"ambiguous-{index}-{repeat}", {
+                Service(self.settings).consent(self.alice, snapshot["run_id"], f"ambiguous-{index}-{repeat}", {
                     "response": "maybe", "prompt_id": snapshot["proposal"]["prompt_id"],
                     "proposal_version": 1, "payload_hash": snapshot["proposal"]["payload_hash"]})
         threads = [threading.Thread(target=respond, args=(i,)) for i in range(8)]
@@ -204,19 +206,23 @@ class TransactionTests(ServiceCase):
         claim, = self.service.claim(1)
         self.assertEqual(self.service.recover_orphans(), 1)
         self.assertFalse(self.service.complete(claim, Outcome("succeeded", "applied", {"revision": 2, "effect_id": 1})))
-        self.assertEqual(self.service.snapshot(ALICE, snapshot["run_id"])["operation"]["state"], "unknown")
+        self.assertEqual(self.service.snapshot(self.alice, snapshot["run_id"])["operation"]["state"], "unknown")
 
     def test_idempotency_conflict_and_cross_principal_isolation(self):
         snapshot = self.new_run()
-        self.service.consent(ALICE, snapshot["run_id"], "consent-same-key", {
+        self.service.consent(self.alice, snapshot["run_id"], "consent-same-key", {
             "response": "maybe", "prompt_id": snapshot["proposal"]["prompt_id"], "proposal_version": 1,
             "payload_hash": snapshot["proposal"]["payload_hash"]})
         with self.assertRaises(ServiceError) as raised:
-            self.service.consent(ALICE, snapshot["run_id"], "consent-same-key", {
+            self.service.consent(self.alice, snapshot["run_id"], "consent-same-key", {
                 "response": "yes", "prompt_id": snapshot["proposal"]["prompt_id"], "proposal_version": 1,
                 "payload_hash": snapshot["proposal"]["payload_hash"]})
         self.assertEqual(raised.exception.code, "idempotency_conflict")
-        carol = Principal("carol", "acme", frozenset(CUSTOMER_SCOPES))
+        conn = self.service.connect()
+        try:
+            carol = auth.resolve(conn, self.tokens["carol"])
+        finally:
+            conn.close()
         with self.assertRaises(ServiceError) as raised:
             self.service.snapshot(carol, snapshot["run_id"])
         self.assertEqual(raised.exception.status, 404)
@@ -279,7 +285,7 @@ class StreamTests(ServiceCase):
     def test_purge_during_replay_ends_with_explicit_expiry_not_success(self):
         snapshot = self.new_run()
         self.pad_events(snapshot["run_id"], 6)
-        self.service.cancel(ALICE, snapshot["run_id"], self.key("cancel"))
+        self.service.cancel(self.alice, snapshot["run_id"], self.key("cancel"))
 
         async def scenario():
             frames, generator = [], self.stream(snapshot["run_id"])
@@ -374,13 +380,13 @@ class RestoreCrashTests(ServiceCase):
 
 
     def test_unverified_restore_refuses_cancel_and_new_prompt_deliveries(self):
-        _, session = self.service.create_session(ALICE, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
-        _, run = self.service.create_run(ALICE, session["session_id"], self.key("run"), RUN_BODY, ORDER)
+        _, session = self.service.create_session(self.alice, self.key("session"), {"resource_id": "SYN-ORDER-1042"})
+        _, run = self.service.create_run(self.alice, session["session_id"], self.key("run"), RUN_BODY, ORDER)
         self.sql("INSERT INTO meta VALUES ('restore_state', 'unverified')")
         with self.assertRaises(ServiceError) as refused:
-            self.service.cancel(ALICE, run["run_id"], self.key("cancel"))
+            self.service.cancel(self.alice, run["run_id"], self.key("cancel"))
         self.assertEqual(refused.exception.code, "restore_unverified")
-        shown = self.service.snapshot(ALICE, run["run_id"])
+        shown = self.service.snapshot(self.alice, run["run_id"])
         self.assertEqual((shown["proposal"]["prompt"], shown["proposal"]["prompt_unavailable"]), (None, "delivery_not_recorded"))
         self.assertEqual(self.sql("SELECT state FROM runs WHERE run_id=?", (run["run_id"],)), [("awaiting_consent",)])
 
