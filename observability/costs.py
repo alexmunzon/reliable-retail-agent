@@ -100,10 +100,12 @@ def _identity(usage: dict) -> tuple:
 
 
 def _content(usage: dict) -> tuple:
-    return (usage["model_id"], usage["measurement"], tuple(usage["tokens"][c] for c in TOKEN_CATEGORIES))
+    return (usage["model_id"], usage["measurement"], tuple(usage["tokens"][c] for c in TOKEN_CATEGORIES),
+            usage["observed_at"], usage["source"], usage["usage_semantics"])
 
 
-def request_costs(usages: list[dict], receipts: list[dict], tables: list[dict], spans: dict, parents: dict) -> dict:
+def request_costs(usages: list[dict], receipts: list[dict], tables: list[dict], spans: dict, parents: dict,
+                  evidence_issues: tuple | list = ()) -> dict:
     """Count each provider call once, then derive per-span rollups (direct usage plus descendants)."""
     unique, seen, duplicates, conflicts = [], {}, 0, set()
     for usage in usages:
@@ -117,35 +119,41 @@ def request_costs(usages: list[dict], receipts: list[dict], tables: list[dict], 
         seen[key] = usage
         unique.append(usage)
     unique = [u for u in unique if _identity(u) not in conflicts]
+    conflict_counts = {kind: len({_identity(u) for u in usages
+                                 if u["measurement"] == kind and _identity(u) in conflicts})
+                       for kind in ("measured", "estimated")}
     records, series = [], {"measured": [], "estimated": []}
     for usage in unique:
         est = estimate(usage, tables)
         row = {"record_id": usage["record_id"], "span_id": usage["span_id"], "provider": usage["provider"],
+               "provider_request_id": usage["provider_request_id"], "source": usage["source"],
+               "usage_semantics": usage["usage_semantics"], "emitter": dict(usage["emitter"]),
                "model_id": usage["model_id"], "measurement": usage["measurement"], "tokens": dict(usage["tokens"]),
                "observed_at": usage["observed_at"], "table_id": est["table_id"], "currency": est["currency"],
                "estimate": money(est["amount"]), "unknown_reason": est["reason"] if est["amount"] is None else None}
         records.append(row)
         series[usage["measurement"]].append((row, est))
 
-    def total(rows):
-        known, unknown, currencies, reasons, tables_used = {}, 0, set(), [], set()
+    def total(rows, kind):
+        unknown = conflict_counts[kind]
+        known, reasons, tables_used = {}, (["conflicting_usage_identity"] if unknown else []), set()
         for row, est in rows:
             if est["amount"] is None:
                 unknown += 1
                 reasons.append(est["reason"])
                 continue
             known[est["currency"]] = known.get(est["currency"], Decimal(0)) + est["amount"]
-            currencies.add(est["currency"])
             tables_used.add(est["table_id"])
-        complete = bool(rows) and unknown == 0
-        return {"usage_records": len(rows), "unknown_usage_records": unknown,
+        complete = bool(rows) and unknown == 0 and not evidence_issues
+        return {"usage_records": len(rows) + conflict_counts[kind], "unknown_usage_records": unknown,
                 "known_subtotal": {c: money(v) for c, v in sorted(known.items())},
                 "total": {c: money(v) for c, v in sorted(known.items())} if complete else None,
-                "reason": None if complete else ("no_usage_records" if not rows else reasons[0]),
+                "reason": None if complete else (reasons[0] if reasons else "telemetry_incomplete" if rows else "no_usage_records"),
+                "evidence_complete": not evidence_issues and conflict_counts[kind] == 0,
                 "pricing_tables": sorted(tables_used)}
 
-    confirmed, receipt_seen, receipt_dupes = {}, set(), 0
-    known_usage = {u["record_id"] for u in usages}
+    confirmed, receipt_seen, receipt_dupes, receipt_conflicts = {}, {}, 0, set()
+    known_usage = {u["record_id"]: _identity(u) for u in usages if _identity(u) not in conflicts}
     rejected_receipts = 0
     for receipt in receipts:
         if receipt["usage_record_id"] not in known_usage:
@@ -153,27 +161,60 @@ def request_costs(usages: list[dict], receipts: list[dict], tables: list[dict], 
             continue
         key = (receipt["source"], receipt["receipt_id"])
         if key in receipt_seen:
-            receipt_dupes += 1
+            previous = receipt_seen[key]
+            if all(previous[k] == receipt[k] for k in ("usage_record_id", "amount", "currency")):
+                receipt_dupes += 1
+            else:
+                receipt_conflicts.add(key)
             continue
-        receipt_seen.add(key)
+        receipt_seen[key] = receipt
+    accepted_receipts = {key: receipt for key, receipt in receipt_seen.items() if key not in receipt_conflicts}
+    receipted_usage = {known_usage[r["usage_record_id"]] for r in accepted_receipts.values()}
+    unreceipted = len(set(known_usage.values()) - receipted_usage)
+    for receipt in accepted_receipts.values():
         confirmed[receipt["currency"]] = confirmed.get(receipt["currency"], Decimal(0)) + Decimal(receipt["amount"])
+    confirmed = {c: money(v) for c, v in sorted(confirmed.items())}
+    receipt_reason = ("conflicting_receipt" if receipt_conflicts else "unbound_receipt" if rejected_receipts
+                      else "conflicting_usage_identity" if conflicts else "no_billing_receipts" if not accepted_receipts
+                      else "missing_billing_receipts" if unreceipted else "telemetry_incomplete" if evidence_issues else None)
 
     rollup: dict[str, dict] = {}
-    for row, est in series["measured"]:
-        node, guard = row["span_id"], 0
+    def rollup_usage(span_id, est, conflict=None):
+        node, guard = span_id, 0
         while node is not None and node in spans and guard <= len(spans):
-            bucket = rollup.setdefault(node, {"known": Decimal(0), "unknown": 0})
+            bucket = rollup.setdefault(node, {"known": {}, "unknown": 0, "conflicts": set()})
             if est["amount"] is None:
-                bucket["unknown"] += 1
+                if conflict is None or conflict not in bucket["conflicts"]:
+                    bucket["unknown"] += 1
+                    if conflict is not None:
+                        bucket["conflicts"].add(conflict)
             else:
-                bucket["known"] += est["amount"]
+                currency = est["currency"]
+                bucket["known"][currency] = bucket["known"].get(currency, Decimal(0)) + est["amount"]
             node, guard = parents.get(node), guard + 1
+    for row, est in series["measured"]:
+        rollup_usage(row["span_id"], est)
+    for usage in usages:
+        if usage["measurement"] == "measured" and _identity(usage) in conflicts:
+            rollup_usage(usage["span_id"], {"amount": None}, _identity(usage))
+
+    def rollup_view(bucket):
+        amounts = {c: money(v) for c, v in sorted(bucket["known"].items())}
+        return {"known_by_currency": amounts, "currency": next(iter(amounts)) if len(amounts) == 1 else None,
+                # Retain the v1 scalar only when no currency mixing is possible.
+                "known": next(iter(amounts.values()), "0") if len(amounts) <= 1 else None,
+                "unknown_usage_records": bucket["unknown"]}
+
     return {"usage": records, "duplicate_usage_identities": duplicates, "conflicting_usage_identities": len(conflicts),
-            "estimated_charge": total(series["measured"]),
-            "estimated_charge_from_estimated_tokens": total(series["estimated"]),
-            "confirmed_charge": {c: money(v) for c, v in sorted(confirmed.items())},
-            "confirmed_receipts": len(receipt_seen), "duplicate_receipts": receipt_dupes, "unbound_receipts": rejected_receipts,
-            "span_rollup": {span: {"known": money(b["known"]), "unknown_usage_records": b["unknown"]} for span, b in rollup.items()},
+            "incomplete_evidence_reasons": sorted(set(evidence_issues)),
+            "estimated_charge": total(series["measured"], "measured"),
+            "estimated_charge_from_estimated_tokens": total(series["estimated"], "estimated"),
+            "confirmed_charge": confirmed, "confirmed_charge_total": confirmed if receipt_reason is None else None,
+            "confirmed_charge_complete": receipt_reason is None, "confirmed_charge_unknown_reason": receipt_reason,
+            "confirmed_receipts": len(accepted_receipts), "duplicate_receipts": receipt_dupes,
+            "conflicting_receipts": len(receipt_conflicts), "unbound_receipts": rejected_receipts,
+            "unreceipted_usage_identities": unreceipted,
+            "span_rollup": {span: rollup_view(b) for span, b in rollup.items()},
             "measured_tokens": {c: sum(r["tokens"][c] for r, _ in series["measured"] if r["tokens"][c] is not None)
                                 for c in TOKEN_CATEGORIES},
             "measured_tokens_missing": {c: sum(1 for r, _ in series["measured"] if r["tokens"][c] is None)

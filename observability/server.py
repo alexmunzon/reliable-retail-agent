@@ -12,13 +12,13 @@ import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlsplit
 
-from .report import STATUSES, Dataset
+from .report import STATUSES, Dataset, parse_utc
 
 WEB = Path(__file__).resolve().parent / "web"
 STATIC = {"/": ("index.html", "text/html; charset=utf-8"), "/index.html": ("index.html", "text/html; charset=utf-8"),
           "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/styles.css": ("styles.css", "text/css; charset=utf-8")}
-KEY = re.compile(r"/api/(requests|export)/([a-z0-9][a-z0-9-]{0,63})/([A-Za-z0-9][A-Za-z0-9._:-]{0,127})")
-TIME = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?Z")
+KEY = re.compile(r"/api/(requests|export)/([a-z0-9][a-z0-9-]{0,63})/"
+                 r"([A-Za-z0-9][A-Za-z0-9._:-]{0,127})(?:/([A-Za-z0-9][A-Za-z0-9._:-]{0,127}))?")
 ROUTE = re.compile(r"[a-z][a-z0-9_]{0,63}")
 QUERY_KEYS = {"status", "route", "from", "to", "page", "page_size", "warmup"}
 SECURITY_HEADERS = {
@@ -56,8 +56,11 @@ def _query(raw: str) -> dict:
     if "route" in q and not ROUTE.fullmatch(q["route"]):
         raise BadRequest("invalid_route")
     for key in ("from", "to"):
-        if key in q and not TIME.fullmatch(q[key]):
-            raise BadRequest("invalid_time")
+        if key in q:
+            try:
+                parse_utc(q[key])
+            except ValueError:
+                raise BadRequest("invalid_time") from None
     for key, high in (("page", 100_000), ("page_size", 100), ("warmup", 1_000)):
         if key in q and not (q[key].isdigit() and 0 <= int(q[key]) <= high):
             raise BadRequest(f"invalid_{key}")
@@ -115,7 +118,7 @@ class Handler(BaseHTTPRequestHandler):
                                                    warmup_per_process=int(q.get("warmup", 0))))
         match = KEY.fullmatch(path)
         if match and not q:
-            kind, key = match.group(1), f"{match.group(2)}/{match.group(3)}"
+            kind, key = match.group(1), "/".join(part for part in match.groups()[1:] if part is not None)
             if kind == "requests":
                 found = data.get(viewer, key)
                 return self._json(200, found) if found else self._error(404, "not_found")

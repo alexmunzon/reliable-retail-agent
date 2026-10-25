@@ -49,7 +49,7 @@ def validate_record(record) -> list[str]:
     if not isinstance(record, dict):
         return ["sidecar.not_object"]
     kind = record.get("kind")
-    if kind not in FIELDS:
+    if not isinstance(kind, str) or kind not in FIELDS:
         return ["sidecar.unknown_kind"]
     allowed = COMMON | FIELDS[kind]["required"] | FIELDS[kind]["optional"]
     problems = []

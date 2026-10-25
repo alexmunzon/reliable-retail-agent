@@ -19,6 +19,7 @@ SAFE_BY = re.compile(r"[a-z][a-z0-9_]{0,31}")
 # Core payloads export exactly the contract's closed hash/enum fields (trace-v1 $defs).
 EXPORTED_PAYLOAD = {"prompt": ("tool_name", "prompt_sha256"), "dispatch_started": ("tool_name",),
                     "dispatch_succeeded": ("tool_name",), "dispatch_uncertain": ("tool_name", "error_class"),
+                    "dispatch_rejected": ("tool_name", "code", "effect"),
                     "blocked": ("reason",), "invalidated": ("reason",),
                     "authorized": ("classifier_version", "consent_binding_hash", "consent_binding_version"),
                     "serving.reconciled": ("outcome", "by")}
@@ -27,13 +28,18 @@ LABELS = {"prompt": "Confirmation shown (proposed)", "authorized": "Customer app
           "dispatch_started": "Attempt durably recorded", "dispatch_succeeded": "Provider confirmed effect",
           "dispatch_uncertain": "Outcome unknown", "serving.reconciled": "Reconciliation result",
           "serving.run_accepted": "Request accepted", "serving.run_finished": "Evidence stream complete",
-          "serving.run_cancelled": "Cancellation requested", "serving.process_restarted": "Process restarted"}
+          "dispatch_rejected": "Provider confirmed no effect",
+          "serving.run_cancelled": "Cancellation requested", "serving.cancelled": "Cancelled before claim",
+          "serving.cancel_requested": "Cancellation requested after claim (effect not undone)",
+          "serving.process_restarted": "Process restarted"}
+CANCELLATION_EVENTS = ("serving.run_cancelled", "serving.cancelled", "serving.cancel_requested")
 
 
 def redact_event(event: dict) -> tuple[dict, int]:
     """Allowlisted view of one event, plus how many payload fields were withheld."""
     kind, payload = event["event_type"], event["payload"]
-    out = {"sequence": event["sequence"], "event_id": event["event_id"], "event_type": kind,
+    out = {"schema_version": event["schema_version"],
+           "sequence": event["sequence"], "event_id": event["event_id"], "event_type": kind,
            "label": LABELS.get(kind, "Other namespaced event (not a business event)" if "." in kind else kind),
            "occurred_at": event.get("occurred_at"), "operation_id": event.get("operation_id"),
            "prompt_id": event.get("prompt_id"), "payload_hash": event.get("payload_hash")}
@@ -45,6 +51,8 @@ def redact_event(event: dict) -> tuple[dict, int]:
             continue
         if key == "error_class" and not SAFE_ERROR.fullmatch(value):
             out["error_class"], out["error_class_redacted"] = "redacted", True
+        elif key == "code" and not SAFE_ERROR.fullmatch(value):
+            out["code"] = "redacted"
         elif key == "by" and not SAFE_BY.fullmatch(value):
             out["by"] = "redacted"
         else:
@@ -54,7 +62,7 @@ def redact_event(event: dict) -> tuple[dict, int]:
 
 def operations(events: list[dict]) -> dict[str, dict]:
     ops: dict[str, dict] = {}
-    cancel_at = next((e["sequence"] for e in events if e["event_type"] == "serving.run_cancelled"), None)
+    cancel_at = next((e["sequence"] for e in events if e["event_type"] in CANCELLATION_EVENTS), None)
     for event in events:
         key = event.get("operation_id") or event.get("payload_hash")
         if not key or event["event_type"] in ("serving.run_accepted", "serving.run_finished"):
@@ -85,6 +93,8 @@ def operations(events: list[dict]) -> dict[str, dict]:
             op["outcome"], op["confirmed_by"], op["terminal"] = "outcome_missing", None, None
         elif kind == "dispatch_succeeded":
             op["outcome"], op["confirmed_by"] = "effect_confirmed", "dispatch_succeeded"
+        elif kind == "dispatch_rejected":
+            op["outcome"], op["confirmed_by"] = "no_effect_confirmed", "dispatch_rejected"
         elif kind == "dispatch_uncertain":
             op["outcome"], op["history_has_unknown"] = "unknown", True
         elif kind == "serving.reconciled":
@@ -241,13 +251,13 @@ def headline(stream: Stream, ops: dict, request_span_status: str | None, cancell
     if stream.completeness:
         return "incomplete", [f"evidence: {c}" for c in stream.completeness]
     if stream.contract_verdict == "INVALID" or stream.conflicting_event_ids:
-        return "invalid_evidence", ["trace-v1 checker verdict INVALID on the artifact as delivered"]
+        return "invalid_evidence", ["trace contract checker verdict INVALID on the artifact as delivered"]
     if any(op["outcome"] == "unknown" for op in ops.values()):
         return "unknown_outcome", [f"{k}: outcome unknown and unresolved" for k, o in ops.items() if o["outcome"] == "unknown"]
     if cancelled:
-        return "cancelled", ["serving.run_cancelled observed (fixture-defined namespaced event, not a trace-v1 core type); "
+        return "cancelled", ["Cancellation observed in a namespaced serving event; "
                              "a claimed attempt is not undone by cancellation"]
-    failed = [f"{k}: reconciliation confirmed no effect" for k, o in ops.items() if o["outcome"] == "no_effect_confirmed"]
+    failed = [f"{k}: {o['confirmed_by']} confirmed no effect" for k, o in ops.items() if o["outcome"] == "no_effect_confirmed"]
     if request_span_status == "error":
         failed.append("request handler reported an error (telemetry request span)")
     if failed:
@@ -263,14 +273,20 @@ def project(stream: Stream, tables: list[dict], data_origin: str, limits: Limits
         error_redactions += bool(view.get("error_class_redacted"))
         events.append(view)
     ops = operations(stream.events)
-    cancelled = any(e["event_type"] == "serving.run_cancelled" for e in stream.events)
+    cancelled = any(e["event_type"] in ("serving.run_cancelled", "serving.cancelled") for e in stream.events)
     spans_in = [r for r in stream.sidecar if r["kind"] == "span"]
     time_view, spans, parents = timing(stream, spans_in, ops, limits)
     span_ids = {s["span_id"] for s in spans}
     usages = [r for r in stream.sidecar if r["kind"] == "usage" and r["span_id"] in span_ids]
     unbound_usage = sum(1 for r in stream.sidecar if r["kind"] == "usage" and r["span_id"] not in span_ids)
+    cost_issues = list(stream.sidecar_problems)
+    cost_issues.extend(code for code in time_view["rejection_codes"] if code != "sidecar.duplicate_record")
+    if unbound_usage:
+        cost_issues.append("usage.unbound_span")
+    if time_view["telemetry_dropped"]:
+        cost_issues.append("sidecar.dropped_records")
     costs = request_costs(usages, [r for r in stream.sidecar if r["kind"] == "billing_receipt"], tables,
-                          {s: True for s in span_ids}, parents)
+                          {s: True for s in span_ids}, parents, cost_issues)
     costs["unbound_usage_records"] = unbound_usage
     status, reasons = headline(stream, ops, time_view["request_span_status"], cancelled)
     costs["uncertain_outcome"] = status == "unknown_outcome" and bool(usages)
@@ -289,6 +305,7 @@ def project(stream: Stream, tables: list[dict], data_origin: str, limits: Limits
                          "diagnostic_view": bool(stream.duplicate_lines or stream.reordered_lines or stream.envelope_invalid_events),
                          "redacted_payload_fields": withheld, "redacted_error_class": error_redactions,
                          "sidecar_rejected": sum(stream.sidecar_rejected.values()),
+                         "sidecar_problems": list(stream.sidecar_problems),
                          "caveats": wall_caveats(stream.events) + (["multiple_clock_domains"] if len(time_view["clock_domains"]) > 1 else []),
                          "flags": []},
             "operations": ops, "events": events, "timing": time_view, "costs": costs}

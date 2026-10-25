@@ -1,4 +1,4 @@
-"""Bounded, digest-bound ingestion of trace-v1 + obs-sidecar-v1 artifact pairs. Read-only, stdlib only.
+"""Bounded, digest-bound ingestion of versioned traces + obs-sidecar-v1. Read-only, stdlib only.
 
 Order of work (each step bounds the next): manifest path allowlist -> byte/line/depth/string limits ->
 sha256 binding -> strict JSON (no duplicate keys, no NaN) -> the UNCHANGED evalgate.trace checker on each
@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 import re
 
-from evalgate import trace as contract  # frozen trace-v1 checker, used as-is
+from evalgate import trace as contract  # versioned contract checker, used as-is
 
 from .sidecar import ID, validate_record
 
@@ -159,6 +159,7 @@ class Stream:
     envelope_invalid_events: int = 0
     sidecar: list[dict] = field(default_factory=list)
     sidecar_rejected: dict[str, int] = field(default_factory=dict)
+    sidecar_problems: list[str] = field(default_factory=list)
 
     @property
     def contract_verdict(self) -> str:
@@ -216,7 +217,7 @@ def build_streams(case_id: str, artifact_sha: str, parsed: list[tuple[int, dict]
             k = event.get("operation_id") or event.get("payload_hash")
             if event["event_type"] == "dispatch_started":
                 open_attempts[k] = True
-            elif event["event_type"] in ("dispatch_succeeded", "dispatch_uncertain"):
+            elif event["event_type"] in contract.OUTCOME_TYPES:
                 open_attempts.pop(k, None)
         if open_attempts:
             stream.completeness.append("attempt_without_outcome")
@@ -235,7 +236,8 @@ def attach_sidecar(streams: list[Stream], parsed: list[tuple[int, dict]], reject
     conflicted: set[tuple] = set()
     for _, record in parsed:
         problems = validate_record(record)
-        stream = index.get((record.get("run_id"), record.get("trace_id"))) if isinstance(record, dict) else None
+        identity = (record.get("run_id"), record.get("trace_id")) if isinstance(record, dict) else ()
+        stream = index.get(identity) if len(identity) == 2 and all(isinstance(v, str) for v in identity) else None
         if problems:
             if stream is not None:
                 _bump(stream.sidecar_rejected, problems[0])  # one count per rejected record
@@ -265,6 +267,10 @@ def attach_sidecar(streams: list[Stream], parsed: list[tuple[int, dict]], reject
             else:
                 keep.append(record)
         stream.sidecar = keep
+        if rejected_lines or artifact["unbound_records"] or artifact["invalid_unattributable"]:
+            # The bad record cannot safely be assigned to one request; every request in
+            # this bounded artifact pair must disclose that its metrics may be incomplete.
+            stream.sidecar_problems.append("sidecar.unattributable_records")
     return artifact
 
 
@@ -289,7 +295,7 @@ def load_fixture_set(root: Path, limits: Limits = Limits()) -> dict:
             problems.append({"case": None, "code": "manifest_entry_invalid"})
             continue
         trace_sha, side_sha = entry.get("trace_sha256"), entry.get("sidecar_sha256")
-        if not (isinstance(trace_sha, str) and SHA.fullmatch(trace_sha) and isinstance(side_sha, str) and SHA.fullmatch(side_sha)):
+        if not (isinstance(trace_sha, str) and SHA.fullmatch(trace_sha)):
             problems.append({"case": case_id, "code": "manifest_digest_missing"})
             continue
         if trace_sha in delivered:
@@ -299,28 +305,34 @@ def load_fixture_set(root: Path, limits: Limits = Limits()) -> dict:
             else:
                 problems.append({"case": case_id, "code": "artifact_redelivery_conflict"})
             continue
-        loaded = {}
+        loaded, side_error = {}, None
         for role, pattern_key, digest in (("trace", "trace", trace_sha), ("sidecar", "sidecar", side_sha)):
             path = safe_path(root, entry.get(pattern_key), ARTIFACT)
-            if path is None:
-                problems.append({"case": case_id, "code": f"{role}_path_rejected"})
-                break
-            raw, error = read_bounded(path, limits.max_artifact_bytes)
+            if not (isinstance(digest, str) and SHA.fullmatch(digest)):
+                raw, error = None, "digest_missing"
+            else:
+                raw, error = read_bounded(path, limits.max_artifact_bytes) if path else (None, "path_rejected")
+            if not error and sha256(raw).hexdigest() != digest:
+                error = "digest_mismatch"
             if error:
                 problems.append({"case": case_id, "code": f"{role}_{error}"})
-                break
-            if sha256(raw).hexdigest() != digest:
-                problems.append({"case": case_id, "code": f"{role}_digest_mismatch"})
+                if role == "sidecar":
+                    side_error = f"sidecar.{error}"
                 break
             loaded[role] = raw
-        if len(loaded) != 2:
+        if "trace" not in loaded:
             continue
         delivered[trace_sha] = side_sha
         parsed, rejected = parse_lines(loaded["trace"], limits)
         for code, count in rejected.items():
             problems.append({"case": case_id, "code": code, "count": count})
         case_streams, _ = build_streams(case_id, trace_sha, parsed, rejected)
-        side_parsed, side_rejected = parse_lines(loaded["sidecar"], limits)
+        # An optional metrics artifact cannot erase a verified authoritative trace.
+        # Unverified sidecar bytes are never parsed, even when the trace remains visible.
+        if side_error:
+            for stream in case_streams:
+                _bump(stream.sidecar_rejected, side_error)
+        side_parsed, side_rejected = parse_lines(loaded.get("sidecar", b""), limits)
         side_summary = attach_sidecar(case_streams, side_parsed, side_rejected, limits)
         if side_summary["unbound_records"] or side_summary["invalid_unattributable"] or side_rejected:
             problems.append({"case": case_id, "code": "sidecar_records_unbound_or_unparseable",
