@@ -1,15 +1,15 @@
-# trace-v1 handoff packet (for the backend owner)
+# Trace contract handoff packet (for the backend owner): trace-v1, and trace-v2 for refusals
 
-**Status:** contract frozen 2026-10-24. The evaluation side is built and tested. **The backend effect adapter is built** (`python3 -m evalgate backend`). It has been run locally against an uncommitted copy of the backend's working tree, not in hosted CI. One contract gap is open: a definite no-effect provider failure has no core outcome (see `docs/EVALUATION_GATE.md`, "Backend adapter").
+**Status:** trace-v1 frozen 2026-10-24 and unchanged. **trace-v2** (committed 2026-10-24) is trace-v1 plus one core outcome, `dispatch_rejected`, for a definite no-effect provider refusal (see "trace-v2" below). The evaluation side is built and tested. **The backend effect adapter is built** (`python3 -m evalgate backend`). It has been run locally against an uncommitted copy of the backend's working tree, not on a pinned commit or in hosted CI. Its full run stays INVALID until the backend exports trace-v2 for refusals (see `docs/EVALUATION_GATE.md`, "Backend adapter").
 
 ## What's in the packet
 
 | Item | Where |
 |---|---|
-| Event envelope (JSON Schema 2020-12) | `contracts/trace-v1.schema.json` |
+| Event envelope (JSON Schema 2020-12) | `contracts/trace-v1.schema.json`; `contracts/trace-v2.schema.json` (v1 + `dispatch_rejected`) |
 | Evaluation records, manifests, comparisons | `contracts/evaluation-v1.schema.json` |
-| Valid sample traces | `contracts/examples/serving-success.jsonl`, `serving-illustrative.jsonl` (unknown outcome, then reconciled), `offline-gate-trace.jsonl` (real mapped gate events) |
-| Invalid sample traces, each with its expected problem | `contracts/examples/invalid/*.jsonl` and `invalid/expected.json` |
+| Valid sample traces | `contracts/examples/serving-success.jsonl`, `serving-illustrative.jsonl` (unknown outcome, then reconciled), `offline-gate-trace.jsonl` (real mapped gate events); trace-v2: `serving-v2-rejected.jsonl` |
+| Invalid sample traces, each with its expected problem | `contracts/examples/invalid/*.jsonl` (trace-v2: `invalid/v2-*.jsonl`) and `invalid/expected.json` |
 | Validation entry point (CLI) | `python3 -m evalgate trace-check TRACE.jsonl` |
 | Validation entry point (Python) | `evalgate.trace.check_file(path)` returns `(problems, events)`; `evalgate.trace.validate_trace(events)` returns `problems` |
 | Ordering rules (normative) | `evalgate.trace.check_semantics` and the "Ordering rules" section below |
@@ -38,6 +38,19 @@ UTF-8 JSON Lines: one JSON object per line, lines ending in LF (CRLF is accepted
 
 **No secrets or personal data:** traces carry hashes and identifiers only, never prompt text, tool arguments, emails, addresses, tokens or headers. Every core payload has a closed field list, so an extra field such as `prompt_text` is rejected (see `invalid/leaks-prompt-text.jsonl`).
 
+## trace-v2: a definite no-effect refusal
+
+trace-v1 has no core outcome for "the provider definitively refused and nothing happened", so such an attempt looks like it has no outcome (INVALID under rule 5). trace-v2 adds exactly one core event and changes nothing else:
+
+| `event_type` | Emit when | Required beyond the envelope (serving) |
+|---|---|---|
+| `dispatch_rejected` | the provider answered with a definite refusal and `effect: "none"` (for example `invalid_request`, `revision_conflict`, `key_conflict`, `key_fenced`) | `operation_id`, `payload_hash`; payload exactly `tool_name`, `code` (1–96 characters, the provider's code) and `effect: "none"` |
+
+- Every event in a trace-v2 stream has `schema_version: "trace-v2"`. **One stream uses one version**: mixing v1 and v2 events in a stream is INVALID (`invalid/v2-mixed-versions.jsonl`). A `dispatch_rejected` in a v1 stream is an unknown event type (`invalid/v2-rejected-in-v1-stream.jsonl`).
+- `dispatch_rejected` is an attempt's one outcome (rule 5). It is final: a later `serving.reconciled` for it is INVALID, because nothing is unknown (`invalid/v2-reconciled-after-rejection.jsonl`). Use it only when the provider said `effect: "none"`; a timeout, a dropped connection or any reply without that is `dispatch_uncertain` (`invalid/v2-rejected-without-effect-none.jsonl`).
+- **Mapping for the backend:** `serving.dispatch_failed_no_effect` → `dispatch_rejected` {`tool_name`, `code`, `effect: "none"`}. The adapter asks for it with `GET /api/v1/runs/{id}/trace?contract=trace-v2`; a backend that ignores the parameter returns trace-v1, which is checked as v1 (so the refusal case stays INVALID). trace-v1 stays valid and frozen for everything else.
+- Validate with the same entry points: `python3 -m evalgate trace-check` and `evalgate.trace.validate_trace` accept both versions.
+
 ## Ordering rules (normative, checked per stream)
 
 Events are keyed by `operation_id`. Legacy offline events have none, so they're keyed by `payload_hash`.
@@ -46,7 +59,7 @@ Events are keyed by `operation_id`. Legacy offline events have none, so they're 
 2. The `authorized` event must answer the operation's **current** prompt: same `prompt_id` and payload. A newer prompt replaces the old one. A refusal, an invalidation or an attempt retires it. A block revokes the approval but leaves the prompt answerable, as the gate does after an ambiguous reply.
 3. Refusals, invalidations and blocks revoke by `operation_id`. Without one, they revoke by `payload_hash`. With neither, they revoke every pending approval.
 4. An operation gets **one** attempt and **one** tool: every `tool_name` reported for it must agree. A retry must reuse the same `operation_id`, which is then rejected; it must never mint a new one.
-5. Every attempt has exactly one outcome (`dispatch_succeeded` or `dispatch_uncertain`). An attempt without an outcome means the evidence is missing or truncated.
+5. Every attempt has exactly one outcome (`dispatch_succeeded` or `dispatch_uncertain`, and in trace-v2 also `dispatch_rejected`). An attempt without an outcome means the evidence is missing or truncated.
 6. No new attempt may start while an earlier outcome is unknown and unreconciled.
 7. `serving.reconciled` may only resolve an outcome that was `dispatch_uncertain` for the **same operation and payload_hash**. `still_unknown` leaves it unresolved.
 8. Serving streams: `sequence` 1..N without gaps, with exactly one `serving.run_finished`, and it comes last.
@@ -64,7 +77,8 @@ Events are keyed by `operation_id`. Legacy offline events have none, so they're 
 2. Map ledger states one-to-one: `started` → `dispatch_started` (written before the call), `succeeded` → `dispatch_succeeded`, `unknown` → `dispatch_uncertain`, operator or provider resolution → `serving.reconciled`.
 3. Emit `prompt` only for a confirmation the customer actually saw, with `payload.prompt_sha256` set to the hash of the exact shown text (required).
 4. For PASS/FAIL on effects, run the opt-in backend adapter: `python3 -m evalgate backend --backend PATH [--backend-python PY]`. It drives the service's real HTTP API through the `backend-v1` suite and points the service's provider URL at an independent evaluation provider (`evalgate/backend_provider.py`), whose ledger the scorer reads. It was built in a separate module, not in `evalgate/driver.py`, so `check` stays standard-library only. It relies on these backend entry points, which the backend owner agreed to keep stable: `scripts/serving.py init` / `serve-app`, the `RRA_*` settings including the test-only failpoints, `credentials.json` and `provider.key` in `RRA_DATA_DIR`, the seeded principals and orders, the v1 HTTP routes, and the provider wire contract. If the backend is absent, the result is NOT_RUN (exit 3), never PASS. Results and limits are in `docs/EVALUATION_GATE.md`, section "Backend adapter".
-5. Keep the trace-v1 contract frozen: any added, removed or re-meant field or enum value is trace-v2. Re-run `python3 scripts/ci.py`, which fails if the schema enums drift from the checker.
+5. Keep trace-v1 and trace-v2 frozen as committed: any further added, removed or re-meant field or enum value is a new version. Re-run `python3 scripts/ci.py`, which fails if the schema enums drift from the checker.
+6. Export trace-v2 for definite refusals (above), then provide a **finalized commit** (full SHA, reachable on GitHub) with its hash-locked `requirements-serving.lock`. The evaluation side then sets `evalgate/backend-pin.json` and runs `python3 -m evalgate backend --pinned`; until then the pinned evaluation is NOT_RUN and its CI check fails.
 
 ## Compatibility limits
 

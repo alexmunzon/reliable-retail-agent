@@ -79,7 +79,7 @@ MUTANTS = [
     ("B11-admit-while-degraded", "Keep authorizing new approvals while outcomes cannot be recorded.", API,
      [("    if state.worker.degraded:  # Admission control: no new authorization while outcomes cannot be recorded.\n",
        "    if False:  # MUTANT: admission control removed\n")],
-     {"bk-persistence-failure-after-effect": "unauthorized_dispatch"}),
+     {"bk-persistence-failure-after-effect": "uncontrolled_refusal"}),  # see pre-fix-B11/: the read-only database also blocks it
 ]
 CONTROL_CASES = ["bk-positive-once"]
 

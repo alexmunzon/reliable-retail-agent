@@ -1,0 +1,11 @@
+--- a/scripts/serving.py
++++ b/scripts/serving.py
+@@ -243,7 +243,7 @@
+     args = parser.parse_args(argv)
+     settings = load_settings()
+     if args.command in {"init", "migrate", "restore", "verify-restore", "serve-app"}:
+-        lock = hold_instance_lock(settings)  # noqa: F841 - held until this process exits.
++        lock = None  # MUTANT: instance lock removed
+     if args.command == "init":
+         return cmd_init(settings, args)
+     if args.command == "migrate":

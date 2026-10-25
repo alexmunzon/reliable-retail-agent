@@ -1,0 +1,167 @@
+{
+ "backend": {
+  "caveat": "results describe this copy of a working tree only, not any committed or merged backend",
+  "dirty": null,
+  "files": {
+   "adapters/__init__.py": "5a5904f228f82f125ffedf257f1c79642048411f55d631d4fafbcf156d114a4f",
+   "adapters/tau_dispatch.py": "8d8c9986a3ac5ff44612976f9bc8d7d5ce6575bbe267d74966b85aad3a545d20",
+   "rra/__init__.py": "889502baf8d823cc9fc756b785548307f213db3cee20080ec1c430272446f1e3",
+   "rra/engine.py": "a035d953d54ddd6db55bfc01afd93c198dd681ec769bf93d0de6da26ec404b11",
+   "rra/gate.py": "3da03b9efae781a7e4ac1673a63480966359ed000b0a9bbef1dc20884e223c7c",
+   "rra/scenarios.py": "59921b3a86234a1259ac044e1e64702a64f3a59a0802eafd758f6fc908bd7c12",
+   "rra/version.py": "7277bb1e2d1c943d30eb06444828d81c9ad4f236e2b8a1e917f8f53d84b3685e",
+   "scripts/ci.py": "f12f04b43d179b38540fdbca85bcf743fe3183b1540e6a410f54eb161092c13d",
+   "scripts/ci_serving.py": "383b9c7d801ed5184c398ff0352da4c1dda65f40ce6212b16b9cc8d136447fa4",
+   "scripts/reproduction.py": "f3e5ccf346c3f7e5607b9aaba44c418fda8f2330c50fdcb6426b4a41277dddcb",
+   "scripts/serving.py": "0528ee064ada6c17b47308b150896d9044275bbfb788726c50df94fdd52b06cc",
+   "scripts/start.py": "06b236550913b23c5180e8c242f9cf675f24b76dd4a960997e1a2fe1233344f1",
+   "serving/__init__.py": "24e04bde9718fc19860d49f65d5f7a7fe437d132a80a025d05915ec253d7b66e",
+   "serving/api.py": "1faddf5ec9f9d957de5e88dfb229cc7ff068f773b180e9e000fa09cdc30efe35",
+   "serving/app.py": "672e6e2beef1c256d7b289973d53352002059a45e2a74f821480f1b586e06eb1",
+   "serving/auth.py": "c6c6c609118db3630abdbff3eae9dd0dab06003519e5295422e83038628f8fe3",
+   "serving/config.py": "1783936f0836776dfefc9e06b8b84ad134b254635d2acd50702dda7bab20cfc9",
+   "serving/provider.py": "f2553566ad53c32dd0150168afa4f6cfac8f5be9dec5d5849d47f01acbca2197",
+   "serving/service.py": "1c9a47715dee080de965e8bbd54d0b171ecf237184ddabe0316e5ba07769702a",
+   "serving/storage.py": "085c5a13c034648a492ada62cddb2c95e1c35d1083ff37a9389c6a7e59c85762",
+   "serving/streaming.py": "bcfefd6afa47bd8ea200ea3dc634e142fe6a7594839eefbb70094eef0e95b981",
+   "serving/telemetry.py": "079bebd07020fce1dbce71c24e7db26109735f7cb025979dfcaf08de5b4cd4d9",
+   "serving/trace_export.py": "694bf984047de08c0fefa5aae593b42b9599840ae7cac7c5ea34cb1781361945",
+   "serving/worker.py": "f23b6250d4a12e25791634d6a5aeec28882acb89b548c6be586a65212d96b5bc",
+   "study/__init__.py": "78024884399d23d651a37e2ef648fa0343b52815dc0c5d6223d23fe9e7982f31",
+   "study/consent.py": "7f43dfb7a8e51b8145a17ccfb0b1b69ee4ef436fa965e19a8ad63d8e06558ee6",
+   "study/consent_as_well_candidate.py": "3e587d6c3575a6f87cb324229d92771bc8d91528733e8b9b66626716bc68dbe1",
+   "study/consent_candidate.py": "ec049c9966d6613b7d5ca40ccdc82c9e85705f873f3aece46b5ce934d2c2f0d3",
+   "study/consent_current.py": "93be930b9271ae3b419581511c86f80005678f9333614a4fa2467704ffef8e09",
+   "study/controller.py": "9f71522a7ad511da270be766ddc670260411604862450ee9fbadad8fc2020100",
+   "study/controller_current.py": "95d975506570a4cbee47f667d3b3aa3a12da4c29a6f64a4f26974122730c29e5",
+   "study/controller_v4.py": "bdffefadde30d7a6291c6f8657438214b278985c0618c449700a613d1ea5c385",
+   "study/evidence.py": "f3452f805b4990133c6b11bd2ebc496e64fb15bd2f26923b1167f361840c0c0e",
+   "study/gate.py": "6c0fc895ef88bec9b7bc5caab9c2b25087bb065faf2b24c250da5eae01036d4e",
+   "study/gate_current.py": "717861bd0c6dc0c9360cd579c4d4e1795896b94525642602de6f2d8d226d9218",
+   "study/gate_v4.py": "99677c1728479ce251d4e9ccab721323baf2d4d370406d761aa85bd6d6b1164c",
+   "study/intents.py": "e4df407ad3f4f9aa23d0de79ecf2e32c7ac74fbd6d386f9d9082051cc514875b",
+   "study/planning.py": "ce85d60a5554420ea214bdf343aeb37857d7399fc00b2b6557bd3edb93131a89",
+   "study/registry.py": "6a17fe423a3bbf75584ef2b2dfb761e73bf4d6b6e2a65266ab541b99445f5e58",
+   "study/termination_candidate.py": "ac104fac69531bed207e0acfccf9c57142f3fe44aeab46c093a70d07c594f44d",
+   "study/visible.py": "48b8a23fb2583e9b656898a84407a39666acda9153f2df472cd9830d2da9516c",
+   "study/visible_current.py": "34f2fa399b5a56fa62e845010e92c952c87e69fcad5c98245b8ceb37dd0c4547",
+   "study/visible_v4.py": "9f4a993523dd1212c267d934c8ad762f4e5e43ef9200b8cb27ed65cdf884ae9b"
+  },
+  "files_sha256": "2ad6f07f4742e83323739d3bc2257e37e8a3e0d1a3ad013f0890740311de3cb9",
+  "git_sha": null,
+  "lock_mismatches": [],
+  "lock_sha256": "dfcd019606601a0ffc97421d21b8b86722a9a289611c1c0c912dc6c4678d62e6",
+  "mode": "unpinned-working-tree",
+  "packages": [
+   [
+    "annotated-types",
+    "0.8.0"
+   ],
+   [
+    "anyio",
+    "4.15.1"
+   ],
+   [
+    "certifi",
+    "2026.7.22"
+   ],
+   [
+    "click",
+    "8.5.0"
+   ],
+   [
+    "fastapi",
+    "0.115.6"
+   ],
+   [
+    "h11",
+    "0.16.0"
+   ],
+   [
+    "httpcore",
+    "1.0.9"
+   ],
+   [
+    "httpx",
+    "0.28.1"
+   ],
+   [
+    "idna",
+    "3.20"
+   ],
+   [
+    "pydantic",
+    "2.13.5"
+   ],
+   [
+    "pydantic-core",
+    "2.46.5"
+   ],
+   [
+    "starlette",
+    "0.41.3"
+   ],
+   [
+    "typing-extensions",
+    "4.16.0"
+   ],
+   [
+    "typing-inspection",
+    "0.4.4"
+   ],
+   [
+    "uvicorn",
+    "0.32.1"
+   ]
+  ],
+  "python": "3.11.1",
+  "root_name": "B11-admit-while-degraded"
+ },
+ "comparison": "not applicable: no approved backend baseline",
+ "costs": "no model or paid calls",
+ "decision": "FAIL",
+ "duration_seconds": 7.4,
+ "evidence_class": "scripted_fixture",
+ "finished_at": "2026-10-25T04:24:49+00:00",
+ "harness": {
+  "backend_harness_version": "evalgate-backend-harness-v1",
+  "dirty": true,
+  "files_sha256": "3ba57ac1554b6eb89df104b6e300e172aea4f3a84d9ac67669cb06826ccb0361",
+  "git_sha": "54050550a0df194c4e945ac76a6faffd8ed694f2",
+  "version": "evalgate-harness-v1"
+ },
+ "outputs": {
+  "metrics.json": "246a94a62666573c6a0330754777917db7461a5dec59a809b9690d66e20c22e3",
+  "observations.json": "8479f810f0bbb1a6b4bff88d0913b27b9b7d4d22c8587c2dc68fcced48fecf7d",
+  "records.jsonl": "4ce80c7adeec112ae0928211921e58fd5820f97f45607c1989d8d7214ce57ea8",
+  "request.json": "211ad2dd8447c5ea383bfe3b65f4b4d4e423b6a78a44bce780b33cf10dc5bbdb",
+  "summary.md": "b30bb7827fbf1eca029ba843fdfc11b8a1bf3f1eeb4dea65b9af83d3befcc2f8",
+  "traces.jsonl": "27b39275185be18d450b88fd770eefedc6b3438245207a0408cbf64ed154cb6c"
+ },
+ "policy": {
+  "id": "evalgate-backend-policy-v1",
+  "sha256": "19b92c8bda2467fb056f32ccaf9d5ef8c2e9f89a38ea2f37b35f32722b440980"
+ },
+ "reasons": [
+  "bk-persistence-failure-after-effect: uncontrolled_refusal"
+ ],
+ "record_type": "backend_run_manifest",
+ "run_id": "20261025T042442Z-b11-admit-while-degraded-652ca00d",
+ "runtime": {
+  "platform": "macOS-15.7.4",
+  "python": "3.11.1"
+ },
+ "schema_version": "backend-evaluation-v1",
+ "started_at": "2026-10-25T04:24:42+00:00",
+ "suite": {
+  "cases_sha256": "224534091a9ccc603dd5108b6c8620c3f19a2e4aa185c163fdad6b54cf2a7fd0",
+  "id": "backend-v1",
+  "independence": "builder-authored regression suite; the builder had read the backend code; no sealed or held-out labels",
+  "labels_sha256": "f2b2f166a924f93ac7b18629049e4b1065115cea3465d2394170f7532f40d480",
+  "scheduled_cases": [
+   "bk-positive-once",
+   "bk-persistence-failure-after-effect"
+  ],
+  "subset": true
+ }
+}

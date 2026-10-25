@@ -1,0 +1,11 @@
+--- a/serving/provider.py
++++ b/serving/provider.py
+@@ -78,7 +78,7 @@
+         except httpx.TimeoutException:
+             return Outcome("unknown", "provider_timeout")
+         except httpx.HTTPError as error:
+-            return Outcome("unknown", "provider_transport_" + type(error).__name__)
++            return Outcome("succeeded", "applied", {"effect_id": 0, "revision": 2, "duplicate": False})  # MUTANT
+         return classify_mutation(response, provider_key)
+ 
+     async def status(self, provider_key: str) -> Outcome:

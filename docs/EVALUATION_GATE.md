@@ -15,11 +15,12 @@ python3 -m evalgate check        # the gate: approved baseline 8e70c0f vs this t
 python3 -m evalgate run          # evaluate one tree (--sut PATH, --role baseline|candidate)
 python3 -m evalgate compare BASELINE_RUN CANDIDATE_RUN
 python3 -m evalgate validate RUN_DIR   # re-score raw evidence; never trusts stored verdicts
-python3 -m evalgate trace-check TRACE.jsonl  # check a service-generated trace-v1 file: CONSISTENT or INVALID, never PASS
+python3 -m evalgate trace-check TRACE.jsonl  # check a service-generated trace-v1/v2 file: CONSISTENT or INVALID, never PASS
 python3 -m evalgate coverage     # invariant coverage matrix
 python3 scripts/mutation_proof.py      # plant curated regressions in throwaway copies and run the real gate
 python3 scripts/ci.py            # all offline unit tests, including the harness's own negative controls
 python3 -m evalgate backend --backend PATH [--backend-python PY]  # opt-in: the durable backend's real effects (exit 3 NOT_RUN if absent)
+python3 -m evalgate backend --pinned --backend-git REPO --backend-python PY  # exactly the commit in evalgate/backend-pin.json (NOT_RUN if unset)
 python3 -m evalgate backend-validate RUN_DIR                      # re-score a backend run from its raw observations
 python3 scripts/backend_mutation_proof.py --backend PATH          # plant real bugs in throwaway backend copies
 ```
@@ -138,7 +139,7 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 
 ## Handoff to the backend owner (milestone 2)
 
-- **Start here:** [`contracts/HANDOFF.md`](../contracts/HANDOFF.md). It has the schema and version, valid and invalid sample traces, the validation entry point, field mapping, compatibility limits, and what the backend must do. The backend adapter is now built and has been run locally against an uncommitted backend working tree (see "Backend adapter"). It has not run in hosted CI.
+- **Start here:** [`contracts/HANDOFF.md`](../contracts/HANDOFF.md). It has the schema and version, valid and invalid sample traces, the validation entry point, field mapping, compatibility limits, and what the backend must do. The backend adapter is built and has been run locally against an uncommitted backend working tree (see "Backend adapter"). It has not run on a pinned backend commit or in hosted CI. trace-v2 (`contracts/trace-v2.schema.json`) adds the definite-refusal outcome.
 - **Contracts:** `contracts/trace-v1.schema.json` (event envelope, frozen 2026-10-24, with `serving.reconciled` defined) and `contracts/evaluation-v1.schema.json` (case records, metrics, manifests, comparisons). Examples: `contracts/examples/offline-gate-trace.jsonl` (real mapped gate events) and `serving-illustrative.jsonl` (hand-written serving example, not observed). Tests fail if the schema enums drift from the code that emits them.
 - **`payload_hash`** = existing `MutationIntent.fingerprint`, unchanged: SHA-256 of strict canonical JSON `{tool_name, arguments}`. It is never consent by itself. `operation_id` and `prompt_id` stay separate fields.
 - **`consent_binding_hash`** is reserved on `authorized` payloads for a separately versioned envelope covering tenant, actor, session, operation, prompt, payload_hash, resource revision, schema/policy version and freshness.
@@ -148,84 +149,111 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 - **Prompt contract:** the offline oracle pins the gate's exact confirmation text (`scoring.PROMPT_TEMPLATE`): operation, tool and one strict JSON argument object. A serving UI that renders consent differently needs its own reviewed oracle, not a loosened one.
 - **Integration path:** built as the opt-in backend adapter below. `check` still doesn't depend on FastAPI, a database or a browser.
 
-## Backend adapter (milestone 2 integration, `backend-v1` r1, policy `evalgate-backend-policy-v1`)
+## Backend adapter (milestone 2 integration, `backend-v1` r3, policy `evalgate-backend-policy-v1`)
 
-**Status: built and run locally against an uncommitted working-tree copy of the durable backend.** Not run in hosted CI (the backend isn't in this repository, and its serving dependencies aren't installed there). Every result is a deterministic scripted fixture with no model calls.
+**Status: built, run locally against an uncommitted working-tree copy of the durable backend, and currently INVALID for one stated reason.** The backend still exports trace-v1, so the now-gating definite-refusal case can't be expressed (below). Nothing here has run against a *finalized, pinned* backend commit or in hosted CI on one: the pin is unset, so the pinned run and its CI job are NOT_RUN, and NOT_RUN fails. Every result is a deterministic scripted fixture with no model calls.
 
 **What it answers:** does the durable backend *actually* do the right thing to the outside store, judged by a ledger the backend can't write to? A consistent backend trace (`trace-check`) can't answer that, because the trace is the backend's own account of itself.
 
+**Independence, stated plainly:** these are **code-informed tests, not a blind holdout.** The same builder who wrote the suite, the labels and the evaluation provider had read the backend's code and its provider simulator. They catch regressions against behavior someone already thought of. They are not evidence about failure modes nobody anticipated.
+
 **How it works** (`evalgate/backend.py`, `evalgate/backend_provider.py`, standard library only):
 
-- The backend tree is copied read-only into a temporary directory. Nothing is written into the backend's checkout. The copy's Python files are hashed into the manifest.
+- The backend tree is copied read-only into a temporary directory (or, in pinned mode, exported from exactly the pinned commit with `git archive`). Nothing is written into the backend's checkout. The copy's Python files are hashed into the manifest.
 - Each case gets a fresh backend data directory (`scripts/serving.py init`), a fresh **evaluation provider**, and the real app (`scripts/serving.py serve-app`) run by the backend's own Python. The app's `RRA_PROVIDER_URL` points at the evaluation provider.
-- The evaluation provider is harness code that runs inside the harness process. It implements the backend's provider wire contract (key deduplication, `key_conflict`, revision preconditions, fenced status lookups, `effect: "none"` refusals), but it never imports backend code. It records every mutation request **on arrival, before any effect**. Failure modes are armed in-process, never over HTTP: a lost response after the effect, a dropped request before any effect, a definite refusal, and an unavailable status lookup. Crashes use the backend's own test-only failpoints (`crash_after_claim`, `crash_after_provider_response`), which work only under `RRA_TEST_MODE=1`.
-- The driver uses only the public HTTP API (sessions, runs, the run snapshot that delivers the prompt, consents, trace export). Labels never reach it.
-- **The scorer reads the provider ledger.** It checks five things:
-  1. Every provider request maps by payload hash to an approved intent. Extra requests count as duplicates even when the provider deduplicated them by key, because the backend promises never to retry automatically.
-  2. The provider's final state matches the label exactly.
-  3. The backend's reported run state agrees with the provider: "succeeded" needs an applied effect, and a no-effect state needs none.
-  4. Every delivered prompt is the declared confirmation text for exactly that operation and payload.
-  5. Each finished run's trace passes trace-v1. Every provider request has a recorded `dispatch_started`, and no trace confirms an effect the provider never applied, or denies one it did.
-- Decision: **INVALID** for a missing or crashed case, or a normative finished run whose trace breaks trace-v1. **FAIL** for any normative violation. Otherwise **PASS**. There's no approved backend baseline yet, so the decision is absolute: no comparison, and exploratory cases never gate. **NOT_RUN** (exit 3, never 0) when the tree or its Python with fastapi/uvicorn/httpx/pydantic is missing. `--case` runs are labelled SUBSET and are never a full-suite result.
+- The evaluation provider is harness code that runs inside the harness process. It implements the backend's provider wire contract (key deduplication, `key_conflict`, revision preconditions, fenced status lookups, `effect: "none"` refusals), but it never imports backend code. Failure modes are armed in-process, never over HTTP. Crashes use the backend's own test-only failpoints (`crash_after_claim`, `crash_after_provider_response`), which work only under `RRA_TEST_MODE=1`.
+- **A request arriving is never counted as an effect.** The provider keeps these facts apart, and every record reports them in separate fields (`mutation_requests_received`, `requests_lost_before_arrival`, `status_lookups`, `effects_applied`):
 
-**Result** (backend working tree as of 2026-10-24, 19 cases in about 55 s):
+  | Armed failure | Received requests | Effects | What it models |
+  |---|---|---|---|
+  | `lose_request_before_arrival` | 0 (counted only as lost before arrival) | 0 | the connection is cut before the provider accepts the request |
+  | `accept_then_drop_before_effect` | 1 | 0 | received, then dropped before anything is applied |
+  | `lose_response_after_effect` | 1 | 1 | applied, then the reply is lost |
+  | `reject_before_effect` | 1 | 0 | a definite refusal, `effect: "none"` |
+  | `hold_after_effect` | 1 | 1 | applied; the reply waits until the harness releases it (used to inject a storage fault in between) |
+  | `status_unavailable` / `_always` | — | — | status lookups fail once / always |
+
+- The driver uses only the public HTTP API (sessions, runs, the run snapshot that delivers the prompt, consents, trace export with `?contract=trace-v2`) plus the backend's operator commands (`backup`, `restore`, `verify-restore`). Labels never reach it.
+- **The scorer reads the provider ledger.** Six checks, each shown to be load-bearing (below):
+  1. Every received request maps by payload hash to an approved intent. Extra requests count as duplicates even when the provider deduplicated them by key, because the backend promises never to retry automatically. The provider's final state must match the label exactly.
+  2. The backend's reported run state agrees with the provider: "succeeded" needs an applied effect, and a no-effect state needs none.
+  3. Every delivered prompt is the declared confirmation text for exactly that operation and payload.
+  4. Each finished run's trace passes its contract (trace-v1, or trace-v2 when exported). Every received request has a recorded `dispatch_started`, and no trace confirms an effect the provider never applied, or denies one it did.
+  5. The interface: no unscheduled server error, operator commands succeed, every scheduled condition (an armed crash, a provider effect, a degraded or ready state) actually happened, and a step specified as a controlled refusal is refused with exactly that code (`expected_refusals`, new in r3).
+  6. Topology: a second instance on the same data directory must be refused.
+- Decision: **INVALID** for a missing or crashed case, or a normative finished run whose trace breaks its contract. **FAIL** for any normative violation. Otherwise **PASS**. There's no approved backend baseline yet, so the decision is absolute: no comparison, and exploratory cases never gate. **NOT_RUN** (exit 3, never 0) when the tree or its Python with fastapi/uvicorn/httpx/pydantic is missing, or in pinned mode when no commit is pinned. `--case` runs are labelled SUBSET and are never a full-suite result.
+
+### trace-v2: an explicit "provider refused, nothing happened" outcome
+
+trace-v1 has no core outcome for a definite no-effect provider refusal, so the backend exported `serving.dispatch_failed_no_effect` and the frozen rules reported "attempt has no recorded outcome". trace-v2 (`contracts/trace-v2.schema.json`) is trace-v1 plus one core event, `dispatch_rejected` (payload `tool_name`, `code`, `effect: "none"`), which closes the attempt as a definite no-effect outcome. v1 is unchanged and still valid. One stream must use one version (mixing is INVALID). A `serving.reconciled` after a rejection is INVALID, because there's nothing unknown to reconcile. Examples: `contracts/examples/serving-v2-rejected.jsonl` and four `invalid/v2-*.jsonl`. `bk-definite-refusal` is **gating** from r2 on, so the backend's full run stays INVALID until it exports trace-v2. That's deliberate: the case isn't hidden or demoted to get a green run. Under a simulated trace-v2 export of the recorded run, the scorer gives PASS (`test_exploratory_findings_never_gate`), so trace-v2 is the only open item for that case.
+
+### Pinning and CI
+
+- `evalgate/backend-pin.json` names the backend repository, branch, **full commit SHA**, lock file and its SHA-256. `python3 -m evalgate backend --pinned --backend-git REPO --backend-python PY` exports exactly that commit, checks the lock hash, and compares the installed packages with the lock (`lock_mismatches`). Every manifest records the Python version, installed packages, lock hash and mode: `pinned-commit`, or `unpinned-working-tree` with a caveat that the result does not describe any committed backend.
+- `.github/workflows/backend-evaluation.yml` installs the pinned commit's lock with `pip --require-hashes` (actions pinned by SHA) and runs the pinned evaluation. **Only exit 0 passes the job**, so NOT_RUN, INVALID and FAIL all fail it.
+- **Today the pin is unset** (awaiting the backend owner's finalized commit), so the pinned run is NOT_RUN and the CI job fails by design. Making `backend-evaluation` a *required* check is a repository-settings change for Alex.
+
+### Current result (suite r3, unpinned working-tree copy, 2026-10-24)
+
+Decision **INVALID**, 24 gating + 1 exploratory cases in about 77 s. The only gating problem is `bk-definite-refusal` (trace-v1 export, above). Run: `evidence/evaluation-gate/backend-adapter/full-run/20261025T042450Z-backend-bbeb2882/`.
 
 | Metric (normative) | n/N |
 |---|---|
-| Provider requests for anything not freshly approved / forbidden opportunities | **0/10** |
-| Unsafe-effect episodes / forbidden cases | **0/10** |
+| Provider requests for anything not freshly approved / forbidden opportunities | **0/11** |
+| Unsafe-effect episodes / forbidden cases | **0/11** |
 | Duplicate provider requests (repeat stratum, 3 cases) | **0** |
-| Misreported outcomes (backend state or trace contradicts the provider) | **0/18** |
-| Crash and unknown-outcome cases fully correct | **5/5** |
-| Legitimate changes applied exactly once and reported succeeded | **9/9** |
-| Complete, valid records | **18/18** |
-| *Exploratory: definite provider refusal* | *0/1 (trace-v1 gap, below)* |
+| Misreported outcomes (backend state or trace contradicts the provider) | **0/24** |
+| Crash, unknown-outcome, refusal, recovery and topology cases fully correct | **10/11** (the refusal case is the 11th) |
+| Legitimate changes applied exactly once and reported succeeded | **13/13** |
+| Complete, valid records | **23/24** (the refusal case's trace-v1 export) |
+| *Exploratory: restore of a backup taken before the approval* | *0/1 (open contract gap, below)* |
 
-What the backend did, scenario by scenario:
+New in r2/r3, all passing on the working tree:
 
 | Scenario | Provider saw | Backend reported |
 |---|---|---|
-| Positive control: one approval | one request, applied | succeeded |
-| No answer; approval before the prompt was delivered; "no" then "yes"; ambiguous or conditional replies; approval by another tenant, a read-only credential or another customer; an unregistered tool | nothing | awaiting consent / rejected / 404, 403, 409, 422 refusals |
-| Approval naming a different prompt, version or payload | nothing | 409 `stale_consent` |
-| Second approval for an order revision that has since changed | nothing (the first change applied once) | `invalidated` at claim time |
-| Approval after the prompt expired | nothing | 410, `expired` |
-| Same approval repeated (same key, new key, before and after the effect, after a clean restart) and six concurrent approvals | one request | succeeded |
-| Crash after durably claiming the attempt, before calling the provider | nothing; one status lookup (which fences the key) | restart → `unknown` → `failed` (no effect) |
-| Crash after the provider applied the change | one request; status lookup `applied` | restart → `unknown` → `succeeded`, never resent |
-| Response lost after the effect | one request; lookup `applied` | `unknown` → `succeeded` |
-| Request dropped before any effect, then a new change to that order | one dropped request, then one applied request for the new change | `failed` (no effect), then `succeeded` |
-| Unknown outcome that can't be reconciled (status lookups down) | one request; new change to that order never sent; another customer's order applied | stays `outcome_unknown`; 409 `resource_on_hold` for that order only |
-| *Definite provider refusal (exploratory)* | *one request, no effect* | *`failed`; trace exports `serving.dispatch_failed_no_effect`* |
+| Request lost **before arrival**, then a new change to that order | 0 received for it; one status lookup (fences the key); 1 applied for the new change | `unknown` → `failed`, then `succeeded` |
+| Request **received then dropped** before any effect | 1 received, 0 effects | `unknown` → `failed` |
+| Definite provider refusal | 1 received, 0 effects | `failed`, no retry; trace still v1 (gating gap) |
+| Effect applied, then the database is made read-only | 1 received, 1 effect; nothing for a second approval made while degraded | readiness `degraded`; that approval refused `503 service_degraded`; after repair `succeeded`, once |
+| Same storage fault, then the process is killed | 1 received, 1 effect | after repair and restart, settled `succeeded` from provider evidence, never resent |
+| Backup taken mid-dispatch, restored after the effect | 1 received, 1 effect | after `verify-restore`, `succeeded` from provider evidence, never resent |
+| Second instance on the same data directory | — | refused (exit nonzero before serving) |
+| *Exploratory: backup taken before the approval, then restored* | *see "Limits"* | *open contract gap* |
+
+### The original r1 result (scoped to those 18 cases only)
+
+On 2026-10-24 the r1 suite (18 gating + 1 exploratory) passed on the backend working tree as it was then: 0/10 unauthorized provider requests, 0 duplicates, 0/18 misreported, 5/5 crash and unknown-outcome cases, 9/9 legitimate changes, 18/18 valid records (`full-run/20261025T034529Z-backend-8e71ee8a/`, mutation receipts in `mutation-proof/`). **That result covers only those 18 cases on that working tree.** It says nothing about the recovery, topology, refusal and lost-before-arrival cases added in r2, and nothing about any committed backend.
 
 **Observed, not a failure:** repeating a consent with the *same* Idempotency-Key after the change has succeeded replays the original `202 authorized` response. That's correct idempotent-replay behavior, and nothing is sent again. But a client could read it as a new authorization.
 
-**Proof that the checks work:**
+### Proof that the checks work
 
-- *Each scorer check is load-bearing.* `CheckAblationTests` plants 18 single failures into observations recorded from a real backend run (`tests/fixtures/backend-v1-observations.json`). The planted failures are a duplicate request, a request without consent, a superseded approval reaching the provider, an unproposed payload, an extra effect, a missing execution, success reported without an effect, failure reported despite an effect, unknown reported as success, a trace confirming or denying the wrong outcome, a request with no recorded start, a truncated trace, a wrong or misattributed prompt, a server error, a crash that didn't happen, and a step mismatch. With all checks active, all 18 are caught. With no checks, none are. Removing any one check lets at least one through. This runs in `scripts/ci.py`.
-- *Real backend bugs are killed.* `scripts/backend_mutation_proof.py` copies the backend, plants one bug per copy, and runs the real adapter. Each mutant is killed for its named reason, and the unmutated copy passes. The mutants are:
-  - B1: resend once after an unknown outcome
-  - B2: reconciliation treats a fenced not_found as applied
-  - B3: accept a stale binding
-  - B4: accept ambiguous replies
-  - B5: no ownership check
-  - B6: ignore a superseded revision
-  - B7: release an order's hold when its outcome becomes unknown
-  - B8: never dispatch
-  - B9: report an unknown outcome as success
+- *Each scorer check is load-bearing.* `CheckAblationTests` plants 24 single failures into observations recorded from a real backend run (`tests/fixtures/backend-v1-observations.json`): duplicates, requests without consent, superseded approvals, unproposed payloads, extra or missing effects, every way of misreporting an outcome, trace confirmations or denials that contradict the ledger, requests with no recorded start, truncated traces, wrong prompts, server errors, crashes or scheduled conditions that didn't happen, a resend after a lost request, an approval admitted while degraded, an uncontrolled crash instead of the controlled refusal, an accepted second instance, a failed operator command and a step mismatch. With all checks active, all are caught. With no checks, none are. Removing any one check lets at least one through. This runs in `scripts/ci.py`.
+- *Real backend bugs are killed.* `scripts/backend_mutation_proof.py` copies the backend, plants one bug per copy, and runs the real adapter. A mutant counts only if the run is non-green **and** each named case fails for its named reason; the unmutated copy must pass the same cases. On suite r3 (2026-10-24, `mutation-proof-r3/`): **11 of 11 mutants killed for their named reasons, and the unmutated copy passes the same 11 cases.** The 9 r1 mutants still die on r3.
+  - B1 resend once after an unknown outcome · B2 reconciliation treats a fenced not_found as applied · B3 accept a stale binding · B4 accept ambiguous replies · B5 no ownership check · B6 ignore a superseded revision · B7 release an order's hold when its outcome becomes unknown · B8 never dispatch · B9 report an unknown outcome as success · B10 start without the one-process-per-data-directory lock · B11 keep authorizing new approvals while outcomes can't be recorded.
+  - B6 ends INVALID rather than FAIL: the superseded change reaches the provider and gets a definite refusal, which hits the trace-v1 gap. It's still non-green, and the named reason is present.
+- *Found in my own suite before acceptance (r1):* the first `bk-unknown-unresolved-hold` only tried to *create* a second run on the held order, so B7 stayed green (`pre-fix-B7/`). The case now also delivers and approves that second change.
+- *Found by the mutation proof on r2 (fixed in r3):* **B11 survived.** In `bk-persistence-failure-after-effect` the read-only database blocks the approval's write by itself, so without admission control the backend crashed with `500 internal_error` instead of refusing with `503 service_degraded`. The provider saw nothing either way, and the label's `allowed_5xx_steps` accepted any 5xx. So the case proved "nothing was authorized while storage was down" but not that admission control exists. The r2 run and a unit test that failed before the fix are kept in `pre-fix-B11/`. r3 requires that step to be refused with exactly `service_degraded`. My predecessor's predicted failure reason for B11 (`unauthorized_dispatch`) was also wrong; the receipt shows why. The effect-level outcome was safe in both versions; what was missing was proof of the *mechanism*.
+- *My own mutant mistake, disclosed (r1):* my first B7 made the code ignore holds entirely, which jammed the dispatch worker for every order, so it failed for the wrong reason (`mutation-proof-run1-unrealistic-B7/`).
 
-  B6 ends INVALID rather than FAIL: the superseded change reaches the provider and gets a definite refusal, which hits the trace-v1 gap below. It's still non-green, and the named reason is present. Receipts, patches and every mutant's run are in `evidence/evaluation-gate/backend-adapter/mutation-proof/`. The full-suite run is in `full-run/`.
-- *Found in my own suite before acceptance:* the first version of `bk-unknown-unresolved-hold` only tried to *create* a second run on the held order, so B7 stayed green (`pre-fix-B7/`). The case now also delivers and approves that second change. Under B7 that change is then proposed against the order the provider has already updated, and it **applies on top of the unknown change** (an unsafe effect), which the case now catches.
-- *My own mutant mistake, disclosed:* my first B7 made the code ignore holds entirely. That wasn't a realistic bug. The database's primary key on `resource_holds` still blocked the second claim, and that jammed the dispatch worker for every order (another customer's change sat `queued`), so it failed for the wrong reason. That receipt is kept in `mutation-proof-run1-unrealistic-B7/`. It also shows that the hold has a second, database-level layer.
+### Limits, stated plainly
 
-**Limits, stated plainly:**
-
-- **trace-v1 gap (contract owner's decision, my side).** A definite no-effect provider failure has no core outcome. The backend exports `serving.dispatch_failed_no_effect`, which the frozen ordering rules report as "attempt has no recorded outcome". The exploratory case shows it. Fixing it means trace-v2, not a loosened v1.
-- Not checked: that `dispatch_started` was durably written *before* the provider request. The scorer sees the order in the backend's trace and the ledger, but there's no shared clock. The crash-after-claim case shows the claim survives a crash.
+- **Code-informed, not blind.** See "Independence" above. No sealed or held-out backend cases exist.
+- **Not finalized, not pinned.** All results are from an uncommitted backend working tree that is still changing. They must not be read as describing the merged backend. The pinned run, and CI on it, wait for the owner's finalized commit.
+- **trace-v2 not exported yet.** The full run is INVALID until the backend exports `dispatch_rejected`.
+- **Restore before approval (exploratory, open contract gap).** If a backup taken *before* the approval is restored after the provider applied the change, the restored database has no local record of the attempt. Recording that change from provider evidence needs a reconciliation with no local attempt history, which neither trace contract defines yet. The exploratory case shows it and does not gate.
+- **No SSE event-stream cases.** The driver reads the run snapshot, not the server-sent event stream, so stream ordering, reconnects and duplicate delivery over SSE are untested.
+- **Single process only.** One process per data directory is the supported topology, and a second instance is checked to be refused. There are no multi-worker, multi-host or shared-database cases. Concurrency is limited to six simultaneous approvals.
+- **Restore coverage is narrow:** one stale mid-dispatch backup and the exploratory case. No corrupted backups, partial restores or restore onto a running service. Storage faults are simulated by making the database read-only, not by disk-full or torn writes.
+- Not checked: that `dispatch_started` was durably written *before* the provider request. There's no shared clock; the crash-after-claim case only shows the claim survives a crash.
 - A run still awaiting consent or unresolved has no `serving.run_finished`, so its trace is cross-checked against the ledger but not run through the full contract check.
-- Single process, single SQLite file, synthetic provider, loopback only. No restore-from-backup, storage-fault, SSE or multi-worker cases yet. No concurrency beyond six simultaneous approvals.
-- The evaluated backend is uncommitted work in progress. Evidence pins file hashes, not a commit, and the backend changes while its review rounds continue.
-- The suite was written by the builder who read the backend code: a builder-authored regression suite, not a held-out benchmark. No Astra or other independent review has been run on it.
+- Synthetic provider, loopback only.
+- **Independent review:** an Astra review of this adapter is prepared but not run yet (see "Astra review of the backend adapter").
+
+## Astra review of the backend adapter (prepared, not yet run)
+
+**Status: on hold.** The review is prepared as one read-only `gpt-6-astra` worker through the verified orchestrate-astra bridge: standard tier, existing ChatGPT login, network off, repo-only reads. Its focus has three questions. Is a request arriving confused with an applied effect anywhere? Does each mutant B1–B11 fail for its intended reason? Where do the backend and the scorer or provider share an assumption that a bug could hide behind? The preflight passed with no model call. The bridge's standing rule holds every Astra model call until Alex confirms, in his own words, that automatic top-ups are off and only his included allowance may be used. So no review has run, and **no independent review of the backend adapter is claimed.** This section will record its findings, verdicts and pre-fix evidence once it runs.
 
 ## Astra review rounds 2–5 (2026-10-24)
 

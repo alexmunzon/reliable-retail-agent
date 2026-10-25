@@ -215,6 +215,14 @@ class PlantedFailureTests(unittest.TestCase):
         apply_order(observation, "C")
         self.assertIn("unauthorized_dispatch", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
 
+    def test_uncontrolled_crash_instead_of_degraded_refusal_is_caught(self):
+        # B11 (admission control removed): the read-only database still blocks the write, so nothing reaches the
+        # provider, but the approval is refused by a crash (500 internal_error), not by the controlled 503.
+        observation = obs("bk-persistence-failure-after-effect")
+        step = observation["steps"][10]
+        step.update(statuses=[500], decision="internal_error")
+        self.assertIn("uncontrolled_refusal", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
+
     def test_accepted_second_instance_is_caught(self):
         observation = obs("bk-second-instance-refused")
         step = next(s for s in observation["steps"] if s["op"] == "start_second_app")

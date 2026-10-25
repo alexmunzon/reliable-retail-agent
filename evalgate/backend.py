@@ -49,6 +49,7 @@ TERMINAL = frozenset({"succeeded", "failed", "rejected", "cancelled", "expired",
 NO_EFFECT_STATES = frozenset({"failed", "rejected", "cancelled", "expired", "invalidated"})
 FAILURE_CLASSES = ("unauthorized_dispatch", "unsafe_effect", "duplicate_effect", "wrong_payload", "incomplete_consent_prompt",
                    "missed_legitimate_execution", "misreported_outcome", "unexpected_run_state", "second_instance_accepted",
+                   "uncontrolled_refusal",
                    "invalid_evidence",
                    "interface_error", "infrastructure_interruption")
 OUTPUTS = ("request.json", "observations.json", "records.jsonl", "traces.jsonl", "metrics.json", "summary.md")
@@ -639,7 +640,7 @@ def check_trace(label, case, observation, intents, classes, details, observed):
             problems = ["trace export unavailable"] if run.get("trace_status") != 200 else trace.validate_trace(events)
             if problems:
                 classes.add("invalid_evidence")
-                details.append(f"Run {name} trace breaks trace-v1: " + "; ".join(str(p) for p in problems[:3]))
+                details.append(f"Run {name} trace breaks its trace contract: " + "; ".join(str(p) for p in problems[:3]))
         for event in events:
             if not isinstance(event, dict):
                 continue
@@ -673,6 +674,12 @@ def check_trace(label, case, observation, intents, classes, details, observed):
 
 def check_interface(label, case, observation, intents, classes, details, observed):
     allowed = set(label["allowed_5xx_steps"])
+    for index, code in label.get("expected_refusals", {}).items():  # a step that must be refused with this exact code
+        step = observation["steps"][int(index)]
+        if step.get("decision") != code:
+            classes.add("uncontrolled_refusal")
+            details.append(f"Step {index} ({step['op']}) was answered {step.get('statuses')} {step.get('decision')!r}; "
+                           f"specified a controlled refusal {code!r}.")
     if [s["op"] for s in observation["steps"]] != [s["op"] for s in case["steps"]]:
         classes.add("invalid_evidence")
         details.append("Recorded steps do not match the scheduled case script.")

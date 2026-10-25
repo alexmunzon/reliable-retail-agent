@@ -416,6 +416,9 @@
      "intent": "A"
     }
    ],
+   "expected_refusals": {
+    "10": "service_degraded"
+   },
    "expected_run_states": {
     "r1": [
      "succeeded"

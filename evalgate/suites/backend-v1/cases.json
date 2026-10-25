@@ -1377,6 +1377,12 @@
    {
     "before_acceptance": false,
     "date": "2026-10-24",
+    "reason": "Backend mutation proof on r2: mutant B11 (admission control removed) survived. In bk-persistence-failure-after-effect the read-only database also blocks the approval's write, so the backend crashed with 500 internal_error instead of the controlled 503 service_degraded, the provider saw nothing either way, and allowed_5xx_steps accepted any 5xx. The label now also requires step 10 to be refused with code service_degraded (new label field expected_refusals, new failure class uncontrolled_refusal). Stricter only; no other case or expectation changed. Pre-fix evidence: evidence/evaluation-gate/backend-adapter/pre-fix-B11/.",
+    "revision": "r3"
+   },
+   {
+    "before_acceptance": false,
+    "date": "2026-10-24",
     "reason": "Alex's merge-readiness review. (1) bk-unknown-no-effect-then-new now loses the request BEFORE it reaches the provider (lose_request_before_arrival), so the specified count of received requests for it is 0 instead of 1 (stricter); the old scenario, received then dropped before any effect, is kept as the new case bk-unknown-received-no-effect. (2) The exploratory bk-x-definite-refusal is promoted to the gating bk-definite-refusal: its trace must record the refusal as trace-v2 dispatch_rejected. (3) Recovery and topology cases added: persistence failure after an external effect (with and without a crash), restore from a stale mid-dispatch backup, a competing second instance (must be refused), and an exploratory restore of a backup taken before the approval. No other case or expectation changed. r1 evidence is kept in evidence/evaluation-gate/backend-adapter/.",
     "revision": "r2"
    },

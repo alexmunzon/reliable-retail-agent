@@ -1,0 +1,13 @@
+--- a/serving/worker.py
++++ b/serving/worker.py
+@@ -114,6 +114,10 @@
+         outcome = await self.provider.mutate(provider_key=claim.provider_key, tenant=claim.tenant_id,
+                                              tool_name=claim.tool_name, arguments=claim.arguments,
+                                              expected_revision=claim.expected_revision)
++        if outcome.state == "unknown":  # MUTANT: automatic retry
++            outcome = await self.provider.mutate(provider_key=claim.provider_key, tenant=claim.tenant_id,
++                                                 tool_name=claim.tool_name, arguments=claim.arguments,
++                                                 expected_revision=claim.expected_revision)
+         if self.settings.failpoint("crash_after_provider_response"):
+             os._exit(71)  # Test-only: provider answered; this process dies before recording it.
+         self.telemetry.count(f"provider_outcome_{outcome.state}")
