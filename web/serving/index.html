@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Serving pilot demo</title>
+  <link rel="stylesheet" href="client.css">
+  <script src="client.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Serving pilot demo</h1>
+    <p class="muted">Local pilot · synthetic provider · scripted actor · no model. The token lives only in this
+      page's memory: reload the page and it is gone.</p>
+  </header>
+
+  <section aria-labelledby="h-token">
+    <h2 id="h-token">1. Credential</h2>
+    <form id="token-form" autocomplete="off">
+      <label for="token">Bearer token (from <code>runtime/serving/credentials.json</code>)</label>
+      <input id="token" type="password" autocomplete="off" spellcheck="false" required>
+      <div class="row">
+        <button type="submit">Use token</button>
+        <button type="button" id="forget">Forget token</button>
+        <span id="token-state" class="muted">No token.</span>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="h-request">
+    <h2 id="h-request">2. Request an address change</h2>
+    <form id="request-form" autocomplete="off">
+      <div class="grid">
+        <label>Order <input name="resource_id" value="SYN-ORDER-1042" required></label>
+        <label>Street <input name="street" value="18 Example Lane" required></label>
+        <label>Apartment <input name="apartment" value="2A"></label>
+        <label>City <input name="city" value="Sampleton" required></label>
+        <label>State <input name="state" value="CA" required></label>
+        <label>Postal code <input name="postal_code" value="00000" required></label>
+        <label>Country <input name="country" value="US" required></label>
+      </div>
+      <button type="submit">Create session and run</button>
+    </form>
+  </section>
+
+  <section aria-labelledby="h-consent">
+    <h2 id="h-consent">3. Exact prompt and consent</h2>
+    <pre id="prompt" class="prompt">No prompt yet.</pre>
+    <form id="consent-form" autocomplete="off">
+      <label for="answer">Your answer</label>
+      <input id="answer" value="yes" required>
+      <div class="row">
+        <button type="submit" id="consent">Send answer</button>
+        <button type="button" id="cancel">Cancel run</button>
+        <button type="button" id="retry">Retry last command (same Idempotency-Key)</button>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="h-stream">
+    <h2 id="h-stream">4. Live events</h2>
+    <div class="row">
+      <button type="button" id="drop">Drop connection</button>
+      <button type="button" id="resume">Resume from Last-Event-ID</button>
+      <span id="stream-state" class="muted">Not connected.</span>
+    </div>
+    <ol id="events" class="events"></ol>
+  </section>
+
+  <section aria-labelledby="h-snapshot">
+    <h2 id="h-snapshot">5. Run snapshot (the source of truth)</h2>
+    <button type="button" id="refresh">Refresh snapshot</button>
+    <pre id="snapshot" class="snapshot">No run yet.</pre>
+  </section>
+
+  <section aria-labelledby="h-log">
+    <h2 id="h-log">Command log</h2>
+    <ol id="log" class="log"></ol>
+  </section>
+</main>
+</body>
+</html>

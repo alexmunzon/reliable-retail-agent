@@ -1,0 +1,4 @@
+# Serving pilot (milestone 2). Not needed by the original no-install demo.
+fastapi==0.115.6
+uvicorn==0.32.1
+httpx==0.28.1
