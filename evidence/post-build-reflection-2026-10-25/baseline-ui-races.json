@@ -1,0 +1,61 @@
+{
+  "status": "FAIL",
+  "scope": "actual app.js asynchronous functions, controlled completion and DOM facade; not full browser evidence",
+  "results": [
+    {
+      "name": "detail reversed success",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n\n'older' !== 'newer'\n"
+    },
+    {
+      "name": "detail stale error",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'newer'\n"
+    },
+    {
+      "name": "list reversed success",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n\n'older' !== 'newer'\n"
+    },
+    {
+      "name": "list stale error",
+      "status": "FAIL",
+      "error": "Cannot read properties of undefined (reading 'renderedKey')"
+    },
+    {
+      "name": "loading belongs to latest list",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'true'\n"
+    },
+    {
+      "name": "aggregate reversed success",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n\n'older' !== 'newer'\n"
+    },
+    {
+      "name": "aggregate stale error",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'newer'\n"
+    },
+    {
+      "name": "credential change invalidates rendering",
+      "status": "FAIL",
+      "error": "Expected \"actual\" to be reference-equal to \"expected\":\n+ actual - expected\n\n  [\n+   {\n+     renderedKey: 'before-clear'\n-   Element {\n-     attributes: {},\n-     children: [],\n-     className: 'hint',\n-     tag: 'p',\n-     textContent: 'Loading request…'\n    }\n  ]\n"
+    },
+    {
+      "name": "credential change invalidates API response",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   private: 'old viewer'\n+ }\n- 'credentials_changed'\n"
+    },
+    {
+      "name": "credential change suppresses export error",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n\n1 !== 0\n"
+    },
+    {
+      "name": "closing detail invalidates pending rendering",
+      "status": "FAIL",
+      "error": "a closed pane must not render or refocus from a pending response\n+ actual - expected\n\n  [\n+   {\n+     renderedKey: 'closed'\n-   Element {\n-     attributes: {},\n-     children: [],\n-     className: 'hint',\n-     tag: 'p',\n-     textContent: 'Loading request…'\n    }\n  ]\n"
+    }
+  ]
+}

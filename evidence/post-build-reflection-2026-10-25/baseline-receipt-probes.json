@@ -1,0 +1,42 @@
+[
+  {
+    "variant": "unaltered",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "empty_trace",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "invalid_json_trace",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "false_suite_hashes",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "false_backend_pin",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "unknown_extra_observation",
+    "problems": [],
+    "decision": "PASS",
+    "valid": true
+  },
+  {
+    "variant": "null_manifest",
+    "exception": "AttributeError(\"'NoneType' object has no attribute 'get'\")"
+  }
+]

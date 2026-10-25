@@ -1,0 +1,63 @@
+{
+  "schema_version": "retail-integration-followup-v1",
+  "date": "2026-10-25",
+  "runtime_commit": "87970608892a0d130a18f9c6bc31bdfcf0e9e471",
+  "runtime_changed": false,
+  "backend_policy_revision": "r5",
+  "harness_version": "evalgate-backend-harness-v2",
+  "cases_changed": false,
+  "cases_sha256": "224534091a9ccc603dd5108b6c8620c3f19a2e4aa185c163fdad6b54cf2a7fd0",
+  "offline": {
+    "passed": 342,
+    "seconds": 20.7
+  },
+  "pinned_backend": {
+    "decision": "PASS",
+    "gating": 24,
+    "total_gating": 24,
+    "raw": "20261025T074658Z-backend-c6b27bb4",
+    "exploratory_failed": [
+      "bk-x-restore-backup-before-approval"
+    ]
+  },
+  "mutants": {
+    "prior_full_backend": "11/11 under r4/harness-v1, retained in prior receipt",
+    "affected_B11_rerun": "KILLED for uncontrolled_refusal under r5/harness-v2; unmutated control on 11 cases PASS",
+    "cleanup_after_rerun": "Only guaranteed blocker cleanup/error propagation changed afterwards; final full pinned suite passed."
+  },
+  "failed_hosted_run": {
+    "head": "abc67600ec0fdce115715ad0994202434be007a3",
+    "run_id": 40173068583,
+    "job_id": 121107880423,
+    "result": "INVALID",
+    "exit": 2,
+    "serving_tests_passed": 91,
+    "valid_gating_records": 23,
+    "gating_records": 24,
+    "condition_not_reached": "bk-persistence-failure-then-crash step 7 await_ready degraded",
+    "raw_log_sha256": "68082257391ce86af130980554cbc6d472194791eea4736a699c543267b0b2d2",
+    "raw_log_location": "Retained locally; public GitHub job link in README."
+  },
+  "reviews": [
+    "Exact B11 status/code strengthening confirmed by read-only review and ablation.",
+    "Held-lock mechanism and unchanged deadlines reviewed.",
+    "Cleanup-failure issue identified, fixed and re-reviewed; tests preserve error propagation."
+  ],
+  "logs": {
+    "offline-final.txt": {
+      "original_sha256": "a0103457279a46b2b909f7faa4d965de9ba920bad9e244c4f19429a51c190618",
+      "public_sha256": "a0103457279a46b2b909f7faa4d965de9ba920bad9e244c4f19429a51c190618",
+      "derivation": "Only private local paths and trailing whitespace normalized."
+    },
+    "b11-first-exposure.txt": {
+      "original_sha256": "093a8e1fd6a6749cfdb0aae12ee1a9df3a6a05c990bb90e02e72f5f8f4325175",
+      "public_sha256": "f146557dcc3719dfb25e60efc18d0347c7d5759a5b653d05b6630f49f2494d42",
+      "derivation": "Only private local paths and trailing whitespace normalized."
+    },
+    "b11-mutant.txt": {
+      "original_sha256": "8503593158ce98a6a1151d53ac7249b96d3ec1ac2ce7669ce63dfdc2b4b3fd17",
+      "public_sha256": "0c663c28ceb897942cb5951152faf65cd826f10301de5fc57fcd8ffaf40e796a",
+      "derivation": "Only private local paths and trailing whitespace normalized."
+    }
+  }
+}

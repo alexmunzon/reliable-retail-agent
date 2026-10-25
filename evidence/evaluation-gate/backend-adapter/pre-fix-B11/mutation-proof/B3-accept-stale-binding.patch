@@ -1,0 +1,11 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -339,7 +339,7 @@
+             return done(409, "consent_policy_changed", "Consent policy changed since this prompt; submit a new request.")
+         if not self._prompt_delivered(conn, run_id):
+             return done(409, "prompt_not_delivered", "Fetch the run snapshot to see the exact prompt before answering.")
+-        if (body["prompt_id"], body["proposal_version"], body["payload_hash"]) != \
++        if False and (body["prompt_id"], body["proposal_version"], body["payload_hash"]) != \
+                 (proposal["prompt_id"], proposal["proposal_version"], proposal["payload_hash"]):
+             self._event(conn, run_id, "blocked", {"title": "Stale consent blocked",
+                                                   "reason": "response_not_bound_to_active_prompt"}, **common)

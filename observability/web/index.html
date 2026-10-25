@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retail Trace Review</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>Retail trace review</h1>
+      <span class="badge synthetic" id="origin-badge">SYNTHETIC FIXTURES</span>
+      <span class="badge held">Live serving: NOT INTEGRATED</span>
+    </div>
+    <p class="viewer">Viewer <strong id="viewer">…</strong> · <span id="isolation"></span> · read-only</p>
+  </header>
+  <div id="set-banner" class="set-banner" hidden></div>
+  <main class="layout">
+    <section class="list-pane" aria-labelledby="list-heading">
+      <h2 id="list-heading">Requests</h2>
+      <form id="filters" class="filters" novalidate>
+        <label>Status
+          <select name="status" id="f-status"><option value="">Any</option></select>
+        </label>
+        <label>Route
+          <select name="route" id="f-route"><option value="">Any</option></select>
+        </label>
+        <label>From (UTC)
+          <input type="datetime-local" name="from" id="f-from" step="60">
+        </label>
+        <label>To (UTC)
+          <input type="datetime-local" name="to" id="f-to" step="60">
+        </label>
+        <div class="filter-actions">
+          <button type="submit">Apply</button>
+          <button type="button" id="f-reset" class="ghost">Reset</button>
+        </div>
+        <p class="hint">Window uses request start wall time (display clock). Undated requests are outside every window.</p>
+      </form>
+      <p id="list-status" class="list-status" role="status" aria-live="polite"></p>
+      <ol id="request-list" class="request-list" aria-label="Requests"></ol>
+      <nav class="pager" aria-label="Pages">
+        <button type="button" id="prev" class="ghost">← Prev</button>
+        <span id="page-label"></span>
+        <button type="button" id="next" class="ghost">Next →</button>
+      </nav>
+      <details class="aggregates" id="aggregates-box">
+        <summary>Aggregates for this window</summary>
+        <div id="aggregates"></div>
+      </details>
+    </section>
+    <section class="detail-pane" id="detail" aria-live="polite" tabindex="-1">
+      <div class="empty-detail">
+        <h2>Select a request</h2>
+        <p>Each request shows what was proposed, authorized, attempted and actually confirmed; what stayed unknown; where time went; and which cost numbers are known.</p>
+        <p class="hint">Keyboard: ↑/↓ move through the list, Enter opens, Esc returns to the list.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">
+    Trace events are the system's own account, never independent proof of an external effect. Estimated charges use dated SYNTHETIC price tables; only receipts are confirmed charges.
+  </footer>
+</body>
+</html>

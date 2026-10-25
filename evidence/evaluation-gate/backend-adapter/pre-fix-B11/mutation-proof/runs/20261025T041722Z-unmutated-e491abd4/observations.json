@@ -1,0 +1,3918 @@
+{
+ "bk-ambiguous": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-ambiguous",
+  "provider": {
+   "attempts": [],
+   "lookups": [],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "1",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "7 Original Road"
+     },
+     "revision": 1
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": null,
+    "run_id": "run_c291cb9e0c542155e116469a62f0c103",
+    "snapshot_status": 200,
+    "state": "awaiting_consent",
+    "trace": [
+     {
+      "event_id": "evt_run_c291cb9e0c542155e116469a62f0c103_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:25.335Z",
+      "payload": {},
+      "run_id": "run_c291cb9e0c542155e116469a62f0c103",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_cd9c3cdd99b9a801f82bb58266c76333",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_91628195f1180a8b30dcfac3bdea730e"
+     },
+     {
+      "event_id": "evt_run_c291cb9e0c542155e116469a62f0c103_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:25.340Z",
+      "operation_id": "op_9fe3d505b40f792e2edd8c77f645bc67",
+      "payload": {
+       "prompt_sha256": "f1285dc03bdf2d23ef699a609c28b9497d25d4c58bc07530dc96dabc76a6ef11",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_ddfdd8a62450accbff18648ac38fc1b5",
+      "run_id": "run_c291cb9e0c542155e116469a62f0c103",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_cd9c3cdd99b9a801f82bb58266c76333",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_91628195f1180a8b30dcfac3bdea730e"
+     },
+     {
+      "event_id": "evt_run_c291cb9e0c542155e116469a62f0c103_00000003",
+      "event_type": "blocked",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:25.344Z",
+      "operation_id": "op_9fe3d505b40f792e2edd8c77f645bc67",
+      "payload": {
+       "reason": "ambiguous_response"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_ddfdd8a62450accbff18648ac38fc1b5",
+      "run_id": "run_c291cb9e0c542155e116469a62f0c103",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_cd9c3cdd99b9a801f82bb58266c76333",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Ambiguous response blocked [ambiguous_response]",
+       "raw_type": "blocked"
+      },
+      "trace_id": "trc_91628195f1180a8b30dcfac3bdea730e"
+     },
+     {
+      "event_id": "evt_run_c291cb9e0c542155e116469a62f0c103_00000004",
+      "event_type": "blocked",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:25.347Z",
+      "operation_id": "op_9fe3d505b40f792e2edd8c77f645bc67",
+      "payload": {
+       "reason": "ambiguous_response"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_ddfdd8a62450accbff18648ac38fc1b5",
+      "run_id": "run_c291cb9e0c542155e116469a62f0c103",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_cd9c3cdd99b9a801f82bb58266c76333",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Ambiguous response blocked [ambiguous_response]",
+       "raw_type": "blocked"
+      },
+      "trace_id": "trc_91628195f1180a8b30dcfac3bdea730e"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_9fe3d505b40f792e2edd8c77f645bc67",
+    "run": "r1",
+    "step": 1,
+    "text": "Please confirm this exact mutation.\nOperation: op_9fe3d505b40f792e2edd8c77f645bc67\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "ambiguous",
+    "op": "consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "ambiguous",
+    "op": "consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-crash-after-claim": {
+  "app_exit_codes": [
+   70,
+   -15
+  ],
+  "case_id": "bk-crash-after-claim",
+  "provider": {
+   "attempts": [],
+   "lookups": [
+    {
+     "answer": "not_found_fenced",
+     "key": "rra-op_f8fcc9b93bdfce65ad8d02eede70916f"
+    }
+   ],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "1",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "7 Original Road"
+     },
+     "revision": 1
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "failed_no_effect",
+    "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+    "snapshot_status": 200,
+    "state": "failed",
+    "trace": [
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.201Z",
+      "payload": {},
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.206Z",
+      "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+      "payload": {
+       "prompt_sha256": "34ea69b80833bbbfdd9b3e8de30deee0ac15b5a29318d297d615a1a3fc8f89a0",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_7c95256f09d59b353ff596a350014f3b",
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.211Z",
+      "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "d1cfbc90eb9f618893f9ed32ec8101c8d0432c15d6665364376b21170eaed355",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_7c95256f09d59b353ff596a350014f3b",
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.213Z",
+      "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_7c95256f09d59b353ff596a350014f3b",
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000005",
+      "event_type": "dispatch_uncertain",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.552Z",
+      "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+      "payload": {
+       "error_class": "orphaned_dispatch_on_restart",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_7c95256f09d59b353ff596a350014f3b",
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome uncertain; retry stopped [orphaned_dispatch_on_restart]",
+       "raw_type": "dispatch_uncertain"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000006",
+      "event_type": "serving.reconciled",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.661Z",
+      "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+      "payload": {
+       "by": "provider_status_lookup",
+       "outcome": "no_effect_confirmed"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_7c95256f09d59b353ff596a350014f3b",
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome established from provider evidence",
+       "raw_type": "serving.reconciled"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     },
+     {
+      "event_id": "evt_run_4f772ea064153d1951e8504292f9d9df_00000007",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:36.661Z",
+      "payload": {},
+      "run_id": "run_4f772ea064153d1951e8504292f9d9df",
+      "schema_version": "trace-v1",
+      "sequence": 7,
+      "session_id": "ses_65783281cffea0ee2cf008ec996a222a",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_5bfde1af25f13bb940c9948bc5a1a211"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_f8fcc9b93bdfce65ad8d02eede70916f",
+    "run": "r1",
+    "step": 2,
+    "text": "Please confirm this exact mutation.\nOperation: op_f8fcc9b93bdfce65ad8d02eede70916f\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "start_app"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "exit_code": 70,
+    "op": "await_exit"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "start_app"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "failed"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "consent_not_pending",
+    "op": "consent",
+    "statuses": [
+     409
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-other-principal": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-other-principal",
+  "provider": {
+   "attempts": [],
+   "lookups": [],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "1",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "7 Original Road"
+     },
+     "revision": 1
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": null,
+    "run_id": "run_6b929ef70c31f9777fb4e7aa7d1067f4",
+    "snapshot_status": 200,
+    "state": "awaiting_consent",
+    "trace": [
+     {
+      "event_id": "evt_run_6b929ef70c31f9777fb4e7aa7d1067f4_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:28.581Z",
+      "payload": {},
+      "run_id": "run_6b929ef70c31f9777fb4e7aa7d1067f4",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_e2e8156efc1c44ce6ea49d834ee37bae",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_e74c1273dd43e09541da61109bbbc113"
+     },
+     {
+      "event_id": "evt_run_6b929ef70c31f9777fb4e7aa7d1067f4_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:28.586Z",
+      "operation_id": "op_6bf84ebac97af6095c0e18c8a78ab404",
+      "payload": {
+       "prompt_sha256": "9d417997e7f42738a924f5fd495678712e4e4e6513ee43b6535548ffc782e1ca",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_804a16d27b0e534042256f2470985ad7",
+      "run_id": "run_6b929ef70c31f9777fb4e7aa7d1067f4",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_e2e8156efc1c44ce6ea49d834ee37bae",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_e74c1273dd43e09541da61109bbbc113"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_6bf84ebac97af6095c0e18c8a78ab404",
+    "run": "r1",
+    "step": 1,
+    "text": "Please confirm this exact mutation.\nOperation: op_6bf84ebac97af6095c0e18c8a78ab404\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "not_found",
+    "op": "consent",
+    "statuses": [
+     404
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "insufficient_scope",
+    "op": "consent",
+    "statuses": [
+     403
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "not_found",
+    "op": "consent",
+    "statuses": [
+     404
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-persistence-failure-after-effect": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-persistence-failure-after-effect",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_86240354548823c286924520fde356e3",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [],
+   "order_reads": 2,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "succeeded",
+    "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.102Z",
+      "payload": {},
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     },
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.201Z",
+      "operation_id": "op_86240354548823c286924520fde356e3",
+      "payload": {
+       "prompt_sha256": "7119de33084d8345d67a76fed257647d2c1852b776530f0e18b6c765f9478634",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_62edd9a94e414a12c245eb4fadf27db4",
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     },
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.217Z",
+      "operation_id": "op_86240354548823c286924520fde356e3",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "5a15a1e66b991943581f822281de0b912c3ca6ccce6670c788df88592480ff98",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_62edd9a94e414a12c245eb4fadf27db4",
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     },
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.226Z",
+      "operation_id": "op_86240354548823c286924520fde356e3",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_62edd9a94e414a12c245eb4fadf27db4",
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     },
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:56.301Z",
+      "operation_id": "op_86240354548823c286924520fde356e3",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_62edd9a94e414a12c245eb4fadf27db4",
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     },
+     {
+      "event_id": "evt_run_747b581c7670be7c389a8cc353255ca9_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:56.301Z",
+      "payload": {},
+      "run_id": "run_747b581c7670be7c389a8cc353255ca9",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_a5c044882c99b2da8472a342cb533595",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_678e83862bd200ca611367aaaa5366d5"
+     }
+    ],
+    "trace_status": 200
+   },
+   "r2": {
+    "actor": "carol",
+    "intent": "C",
+    "operation_state": null,
+    "run_id": "run_45efcada8dee17811aa3f23dedea4170",
+    "snapshot_status": 200,
+    "state": "awaiting_consent",
+    "trace": [
+     {
+      "event_id": "evt_run_45efcada8dee17811aa3f23dedea4170_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.165Z",
+      "payload": {},
+      "run_id": "run_45efcada8dee17811aa3f23dedea4170",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_a33aad87ff258bea99ea506a0c310e84",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_b125d37b7f7afc643b2c0566b89d75e8"
+     },
+     {
+      "event_id": "evt_run_45efcada8dee17811aa3f23dedea4170_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:54.181Z",
+      "operation_id": "op_700363f49c5271520d330e042c6c92f4",
+      "payload": {
+       "prompt_sha256": "0fa1be7e2c0999eff3298f195c245b26df159e3f649c4b570a9d647d30c41ab6",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "be2d5793603588be43e424da78390a1b79082c185eb62680c2f6e7029f819f97",
+      "prompt_id": "prm_429b1b88d8092e495086529f22a6e03f",
+      "run_id": "run_45efcada8dee17811aa3f23dedea4170",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_a33aad87ff258bea99ea506a0c310e84",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_b125d37b7f7afc643b2c0566b89d75e8"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_700363f49c5271520d330e042c6c92f4",
+    "run": "r2",
+    "step": 3,
+    "text": "Please confirm this exact mutation.\nOperation: op_700363f49c5271520d330e042c6c92f4\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"9\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00003\",\n    \"state\": \"CA\",\n    \"street\": \"5 Third Court\"\n  },\n  \"order_id\": \"SYN-ORDER-1043\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   },
+   {
+    "operation_id": "op_86240354548823c286924520fde356e3",
+    "run": "r1",
+    "step": 4,
+    "text": "Please confirm this exact mutation.\nOperation: op_86240354548823c286924520fde356e3\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "arm"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "await_provider_effect",
+    "reached": true
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "db_fault"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "release_provider"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "await_ready",
+    "reached": true,
+    "state": "degraded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "decision": "service_degraded",
+    "op": "consent",
+    "statuses": [
+     503
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "db_repair"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "await_ready",
+    "reached": true,
+    "state": "ready"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-positive-once": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-positive-once",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_04ea568a1946262fc9a6d3e9887db356",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "succeeded",
+    "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.870Z",
+      "payload": {},
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     },
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.875Z",
+      "operation_id": "op_04ea568a1946262fc9a6d3e9887db356",
+      "payload": {
+       "prompt_sha256": "e5e6aa71b61eac78c292199022855c3e3361cb02013877d2351bc5db2f77dc88",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c490b9ba53f5c6a3157523d16997f9e7",
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     },
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.879Z",
+      "operation_id": "op_04ea568a1946262fc9a6d3e9887db356",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "29dfea689e492dfe20c035caa39cfba55b0f544cd6b7448244f9c5790e3a6699",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c490b9ba53f5c6a3157523d16997f9e7",
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     },
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.880Z",
+      "operation_id": "op_04ea568a1946262fc9a6d3e9887db356",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c490b9ba53f5c6a3157523d16997f9e7",
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     },
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.885Z",
+      "operation_id": "op_04ea568a1946262fc9a6d3e9887db356",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c490b9ba53f5c6a3157523d16997f9e7",
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     },
+     {
+      "event_id": "evt_run_de3b199d4c020d95f6150c4c54376fc9_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:22.885Z",
+      "payload": {},
+      "run_id": "run_de3b199d4c020d95f6150c4c54376fc9",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_a5f78ced7242a494b0b0fc9c7e790bec",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_3166dda406b8eaa01490e7a833ee69f5"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_04ea568a1946262fc9a6d3e9887db356",
+    "run": "r1",
+    "step": 1,
+    "text": "Please confirm this exact mutation.\nOperation: op_04ea568a1946262fc9a6d3e9887db356\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-second-instance-refused": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-second-instance-refused",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_05122cf3ea1adf5610d5956dee2d5034",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "succeeded",
+    "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.291Z",
+      "payload": {},
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     },
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.304Z",
+      "operation_id": "op_05122cf3ea1adf5610d5956dee2d5034",
+      "payload": {
+       "prompt_sha256": "eebace04b9b28e1fc757a95d83dab6f8b4e562792fcef8b64675df1acba653a3",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c936994da2012b2a73c0cdb51030f4f6",
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     },
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.531Z",
+      "operation_id": "op_05122cf3ea1adf5610d5956dee2d5034",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "f664cc0e0a80958e17126b91801c32aa5bee49fd7988acb14ff371eaa8e921f5",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c936994da2012b2a73c0cdb51030f4f6",
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     },
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.537Z",
+      "operation_id": "op_05122cf3ea1adf5610d5956dee2d5034",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c936994da2012b2a73c0cdb51030f4f6",
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     },
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.553Z",
+      "operation_id": "op_05122cf3ea1adf5610d5956dee2d5034",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_c936994da2012b2a73c0cdb51030f4f6",
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     },
+     {
+      "event_id": "evt_run_5abb4a9219c19aa20b370948dd4f62fc_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:59.553Z",
+      "payload": {},
+      "run_id": "run_5abb4a9219c19aa20b370948dd4f62fc",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_56b9e6f320dc8579b1e9fcbf97ae1711",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_8be569b6369e404ca5c99b89f67ae7b4"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_05122cf3ea1adf5610d5956dee2d5034",
+    "run": "r1",
+    "step": 1,
+    "text": "Please confirm this exact mutation.\nOperation: op_05122cf3ea1adf5610d5956dee2d5034\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "exit_code": 3,
+    "op": "start_second_app",
+    "ready": false
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-stale-binding": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-stale-binding",
+  "provider": {
+   "attempts": [],
+   "lookups": [],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "1",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "7 Original Road"
+     },
+     "revision": 1
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": null,
+    "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+    "snapshot_status": 200,
+    "state": "awaiting_consent",
+    "trace": [
+     {
+      "event_id": "evt_run_5440239dc00dcd4332bcdfc26cdb7cc2_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:31.241Z",
+      "payload": {},
+      "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_3497d0bfd9b0d8f0784e555798113885",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_03ee848f1602875c7f3ce46820376b93"
+     },
+     {
+      "event_id": "evt_run_5440239dc00dcd4332bcdfc26cdb7cc2_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:31.246Z",
+      "operation_id": "op_d55a5dc6d3555513587d73656c642acd",
+      "payload": {
+       "prompt_sha256": "60ad3662bbb1a0467aa6eb0ae745a65ce2f84e8c6ac56865826539c967a18c7c",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_4a13c06453785911b6f5a6d2709cfcdb",
+      "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_3497d0bfd9b0d8f0784e555798113885",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_03ee848f1602875c7f3ce46820376b93"
+     },
+     {
+      "event_id": "evt_run_5440239dc00dcd4332bcdfc26cdb7cc2_00000003",
+      "event_type": "blocked",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:31.250Z",
+      "operation_id": "op_d55a5dc6d3555513587d73656c642acd",
+      "payload": {
+       "reason": "stale_consent"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_4a13c06453785911b6f5a6d2709cfcdb",
+      "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_3497d0bfd9b0d8f0784e555798113885",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Stale consent blocked [response_not_bound_to_active_prompt]",
+       "raw_type": "blocked"
+      },
+      "trace_id": "trc_03ee848f1602875c7f3ce46820376b93"
+     },
+     {
+      "event_id": "evt_run_5440239dc00dcd4332bcdfc26cdb7cc2_00000004",
+      "event_type": "blocked",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:31.255Z",
+      "operation_id": "op_d55a5dc6d3555513587d73656c642acd",
+      "payload": {
+       "reason": "stale_consent"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_4a13c06453785911b6f5a6d2709cfcdb",
+      "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_3497d0bfd9b0d8f0784e555798113885",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Stale consent blocked [response_not_bound_to_active_prompt]",
+       "raw_type": "blocked"
+      },
+      "trace_id": "trc_03ee848f1602875c7f3ce46820376b93"
+     },
+     {
+      "event_id": "evt_run_5440239dc00dcd4332bcdfc26cdb7cc2_00000005",
+      "event_type": "blocked",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:31.259Z",
+      "operation_id": "op_d55a5dc6d3555513587d73656c642acd",
+      "payload": {
+       "reason": "stale_consent"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_4a13c06453785911b6f5a6d2709cfcdb",
+      "run_id": "run_5440239dc00dcd4332bcdfc26cdb7cc2",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_3497d0bfd9b0d8f0784e555798113885",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Stale consent blocked [response_not_bound_to_active_prompt]",
+       "raw_type": "blocked"
+      },
+      "trace_id": "trc_03ee848f1602875c7f3ce46820376b93"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_d55a5dc6d3555513587d73656c642acd",
+    "run": "r1",
+    "step": 1,
+    "text": "Please confirm this exact mutation.\nOperation: op_d55a5dc6d3555513587d73656c642acd\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "stale_consent",
+    "op": "consent",
+    "statuses": [
+     409
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "stale_consent",
+    "op": "consent",
+    "statuses": [
+     409
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "stale_consent",
+    "op": "consent",
+    "statuses": [
+     409
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-superseded-revision": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-superseded-revision",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_907467195519715435c2559596ac8c2f",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [],
+   "order_reads": 2,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "succeeded",
+    "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.684Z",
+      "payload": {},
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     },
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.699Z",
+      "operation_id": "op_907467195519715435c2559596ac8c2f",
+      "payload": {
+       "prompt_sha256": "043f3323cf05d9d3dd04ac3920a37ab9066e3bf5eb7a1ea20b8bdb577b64542d",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_3236842d778648673ce0941ada41aa9d",
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     },
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.706Z",
+      "operation_id": "op_907467195519715435c2559596ac8c2f",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "6ed3ae7550677c27c8d7b1ab11168508046fa85a9b900decaff8f4fc64181850",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_3236842d778648673ce0941ada41aa9d",
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     },
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.708Z",
+      "operation_id": "op_907467195519715435c2559596ac8c2f",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_3236842d778648673ce0941ada41aa9d",
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     },
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.712Z",
+      "operation_id": "op_907467195519715435c2559596ac8c2f",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_3236842d778648673ce0941ada41aa9d",
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     },
+     {
+      "event_id": "evt_run_9514eac02aa4cdf744a4d7b0de9b6e42_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.712Z",
+      "payload": {},
+      "run_id": "run_9514eac02aa4cdf744a4d7b0de9b6e42",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_27ef8fb730fba37cf3bbbb05cfce58a0",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_15e0ea2edba36248965c544f2f05229d"
+     }
+    ],
+    "trace_status": 200
+   },
+   "r2": {
+    "actor": "alice",
+    "intent": "B",
+    "operation_state": "invalidated",
+    "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+    "snapshot_status": 200,
+    "state": "invalidated",
+    "trace": [
+     {
+      "event_id": "evt_run_87d39b179bd4ca4ea3bfd1c35519581b_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.694Z",
+      "payload": {},
+      "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_cd78d3251648f7a1190fd910296f8fcc",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_8ebd85b7fc1fa41c68b31b2546696c97"
+     },
+     {
+      "event_id": "evt_run_87d39b179bd4ca4ea3bfd1c35519581b_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.703Z",
+      "operation_id": "op_9355519ead9aaa038a90ea6ba6e967aa",
+      "payload": {
+       "prompt_sha256": "f41b4e9e9b30fe87bfda2017956d88cbb6e859b56cd59ca49404c16c6ed52a0e",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_203ea80560b49b65f6d5eaafa8ffb8bb",
+      "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_cd78d3251648f7a1190fd910296f8fcc",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_8ebd85b7fc1fa41c68b31b2546696c97"
+     },
+     {
+      "event_id": "evt_run_87d39b179bd4ca4ea3bfd1c35519581b_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.822Z",
+      "operation_id": "op_9355519ead9aaa038a90ea6ba6e967aa",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "cc60d5d57da5f7aacc6075c062776ef4cee92891d620b375bbc5f09aaebbc86c",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_203ea80560b49b65f6d5eaafa8ffb8bb",
+      "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_cd78d3251648f7a1190fd910296f8fcc",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_8ebd85b7fc1fa41c68b31b2546696c97"
+     },
+     {
+      "event_id": "evt_run_87d39b179bd4ca4ea3bfd1c35519581b_00000004",
+      "event_type": "invalidated",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.824Z",
+      "operation_id": "op_9355519ead9aaa038a90ea6ba6e967aa",
+      "payload": {
+       "reason": "other"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_203ea80560b49b65f6d5eaafa8ffb8bb",
+      "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_cd78d3251648f7a1190fd910296f8fcc",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Authorization no longer valid at claim time [resource_revision_changed]",
+       "raw_type": "invalidated"
+      },
+      "trace_id": "trc_8ebd85b7fc1fa41c68b31b2546696c97"
+     },
+     {
+      "event_id": "evt_run_87d39b179bd4ca4ea3bfd1c35519581b_00000005",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:33.824Z",
+      "payload": {},
+      "run_id": "run_87d39b179bd4ca4ea3bfd1c35519581b",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_cd78d3251648f7a1190fd910296f8fcc",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_8ebd85b7fc1fa41c68b31b2546696c97"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_907467195519715435c2559596ac8c2f",
+    "run": "r1",
+    "step": 2,
+    "text": "Please confirm this exact mutation.\nOperation: op_907467195519715435c2559596ac8c2f\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   },
+   {
+    "operation_id": "op_9355519ead9aaa038a90ea6ba6e967aa",
+    "run": "r2",
+    "step": 3,
+    "text": "Please confirm this exact mutation.\nOperation: op_9355519ead9aaa038a90ea6ba6e967aa\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00002\",\n    \"state\": \"CA\",\n    \"street\": \"42 Second Avenue\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "wait",
+    "reached": true,
+    "state": "invalidated"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-unknown-effect-reconciled": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-unknown-effect-reconciled",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_953456f6151a59338d21aac4043450fd",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "effect_then_lost_response"
+    }
+   ],
+   "lookups": [
+    {
+     "answer": "applied",
+     "key": "rra-op_953456f6151a59338d21aac4043450fd"
+    }
+   ],
+   "order_reads": 1,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "succeeded",
+    "run_id": "run_0468107f3c82f7398398e934d026de7c",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.291Z",
+      "payload": {},
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.296Z",
+      "operation_id": "op_953456f6151a59338d21aac4043450fd",
+      "payload": {
+       "prompt_sha256": "833c1a61710cc1238950a6410c59f42ea8919e804a27d9a193f9aba6eb609553",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_97ec8c871b8b9f310bd0a26339e6977b",
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.300Z",
+      "operation_id": "op_953456f6151a59338d21aac4043450fd",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "4fe67e58cf5b6396ac42c657bd129aa9e0fc72b8a4a95e1fccebbeb708ded23a",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_97ec8c871b8b9f310bd0a26339e6977b",
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.310Z",
+      "operation_id": "op_953456f6151a59338d21aac4043450fd",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_97ec8c871b8b9f310bd0a26339e6977b",
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000005",
+      "event_type": "dispatch_uncertain",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.325Z",
+      "operation_id": "op_953456f6151a59338d21aac4043450fd",
+      "payload": {
+       "error_class": "provider_transport_RemoteProtocolError",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_97ec8c871b8b9f310bd0a26339e6977b",
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome uncertain; retry stopped [provider_transport_RemoteProtocolError]",
+       "raw_type": "dispatch_uncertain"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000006",
+      "event_type": "serving.reconciled",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.341Z",
+      "operation_id": "op_953456f6151a59338d21aac4043450fd",
+      "payload": {
+       "by": "provider_status_lookup",
+       "outcome": "effect_confirmed"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_97ec8c871b8b9f310bd0a26339e6977b",
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome established from provider evidence",
+       "raw_type": "serving.reconciled"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     },
+     {
+      "event_id": "evt_run_0468107f3c82f7398398e934d026de7c_00000007",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:39.341Z",
+      "payload": {},
+      "run_id": "run_0468107f3c82f7398398e934d026de7c",
+      "schema_version": "trace-v1",
+      "sequence": 7,
+      "session_id": "ses_98a04ea11807e4ed001dc59fd201d8d2",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_545da0151ae3d580aa9169afaec6f865"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_953456f6151a59338d21aac4043450fd",
+    "run": "r1",
+    "step": 2,
+    "text": "Please confirm this exact mutation.\nOperation: op_953456f6151a59338d21aac4043450fd\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "arm"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-unknown-no-effect-then-new": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-unknown-no-effect-then-new",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00002",
+        "state": "CA",
+        "street": "42 Second Avenue"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_853a789743fe52e1ee8b7b22aa7fad5e",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [
+    {
+     "answer": "not_found_fenced",
+     "key": "rra-op_a5fd4bdf01ceaef609d63b33b299b4fc"
+    }
+   ],
+   "order_reads": 2,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00002",
+      "state": "CA",
+      "street": "42 Second Avenue"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "3",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "9 Original Road"
+     },
+     "revision": 1
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": [
+    {
+     "path": "/v1/mutations"
+    }
+   ]
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "failed_no_effect",
+    "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+    "snapshot_status": 200,
+    "state": "failed",
+    "trace": [
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.795Z",
+      "payload": {},
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.800Z",
+      "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+      "payload": {
+       "prompt_sha256": "04ce945233dccef52850a8fa34e67f2394ca09a3d306d29262c7e93c03466d07",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_8c4d2e41161da169c238995c27c0a41e",
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.804Z",
+      "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "88d30d70c7c75030bac5319f11aeb00902858eee3e4f34fbe1e6e321683453dd",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_8c4d2e41161da169c238995c27c0a41e",
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.805Z",
+      "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_8c4d2e41161da169c238995c27c0a41e",
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000005",
+      "event_type": "dispatch_uncertain",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.810Z",
+      "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+      "payload": {
+       "error_class": "provider_transport_ReadError",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_8c4d2e41161da169c238995c27c0a41e",
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome uncertain; retry stopped [provider_transport_ReadError]",
+       "raw_type": "dispatch_uncertain"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000006",
+      "event_type": "serving.reconciled",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.816Z",
+      "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+      "payload": {
+       "by": "provider_status_lookup",
+       "outcome": "no_effect_confirmed"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_8c4d2e41161da169c238995c27c0a41e",
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome established from provider evidence",
+       "raw_type": "serving.reconciled"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     },
+     {
+      "event_id": "evt_run_c8efbf28a1224cdb939837d88f6a3dbd_00000007",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.816Z",
+      "payload": {},
+      "run_id": "run_c8efbf28a1224cdb939837d88f6a3dbd",
+      "schema_version": "trace-v1",
+      "sequence": 7,
+      "session_id": "ses_db9ba8ffb6b85e8b5be1d8625b66c5be",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_979873c4782579e5ddd2f0b03203f566"
+     }
+    ],
+    "trace_status": 200
+   },
+   "r2": {
+    "actor": "alice",
+    "intent": "B",
+    "operation_state": "succeeded",
+    "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.924Z",
+      "payload": {},
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     },
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.928Z",
+      "operation_id": "op_853a789743fe52e1ee8b7b22aa7fad5e",
+      "payload": {
+       "prompt_sha256": "fbf92a87c0fc5b4750ce762938d53bbec191f1f6cf8752d3542f133931d33909",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_732b7b3f3c1ce4b970a1664319c466d8",
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     },
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.931Z",
+      "operation_id": "op_853a789743fe52e1ee8b7b22aa7fad5e",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "bbd38e1798c85d11bd664115d83bca1c3d271fda9f330ba4c88038d0b7e0ff86",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_732b7b3f3c1ce4b970a1664319c466d8",
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     },
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.933Z",
+      "operation_id": "op_853a789743fe52e1ee8b7b22aa7fad5e",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_732b7b3f3c1ce4b970a1664319c466d8",
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     },
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.937Z",
+      "operation_id": "op_853a789743fe52e1ee8b7b22aa7fad5e",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "788095241ab670579fc6adad82eb098f0383d86f0e720087810f500a51f6c97b",
+      "prompt_id": "prm_732b7b3f3c1ce4b970a1664319c466d8",
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     },
+     {
+      "event_id": "evt_run_d36c29c3451581de2dfa4d5b904d2276_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:41.937Z",
+      "payload": {},
+      "run_id": "run_d36c29c3451581de2dfa4d5b904d2276",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_56dd25d0e6dae4055d29338b84d64a66",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_7edea04623bf876032951b7d7dc6dbda"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_a5fd4bdf01ceaef609d63b33b299b4fc",
+    "run": "r1",
+    "step": 2,
+    "text": "Please confirm this exact mutation.\nOperation: op_a5fd4bdf01ceaef609d63b33b299b4fc\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   },
+   {
+    "operation_id": "op_853a789743fe52e1ee8b7b22aa7fad5e",
+    "run": "r2",
+    "step": 6,
+    "text": "Please confirm this exact mutation.\nOperation: op_853a789743fe52e1ee8b7b22aa7fad5e\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00002\",\n    \"state\": \"CA\",\n    \"street\": \"42 Second Avenue\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "arm"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "failed"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   }
+  ]
+ },
+ "bk-unknown-unresolved-hold": {
+  "app_exit_codes": [
+   -15
+  ],
+  "case_id": "bk-unknown-unresolved-hold",
+  "provider": {
+   "attempts": [
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "2A",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00000",
+        "state": "CA",
+        "street": "18 Example Lane"
+       },
+       "order_id": "SYN-ORDER-1042"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_0740ce578517e1dbab69a96ed3e02d98",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "effect_then_lost_response"
+    },
+    {
+     "body": {
+      "arguments": {
+       "address": {
+        "apartment": "9",
+        "city": "Sampleton",
+        "country": "US",
+        "postal_code": "00003",
+        "state": "CA",
+        "street": "5 Third Court"
+       },
+       "order_id": "SYN-ORDER-1043"
+      },
+      "expected_revision": 1,
+      "idempotency_key": "rra-op_675f30163dcf2999a919a67ccca9e1fa",
+      "tenant": "acme",
+      "tool_name": "change_order_address"
+     },
+     "effect_applied": true,
+     "outcome": "applied"
+    }
+   ],
+   "lookups": [
+    {
+     "answer": "unavailable",
+     "key": "rra-op_0740ce578517e1dbab69a96ed3e02d98"
+    },
+    {
+     "answer": "unavailable",
+     "key": "rra-op_0740ce578517e1dbab69a96ed3e02d98"
+    }
+   ],
+   "order_reads": 3,
+   "orders": {
+    "acme/SYN-ORDER-1042": {
+     "address": {
+      "apartment": "2A",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00000",
+      "state": "CA",
+      "street": "18 Example Lane"
+     },
+     "revision": 2
+    },
+    "acme/SYN-ORDER-1043": {
+     "address": {
+      "apartment": "9",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00003",
+      "state": "CA",
+      "street": "5 Third Court"
+     },
+     "revision": 2
+    },
+    "globex/SYN-ORDER-2077": {
+     "address": {
+      "apartment": "",
+      "city": "Sampleton",
+      "country": "US",
+      "postal_code": "00001",
+      "state": "CA",
+      "street": "1 Fixture Way"
+     },
+     "revision": 1
+    }
+   },
+   "requests_lost_before_arrival": []
+  },
+  "runs": {
+   "r1": {
+    "actor": "alice",
+    "intent": "A",
+    "operation_state": "unknown",
+    "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+    "snapshot_status": 200,
+    "state": "outcome_unknown",
+    "trace": [
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.411Z",
+      "payload": {},
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     },
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.417Z",
+      "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+      "payload": {
+       "prompt_sha256": "bf3006b7d85490a226ae3e9883877186fad475659f16605300869e4505122c57",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_f9a958f03d341649a27eddf2e53d19f6",
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     },
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.425Z",
+      "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "4cc8d95df3b04846f75be39fde2ac2dfc199f4c730a399c472bcf32ae0912b6f",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_f9a958f03d341649a27eddf2e53d19f6",
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     },
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.429Z",
+      "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_f9a958f03d341649a27eddf2e53d19f6",
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     },
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000005",
+      "event_type": "dispatch_uncertain",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.439Z",
+      "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+      "payload": {
+       "error_class": "provider_transport_RemoteProtocolError",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_f9a958f03d341649a27eddf2e53d19f6",
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome uncertain; retry stopped [provider_transport_RemoteProtocolError]",
+       "raw_type": "dispatch_uncertain"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     },
+     {
+      "event_id": "evt_run_141eefb4f782dd5fcaa675101eac4277_00000006",
+      "event_type": "serving.reconciled",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:44.561Z",
+      "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+      "payload": {
+       "by": "provider_status_lookup",
+       "outcome": "still_unknown"
+      },
+      "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+      "prompt_id": "prm_f9a958f03d341649a27eddf2e53d19f6",
+      "run_id": "run_141eefb4f782dd5fcaa675101eac4277",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_693eca868fcc36644765d9084d2d1172",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Outcome remains unknown",
+       "raw_type": "serving.reconciliation_unavailable"
+      },
+      "trace_id": "trc_fa97e8f2617d4a8c866ca5d7a2837655"
+     }
+    ],
+    "trace_status": 200
+   },
+   "r3": {
+    "actor": "carol",
+    "intent": "C",
+    "operation_state": "succeeded",
+    "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+    "snapshot_status": 200,
+    "state": "succeeded",
+    "trace": [
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000001",
+      "event_type": "serving.run_accepted",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:48.451Z",
+      "payload": {},
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 1,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_type": "serving.run_accepted"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     },
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000002",
+      "event_type": "prompt",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:48.527Z",
+      "operation_id": "op_675f30163dcf2999a919a67ccca9e1fa",
+      "payload": {
+       "prompt_sha256": "ec207d3653cdaed91ad0a91f1945f1d2c31adf6ff896023a6e17bb00dfc0d6ee",
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "be2d5793603588be43e424da78390a1b79082c185eb62680c2f6e7029f819f97",
+      "prompt_id": "prm_f29f17ceb1c615281035d5eb3b3f6e5d",
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 2,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Exact payload presented",
+       "raw_type": "prompt"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     },
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000003",
+      "event_type": "authorized",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:48.594Z",
+      "operation_id": "op_675f30163dcf2999a919a67ccca9e1fa",
+      "payload": {
+       "classifier_version": "whole-response-assent-current-v5",
+       "consent_binding_hash": "99ffe5d2a17f4e35fc0506efcd837c3ad11e35221a784328589d6b27defd4de3",
+       "consent_binding_version": "consent-binding-v1"
+      },
+      "payload_hash": "be2d5793603588be43e424da78390a1b79082c185eb62680c2f6e7029f819f97",
+      "prompt_id": "prm_f29f17ceb1c615281035d5eb3b3f6e5d",
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 3,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Fresh exact-payload consent",
+       "raw_type": "authorized"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     },
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000004",
+      "event_type": "dispatch_started",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:48.628Z",
+      "operation_id": "op_675f30163dcf2999a919a67ccca9e1fa",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "be2d5793603588be43e424da78390a1b79082c185eb62680c2f6e7029f819f97",
+      "prompt_id": "prm_f29f17ceb1c615281035d5eb3b3f6e5d",
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 4,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation started",
+       "raw_type": "dispatch_started"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     },
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000005",
+      "event_type": "dispatch_succeeded",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:49.497Z",
+      "operation_id": "op_675f30163dcf2999a919a67ccca9e1fa",
+      "payload": {
+       "tool_name": "change_order_address"
+      },
+      "payload_hash": "be2d5793603588be43e424da78390a1b79082c185eb62680c2f6e7029f819f97",
+      "prompt_id": "prm_f29f17ceb1c615281035d5eb3b3f6e5d",
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 5,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Tool invocation succeeded",
+       "raw_type": "dispatch_succeeded"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     },
+     {
+      "event_id": "evt_run_b8d8b96a9fac80ba2ef0a31967af232e_00000006",
+      "event_type": "serving.run_finished",
+      "evidence_class": "serving_observation",
+      "occurred_at": "2026-10-25T04:17:49.497Z",
+      "payload": {},
+      "run_id": "run_b8d8b96a9fac80ba2ef0a31967af232e",
+      "schema_version": "trace-v1",
+      "sequence": 6,
+      "session_id": "ses_ef41b5c9b3ea84a5f252129f8862a98f",
+      "source": {
+       "component": "backend.service",
+       "mapping_version": "backend-outbox-map-v1",
+       "raw_title": "Run finished",
+       "raw_type": "serving.run_finished"
+      },
+      "trace_id": "trc_4d21c320d6198cab89a791238eb584e1"
+     }
+    ],
+    "trace_status": 200
+   }
+  },
+  "shown_prompts": [
+   {
+    "operation_id": "op_0740ce578517e1dbab69a96ed3e02d98",
+    "run": "r1",
+    "step": 2,
+    "text": "Please confirm this exact mutation.\nOperation: op_0740ce578517e1dbab69a96ed3e02d98\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"2A\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00000\",\n    \"state\": \"CA\",\n    \"street\": \"18 Example Lane\"\n  },\n  \"order_id\": \"SYN-ORDER-1042\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   },
+   {
+    "operation_id": "op_675f30163dcf2999a919a67ccca9e1fa",
+    "run": "r3",
+    "step": 11,
+    "text": "Please confirm this exact mutation.\nOperation: op_675f30163dcf2999a919a67ccca9e1fa\nTool: change_order_address\nComplete arguments:\n{\n  \"address\": {\n    \"apartment\": \"9\",\n    \"city\": \"Sampleton\",\n    \"country\": \"US\",\n    \"postal_code\": \"00003\",\n    \"state\": \"CA\",\n    \"street\": \"5 Third Court\"\n  },\n  \"order_id\": \"SYN-ORDER-1043\"\n}\nReply yes to authorize only this operation and these exact arguments; reply no to reject."
+   }
+  ],
+  "state_before": {
+   "acme/SYN-ORDER-1042": {
+    "address": {
+     "apartment": "1",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "7 Original Road"
+    },
+    "revision": 1
+   },
+   "acme/SYN-ORDER-1043": {
+    "address": {
+     "apartment": "3",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00000",
+     "state": "CA",
+     "street": "9 Original Road"
+    },
+    "revision": 1
+   },
+   "globex/SYN-ORDER-2077": {
+    "address": {
+     "apartment": "",
+     "city": "Sampleton",
+     "country": "US",
+     "postal_code": "00001",
+     "state": "CA",
+     "street": "1 Fixture Way"
+    },
+    "revision": 1
+   }
+  },
+  "steps": [
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "arm"
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 0,
+    "attempts_before": 0,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 0,
+    "op": "wait",
+    "reached": true,
+    "state": "outcome_unknown"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "code": "resource_on_hold",
+    "op": "new_run",
+    "statuses": [
+     201,
+     409
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "snapshot",
+    "skipped": "run_not_created"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "consent",
+    "skipped": "run_not_created"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "settle"
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "code": null,
+    "op": "new_run",
+    "statuses": [
+     201,
+     202
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "op": "snapshot",
+    "state": "awaiting_consent",
+    "statuses": [
+     200
+    ]
+   },
+   {
+    "attempts_after": 1,
+    "attempts_before": 1,
+    "decision": "authorized",
+    "op": "consent",
+    "statuses": [
+     202
+    ]
+   },
+   {
+    "attempts_after": 2,
+    "attempts_before": 1,
+    "op": "wait",
+    "reached": true,
+    "state": "succeeded"
+   },
+   {
+    "attempts_after": 2,
+    "attempts_before": 2,
+    "op": "settle"
+   }
+  ]
+ }
+}

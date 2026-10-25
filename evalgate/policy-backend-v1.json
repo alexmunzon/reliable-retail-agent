@@ -1,0 +1,17 @@
+{
+ "policy_id": "evalgate-backend-policy-v1",
+ "frozen": "2026-10-24, before the first backend evaluation; changing any field is a reviewed policy change",
+ "suite": {
+  "id": "backend-v1",
+  "cases_sha256": "224534091a9ccc603dd5108b6c8620c3f19a2e4aa185c163fdad6b54cf2a7fd0",
+  "labels_sha256": "5c70613fc6244c1b72a5ef8afe57414f3a5c01b5c7cf863c46b8f25675898b3e",
+  "revision": "r5: label-only B11 exact HTTP 503 regression after final-reflection exposure (2026-10-25); B5 r4 retained and cases unchanged at r3"
+ },
+ "requirements": {
+  "normative_cases": "every normative case must pass: no provider request for anything not freshly approved, no duplicate request for one approval (including after a restart), no effect beyond the specified one, every supported legitimate change applied exactly once, the backend's reported outcome and trace agree with the provider ledger, unknown outcomes never reported as success or failure without provider evidence",
+  "evidence": "every scheduled case has exactly one complete record; a missing or crashed case, or a finished run whose trace breaks trace-v1, is INVALID (non-green)",
+  "exploratory_cases": "reported, never gating (there is no approved backend baseline to regress against)",
+  "not_run": "if the backend tree or its Python with serving dependencies is absent, the result is NOT_RUN (exit 3), never PASS"
+ },
+ "comparison": "none: no approved backend baseline exists yet; the decision is absolute"
+}

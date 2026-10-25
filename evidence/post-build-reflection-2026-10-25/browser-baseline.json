@@ -1,0 +1,80 @@
+{
+  "verification": "local-headless-observability-v1",
+  "status": "FAIL",
+  "source_hashes_before": {
+    "observability/web/app.js": "de2239c66e82c9bbccc1bf8c083e37229fafe73510c422e7287854fe461edf23",
+    "observability/web/index.html": "83c9252c5cacb89ca5ddc61130d4d6a130ea7839d0947ddfe7fc9d3567fc34a9",
+    "serving/observability_api.py": "91e80c01552002bc364ce8e9f30a10989ed68a8078301ee76cbce661cfc2c26f",
+    "serving/observability_projection.py": "ae6e6f1893b5afb707bbc470da6c54cb45ca8e00b825f8d93f9e5f9d53d83c3f",
+    "observability/report.py": "9147df43e177a0f73ff97651de9ff15584dbac10faa4acbfde8b7c9a8a1a1ce8"
+  },
+  "synthetic_runs_created": 101,
+  "scope": "fixture UI and authenticated local synthetic provider; no real customer or provider data",
+  "browser": {
+    "checks": [
+      {
+        "name": "fixture badge distinguishes fixture data",
+        "result": "PASS"
+      },
+      {
+        "name": "fixture healthy row opens detail",
+        "result": "PASS"
+      },
+      {
+        "name": "fixture estimate agrees with frozen oracle",
+        "result": "PASS"
+      },
+      {
+        "name": "fixture receipt agrees with frozen oracle",
+        "result": "PASS"
+      },
+      {
+        "name": "fixture status filter agrees with frozen oracle",
+        "result": "PASS"
+      },
+      {
+        "name": "keyboard row navigation opens uncertain detail",
+        "result": "PASS"
+      },
+      {
+        "name": "missing fixture tokens show unknown estimate",
+        "result": "PASS"
+      },
+      {
+        "name": "narrow detail has a usable back control",
+        "result": "PASS"
+      },
+      {
+        "name": "narrow back restores request list",
+        "result": "PASS"
+      }
+    ],
+    "rejected_external_requests": [],
+    "browser_errors": [],
+    "observed_http_methods": {
+      "GET": 20
+    },
+    "browser_version": "153.0.8010.12",
+    "status": "FAIL",
+    "error": "AssertionError [ERR_ASSERTION]: reversed detail response cannot replace latest selection\n    at check ([eval]:8:10)\n    at delayedDetail ([eval]:102:7)\n    at async [eval]:106:5"
+  },
+  "business_before": {
+    "digest": "1b6876c322c00b20e6d8011f45c5a027dbfdc856d7a491c7f4325be37796980d",
+    "prompt_events": 0,
+    "provider_effects": 0
+  },
+  "business_after": {
+    "digest": "1b6876c322c00b20e6d8011f45c5a027dbfdc856d7a491c7f4325be37796980d",
+    "prompt_events": 0,
+    "provider_effects": 0
+  },
+  "business_unchanged": true,
+  "source_hashes_after": {
+    "observability/web/app.js": "de2239c66e82c9bbccc1bf8c083e37229fafe73510c422e7287854fe461edf23",
+    "observability/web/index.html": "83c9252c5cacb89ca5ddc61130d4d6a130ea7839d0947ddfe7fc9d3567fc34a9",
+    "serving/observability_api.py": "91e80c01552002bc364ce8e9f30a10989ed68a8078301ee76cbce661cfc2c26f",
+    "serving/observability_projection.py": "ae6e6f1893b5afb707bbc470da6c54cb45ca8e00b825f8d93f9e5f9d53d83c3f",
+    "observability/report.py": "9147df43e177a0f73ff97651de9ff15584dbac10faa4acbfde8b7c9a8a1a1ce8"
+  },
+  "source_unchanged_during_run": true
+}

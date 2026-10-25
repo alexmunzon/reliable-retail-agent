@@ -1,6 +1,6 @@
-"""Command line: run, compare, check (both), validate, trace-check, coverage.
+"""Command line: run, compare, check (both), validate, trace-check, coverage, backend, backend-validate.
 
-Exit codes: 0 PASS, 1 FAIL (policy violation), 2 INVALID/INCOMPLETE evidence.
+Exit codes: 0 PASS, 1 FAIL (policy violation), 2 INVALID/INCOMPLETE evidence, 3 NOT_RUN (backend only).
 trace-check exits 0 for CONSISTENT and 2 for INVALID; it never reports PASS.
 """
 from __future__ import annotations
@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 import tempfile
 
-from . import compare, runner, trace
+from . import backend, compare, runner, trace
 
 DEFAULT_OUT = runner.REPO / "runtime" / "evalgate"
 
@@ -79,7 +79,8 @@ def cmd_trace_check(args) -> int:
         print(f"INVALID: {len(problems)} problem(s) in {len(events)} event(s)")
         return 2
     streams = len({(e.get("run_id"), e.get("trace_id")) for e in events})
-    print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow trace-v1 and its ordering rules. "
+    versions = "/".join(sorted({e.get("schema_version") for e in events}))
+    print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow {versions} and its ordering rules. "
           "This is not a PASS: the trace is the system's own account, and effects need independent evidence (see contracts/HANDOFF.md).")
     return 0
 
@@ -127,6 +128,16 @@ def main(argv=None) -> int:
     p = sub.add_parser("trace-check", help="check a service-generated trace-v1 JSON Lines file (never reports PASS)")
     p.add_argument("trace_file")
     p.set_defaults(func=cmd_trace_check)
+    p = sub.add_parser("backend", parents=[common], help="opt-in: evaluate the durable backend's real effects (NOT_RUN if absent)")
+    p.add_argument("--backend", help="backend source tree (copied read-only; never written)")
+    p.add_argument("--backend-python", help="Python with the backend's serving dependencies (default <backend>/.venv/bin/python)")
+    p.add_argument("--case", action="append", help="run only this case (repeatable); the result is labelled a subset")
+    p.add_argument("--pinned", action="store_true", help="evaluate exactly the commit in evalgate/backend-pin.json (NOT_RUN if unset)")
+    p.add_argument("--backend-git", help="with --pinned: a git clone that holds the pinned backend commit")
+    p.set_defaults(func=backend.main_backend)
+    p = sub.add_parser("backend-validate", help="validate one backend run directory from raw observations")
+    p.add_argument("run_dir")
+    p.set_defaults(func=backend.main_validate)
     p = sub.add_parser("coverage", help="print the invariant coverage matrix")
     p.set_defaults(func=cmd_coverage)
     args = parser.parse_args(argv)

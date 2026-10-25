@@ -1,0 +1,11 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -571,7 +571,7 @@
+                 reason = "policy_or_schema_version_changed"
+             elif row["consent_binding_hash"] != consent_binding_hash(row):
+                 reason = "consent_binding_mismatch"
+-            elif row["known_revision"] is not None and row["known_revision"] != row["resource_revision"]:
++            elif False:  # MUTANT: revision check removed
+                 reason = "resource_revision_changed"
+             elif now >= row["authorization_expires_at"]:
+                 reason = "authorization_expired"

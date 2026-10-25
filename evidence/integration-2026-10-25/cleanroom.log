@@ -1,0 +1,29 @@
+test_authentication_scope_and_ownership_matrix (tests_serving.test_http_api.HTTPAPITests.test_authentication_scope_and_ownership_matrix) ... ok
+test_client_controlled_strings_never_reach_logs_or_errors (tests_serving.test_http_api.HTTPAPITests.test_client_controlled_strings_never_reach_logs_or_errors) ... ok
+test_command_idempotency (tests_serving.test_http_api.HTTPAPITests.test_command_idempotency) ... ok
+test_consent_refusals_cause_no_effect (tests_serving.test_http_api.HTTPAPITests.test_consent_refusals_cause_no_effect) ... ok
+test_demo_client_is_served_same_origin_under_the_csp (tests_serving.test_http_api.HTTPAPITests.test_demo_client_is_served_same_origin_under_the_csp) ... ok
+test_expired_retention_cursor_returns_410 (tests_serving.test_http_api.HTTPAPITests.test_expired_retention_cursor_returns_410) ... ok
+test_health_endpoints_expose_no_customer_data (tests_serving.test_http_api.HTTPAPITests.test_health_endpoints_expose_no_customer_data) ... ok
+test_live_stream_delivers_incrementally_and_observing_never_dispatches (tests_serving.test_http_api.HTTPAPITests.test_live_stream_delivers_incrementally_and_observing_never_dispatches) ... ok
+test_origin_and_host_checks (tests_serving.test_http_api.HTTPAPITests.test_origin_and_host_checks) ... ok
+test_revoked_credential_closes_stream_and_blocks_commands (tests_serving.test_http_api.HTTPAPITests.test_revoked_credential_closes_stream_and_blocks_commands) ... ok
+test_sse_replay_resume_and_cursor_validation (tests_serving.test_http_api.HTTPAPITests.test_sse_replay_resume_and_cursor_validation) ... ok
+test_stream_subscriber_limit (tests_serving.test_http_api.HTTPAPITests.test_stream_subscriber_limit) ... ok
+test_strict_request_parsing (tests_serving.test_http_api.HTTPAPITests.test_strict_request_parsing) ... ok
+test_walkthrough_arm_command_injects_a_provider_failure (tests_serving.test_http_api.HTTPAPITests.test_walkthrough_arm_command_injects_a_provider_failure) ... ok
+test_zz_logs_contain_no_secrets_or_customer_data (tests_serving.test_http_api.HTTPAPITests.test_zz_logs_contain_no_secrets_or_customer_data) ... ok
+test_rate_limits_return_429_with_retry_after (tests_serving.test_http_api.LimitsTests.test_rate_limits_return_429_with_retry_after) ... ok
+test_slow_consumer_is_disconnected_without_blocking_work (tests_serving.test_http_api.LimitsTests.test_slow_consumer_is_disconnected_without_blocking_work) ... ok
+test_failing_optional_recorder_cannot_change_dispatch (tests_serving.test_observability_live.CaptureIsolation.test_failing_optional_recorder_cannot_change_dispatch) ... {"detail_code":"applied","duration_ms":45.0,"event":"worker.dispatch_finished","operation_id":"op_eaf6acc53b58bee1c0ac91bc522e3264","run_id":"run_09e05b90538e01c5113fc402ce58c2ef","state":"succeeded","ts":1792912910.832}
+ok
+test_span_memory_and_age_are_bounded (tests_serving.test_observability_live.CaptureIsolation.test_span_memory_and_age_are_bounded) ... ok
+test_live_refusal_and_cancel_before_claim (tests_serving.test_observability_live.LiveHTTP.test_live_refusal_and_cancel_before_claim) ... ok
+test_observing_never_delivers_prompt_or_dispatches (tests_serving.test_observability_live.LiveHTTP.test_observing_never_delivers_prompt_or_dispatches) ... ok
+test_real_effect_and_measured_provider_duration_then_restart_missingness (tests_serving.test_observability_live.LiveHTTP.test_real_effect_and_measured_provider_duration_then_restart_missingness) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 18.282s
+
+OK
+Serving CI passed: no credentials inherited; outbound TCP blocked; synthetic provider only.

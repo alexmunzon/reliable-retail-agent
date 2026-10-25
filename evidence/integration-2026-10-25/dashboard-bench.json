@@ -1,0 +1,44 @@
+{
+  "bench": "obs-bench-v1",
+  "python": "3.11.1",
+  "machine": "arm64",
+  "system": "Darwin",
+  "note": "single local run; not a CI threshold",
+  "results": [
+    {
+      "workload": "frozen fixture set obs-fixtures-v1",
+      "requests": 54,
+      "spans": 752,
+      "input_bytes": 595316,
+      "ingest_and_project_ms_best_of_3": 29.148,
+      "peak_python_heap_mib_during_load": 6.57,
+      "list_page_ms_best_of_5": 0.125,
+      "filtered_list_ms_best_of_5": 0.013,
+      "detail_ms_best_of_5": 0.0,
+      "aggregates_ms_best_of_5": 0.127,
+      "export_one_request_ms_best_of_5": 0.062,
+      "export_bytes": 10417,
+      "set_problems": [
+        "artifact_redelivery_ignored",
+        "line_too_large",
+        "unparseable_line"
+      ]
+    },
+    {
+      "workload": "synthesized 2000 healthy-shaped requests",
+      "requests": 2000,
+      "spans": 20000,
+      "input_bytes": 19259796,
+      "ingest_and_project_ms_best_of_3": 1072.264,
+      "peak_python_heap_mib_during_load": 126.75,
+      "list_page_ms_best_of_5": 2.64,
+      "filtered_list_ms_best_of_5": 0.103,
+      "detail_ms_best_of_5": 0.0,
+      "aggregates_ms_best_of_5": 6.718,
+      "export_one_request_ms_best_of_5": 0.058,
+      "export_bytes": 10617,
+      "set_problems": []
+    }
+  ],
+  "instrumentation_overhead": "not measured here: this harness measures fixture ingest/query only; serving capture is measured separately"
+}

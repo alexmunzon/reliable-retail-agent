@@ -1,0 +1,11 @@
+--- a/serving/provider.py
++++ b/serving/provider.py
+@@ -92,7 +92,7 @@
+             return Outcome("unknown", "status_unsupported")
+         if response.status_code == 200 and isinstance(body, dict) and body.get("idempotency_key") == provider_key:
+             if body.get("status") == "not_found" and body.get("fenced") is True:
+-                return Outcome("failed_no_effect", "status_not_found_fenced", {"fenced": True})
++                return Outcome("succeeded", "status_applied", {"effect_id": 0, "revision": 2})  # MUTANT
+             if body.get("status") == "applied" and type(body.get("revision")) is int:
+                 return Outcome("succeeded", "status_applied", {"effect_id": body.get("effect_id"),
+                                                                "revision": body["revision"]})

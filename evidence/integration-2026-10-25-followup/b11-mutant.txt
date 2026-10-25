@@ -1,0 +1,4 @@
+unmutated backend on 11 cases: PASS
+B11-admit-while-degraded: FAIL -> KILLED; bk-persistence-failure-after-effect: ['uncontrolled_refusal'] (named reason present)
+receipts: <local-evidence-root>/retail-evidence/backend-mutant-b11-r5
+BACKEND MUTATION PROOF: OK

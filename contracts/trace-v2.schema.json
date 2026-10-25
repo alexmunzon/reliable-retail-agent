@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alexmunzon/reliable-retail-agent/contracts/trace-v2.schema.json",
+  "title": "Reliable Retail Agent trace event, v2 (2026-10-24; additive over frozen trace-v1)",
+  "description": "trace-v2 is trace-v1 plus exactly one core outcome, dispatch_rejected: the provider definitively refused the attempt and confirmed that nothing happened (its reply carried effect: none). It resolves the attempt like dispatch_succeeded and is never an unknown outcome. Every other field, enum and ordering rule is unchanged from trace-v1, and trace-v1 files validate exactly as before. One stream must use one version. Normative ordering rules: contracts/HANDOFF.md and evalgate.trace.check_semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "sequence",
+    "event_type",
+    "session_id",
+    "run_id",
+    "trace_id",
+    "source",
+    "evidence_class",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "trace-v2"
+    },
+    "event_id": {
+      "$ref": "#/$defs/opaque_id",
+      "description": "Stable and opaque. Never implies ordering or ownership."
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Strictly increasing within one (run_id, trace_id) stream. Serving uses one trace per run; offline evaluation uses one trace per case. Legacy gate seq is preserved in source.raw_sequence."
+    },
+    "event_type": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/core_event_type"
+        },
+        {
+          "type": "string",
+          "pattern": "^(serving|eval|transport)\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+          "description": "Namespaced non-core events, e.g. serving.run_accepted, serving.reconciled. A transport reconnect is never a business mutation event."
+        }
+      ]
+    },
+    "session_id": {
+      "$ref": "#/$defs/opaque_id"
+    },
+    "run_id": {
+      "$ref": "#/$defs/opaque_id"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/opaque_id"
+    },
+    "operation_id": {
+      "$ref": "#/$defs/opaque_id"
+    },
+    "payload_hash": {
+      "$ref": "#/$defs/sha256",
+      "description": "Alias of MutationIntent.fingerprint."
+    },
+    "prompt_id": {
+      "$ref": "#/$defs/opaque_id"
+    },
+    "occurred_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+      "description": "Real UTC time. Omit for legacy/offline sources that never recorded time; never invent it."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "mapping_version"
+      ],
+      "properties": {
+        "component": {
+          "enum": [
+            "rra.gate",
+            "adapters.tau_dispatch",
+            "eval.simulator",
+            "eval.harness",
+            "backend.service"
+          ]
+        },
+        "mapping_version": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+          "description": "Version of the adapter that mapped raw events into this envelope, e.g. rra-gate-legacy-map-v1."
+        },
+        "raw_type": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Original event type label, preserved verbatim."
+        },
+        "raw_sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "raw_title": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Legacy rra.gate event title, preserved because blocked reasons are encoded only there at 8e70c0f."
+        }
+      }
+    },
+    "evidence_class": {
+      "enum": [
+        "scripted_fixture",
+        "synthetic_simulator",
+        "serving_observation",
+        "retrospective_author_trajectory",
+        "prospective_model"
+      ],
+      "description": "Reports must never mix classes in one metric."
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_class": {
+            "const": "serving_observation"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "occurred_at"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "prompt"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_prompt"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "invalidated"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_invalidated"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "authorized"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_authorized"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_blocked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "rejected"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_empty"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "dispatch_started",
+              "dispatch_succeeded",
+              "dispatch_uncertain"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_dispatch"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "serving.reconciled"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "operation_id",
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_reconciled"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_class": {
+            "const": "serving_observation"
+          },
+          "event_type": {
+            "enum": [
+              "prompt",
+              "authorized"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_id",
+          "prompt_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_class": {
+            "const": "serving_observation"
+          },
+          "event_type": {
+            "const": "prompt"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "prompt_sha256"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_class": {
+            "const": "serving_observation"
+          },
+          "event_type": {
+            "enum": [
+              "rejected",
+              "invalidated"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_class": {
+            "const": "serving_observation"
+          },
+          "event_type": {
+            "enum": [
+              "dispatch_started",
+              "dispatch_succeeded",
+              "dispatch_uncertain",
+              "dispatch_rejected"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "operation_id"
+        ],
+        "properties": {
+          "payload": {
+            "required": [
+              "tool_name"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "dispatch_rejected"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload_hash"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/payload_dispatch_rejected"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "opaque_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "core_event_type": {
+      "enum": [
+        "prompt",
+        "invalidated",
+        "authorized",
+        "blocked",
+        "rejected",
+        "dispatch_started",
+        "dispatch_succeeded",
+        "dispatch_uncertain",
+        "dispatch_rejected"
+      ]
+    },
+    "tool_name": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+    },
+    "payload_empty": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "payload_prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool_name": {
+          "$ref": "#/$defs/tool_name"
+        },
+        "prompt_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "Hash of the complete prompt text the customer saw; the text itself is not exported."
+        }
+      }
+    },
+    "payload_invalidated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason"
+      ],
+      "properties": {
+        "reason": {
+          "enum": [
+            "payload_or_operation_changed",
+            "policy_version_changed",
+            "expired",
+            "revoked",
+            "rejected",
+            "other"
+          ]
+        }
+      }
+    },
+    "payload_authorized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classifier_version"
+      ],
+      "properties": {
+        "classifier_version": {
+          "type": "string",
+          "maxLength": 96
+        },
+        "consent_binding_hash": {
+          "$ref": "#/$defs/sha256",
+          "description": "RESERVED for milestone 2: hash of a separately versioned authorization envelope (tenant, actor, session, operation, prompt, payload_hash, resource revision, schema/policy version, freshness). Never equal in meaning to payload_hash."
+        },
+        "consent_binding_version": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "payload_blocked": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason"
+      ],
+      "properties": {
+        "reason": {
+          "enum": [
+            "unknown_tool",
+            "stale_consent",
+            "ambiguous_response",
+            "unconfirmed_dispatch",
+            "repeat_dispatch",
+            "halted_after_uncertain",
+            "wrong_source",
+            "unclassified_tool",
+            "unmapped_legacy_reason"
+          ]
+        }
+      }
+    },
+    "payload_reconciled": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "effect_confirmed",
+            "no_effect_confirmed",
+            "still_unknown"
+          ],
+          "description": "Resolution of an earlier dispatch_uncertain for the same operation, from evidence outside the agent (provider ledger, operator check)."
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "payload_dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool_name": {
+          "$ref": "#/$defs/tool_name"
+        },
+        "error_class": {
+          "type": "string",
+          "maxLength": 96,
+          "description": "dispatch_uncertain only. Backend ledger state 'unknown' maps to dispatch_uncertain, never to success."
+        }
+      }
+    },
+    "payload_dispatch_rejected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "effect"
+      ],
+      "properties": {
+        "tool_name": {
+          "$ref": "#/$defs/tool_name"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96,
+          "description": "The provider's definite no-effect code, e.g. revision_conflict, key_fenced, invalid_request."
+        },
+        "effect": {
+          "const": "none",
+          "description": "The provider explicitly confirmed that no effect was applied."
+        }
+      }
+    }
+  }
+}

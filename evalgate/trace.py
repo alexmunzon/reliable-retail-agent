@@ -16,6 +16,10 @@ from .scoring import payload_hash
 MAPPING_VERSION = "rra-gate-legacy-map-v1"
 CORE_EVENT_TYPES = ("prompt", "invalidated", "authorized", "blocked", "rejected",
                     "dispatch_started", "dispatch_succeeded", "dispatch_uncertain")
+# trace-v2 (contracts/trace-v2.schema.json) is trace-v1 plus one core outcome: the provider definitively refused
+# the attempt and nothing happened. trace-v1 events are checked exactly as before; a stream uses one version.
+SCHEMA_VERSIONS = ("trace-v1", "trace-v2")
+V2_CORE_EVENT_TYPES = CORE_EVENT_TYPES + ("dispatch_rejected",)
 BLOCKED_REASONS = ("unknown_tool", "stale_consent", "ambiguous_response", "unconfirmed_dispatch", "repeat_dispatch",
                    "halted_after_uncertain", "wrong_source", "unclassified_tool", "unmapped_legacy_reason")
 EVIDENCE_CLASSES = ("scripted_fixture", "synthetic_simulator", "serving_observation",
@@ -30,7 +34,8 @@ ENVELOPE_KEYS = {"schema_version", "event_id", "sequence", "event_type", "sessio
                  "payload_hash", "prompt_id", "occurred_at", "source", "evidence_class", "payload"}
 REQUIRED_KEYS = {"schema_version", "event_id", "sequence", "event_type", "session_id", "run_id", "trace_id",
                  "source", "evidence_class", "payload"}
-NEEDS_HASH = {"prompt", "invalidated", "authorized", "rejected", "dispatch_started", "dispatch_succeeded", "dispatch_uncertain"}
+NEEDS_HASH = {"prompt", "invalidated", "authorized", "rejected", "dispatch_started", "dispatch_succeeded", "dispatch_uncertain",
+              "dispatch_rejected"}
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}")
 _SHA = re.compile(r"[0-9a-f]{64}")
 _NAMESPACED = re.compile(r"(serving|eval|transport)\.[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*")
@@ -40,13 +45,13 @@ _TOOL = re.compile(r"[A-Za-z_][A-Za-z0-9_]{0,63}")
 SOURCE_COMPONENTS = ("rra.gate", "adapters.tau_dispatch", "eval.simulator", "eval.harness", "backend.service")
 SOURCE_KEYS = {"component", "mapping_version", "raw_type", "raw_sequence", "raw_title"}
 RECONCILED_OUTCOMES = ("effect_confirmed", "no_effect_confirmed", "still_unknown")
-OUTCOME_TYPES = ("dispatch_succeeded", "dispatch_uncertain")
+OUTCOME_TYPES = ("dispatch_succeeded", "dispatch_uncertain", "dispatch_rejected")
 INVALIDATED_REASONS = ("payload_or_operation_changed", "policy_version_changed", "expired", "revoked", "rejected", "other")
 # Allowed payload fields per core event type (mirrors the schema's $defs).
 PAYLOAD_KEYS = {"prompt": {"tool_name", "prompt_sha256"}, "invalidated": {"reason"}, "rejected": set(),
                 "authorized": {"classifier_version", "consent_binding_hash", "consent_binding_version"}, "blocked": {"reason"},
                 "dispatch_started": {"tool_name", "error_class"}, "dispatch_succeeded": {"tool_name", "error_class"},
-                "dispatch_uncertain": {"tool_name", "error_class"}}
+                "dispatch_uncertain": {"tool_name", "error_class"}, "dispatch_rejected": {"tool_name", "code", "effect"}}
 
 
 def _payload(event: dict, classifier_version: str) -> dict:
@@ -90,15 +95,16 @@ def validate_event(event: dict) -> list[str]:
     if missing := REQUIRED_KEYS - set(event):
         problems.append(f"missing fields {sorted(missing)}")
         return problems
-    if event["schema_version"] != "trace-v1":
+    if event["schema_version"] not in SCHEMA_VERSIONS:
         problems.append("unknown schema_version")
+    core = V2_CORE_EVENT_TYPES if event["schema_version"] == "trace-v2" else CORE_EVENT_TYPES
     for key in ("event_id", "session_id", "run_id", "trace_id", "operation_id", "prompt_id"):
         if key in event and not (isinstance(event[key], str) and _ID.fullmatch(event[key])):
             problems.append(f"invalid {key}")
     if type(event["sequence"]) is not int or event["sequence"] < 1:
         problems.append("invalid sequence")
     kind = event["event_type"]
-    if kind not in CORE_EVENT_TYPES and not (isinstance(kind, str) and _NAMESPACED.fullmatch(kind)):
+    if kind not in core and not (isinstance(kind, str) and _NAMESPACED.fullmatch(kind)):
         problems.append(f"unknown event_type {kind!r}")
         kind = ""
     if "payload_hash" in event and not (isinstance(event["payload_hash"], str) and _SHA.fullmatch(event["payload_hash"])):
@@ -118,7 +124,7 @@ def validate_event(event: dict) -> list[str]:
         problems.append(f"serving {kind} events require operation_id")
     if serving and kind == "prompt" and "prompt_sha256" not in (event["payload"] if isinstance(event["payload"], dict) else {}):
         problems.append("serving prompt events require payload.prompt_sha256 (hash of the exact text shown)")
-    if serving and kind.startswith("dispatch_") and kind in CORE_EVENT_TYPES and (
+    if serving and kind.startswith("dispatch_") and kind in core and (
             "operation_id" not in event or "tool_name" not in (event["payload"] if isinstance(event["payload"], dict) else {})):
         problems.append(f"serving {kind} events require operation_id and payload.tool_name")
     source = event["source"]
@@ -134,15 +140,18 @@ def validate_event(event: dict) -> list[str]:
         return problems
     if kind in PAYLOAD_KEYS and set(payload) - PAYLOAD_KEYS[kind]:
         problems.append(f"{kind} payload has disallowed fields {sorted(set(payload) - PAYLOAD_KEYS[kind])}")
-    if "tool_name" in payload and kind in CORE_EVENT_TYPES and not (isinstance(payload["tool_name"], str) and _TOOL.fullmatch(payload["tool_name"])):
+    if "tool_name" in payload and kind in core and not (isinstance(payload["tool_name"], str) and _TOOL.fullmatch(payload["tool_name"])):
         problems.append("invalid payload.tool_name")
     for key in ("prompt_sha256", "consent_binding_hash"):
-        if kind in CORE_EVENT_TYPES and key in payload and not (isinstance(payload[key], str) and _SHA.fullmatch(payload[key])):
+        if kind in core and key in payload and not (isinstance(payload[key], str) and _SHA.fullmatch(payload[key])):
             problems.append(f"invalid payload.{key}")
     if kind == "blocked" and payload.get("reason") not in BLOCKED_REASONS:
         problems.append("blocked event requires a known reason")
     if kind == "invalidated" and payload.get("reason") not in INVALIDATED_REASONS:
         problems.append("invalidated event requires a known reason")
+    if kind == "dispatch_rejected" and (payload.get("effect") != "none" or not isinstance(payload.get("code"), str)
+                                        or not 1 <= len(payload["code"]) <= 96):
+        problems.append('dispatch_rejected requires payload.effect "none" and a payload.code of 1-96 characters')
     if kind == "authorized" and not isinstance(payload.get("classifier_version"), str):
         problems.append("authorized event requires a string classifier_version")
     if kind == "serving.reconciled":
@@ -151,7 +160,7 @@ def validate_event(event: dict) -> list[str]:
         if set(payload) - {"outcome", "by"} or payload.get("outcome") not in RECONCILED_OUTCOMES or not _short_string(payload, "by", 64):
             problems.append(f"serving.reconciled requires payload.outcome in {list(RECONCILED_OUTCOMES)} and at most a short payload.by")
     for key, limit in (("classifier_version", 96), ("consent_binding_version", 64), ("error_class", 96)):
-        if kind in CORE_EVENT_TYPES and not _short_string(payload, key, limit):
+        if kind in core and not _short_string(payload, key, limit):
             problems.append(f"invalid payload.{key}")
     return problems
 
@@ -176,7 +185,7 @@ def check_semantics(events: list[dict]) -> list[str]:
         for event in stream:
             kind, operation, hashed = event["event_type"], event.get("operation_id"), event.get("payload_hash")
             key, where, prompt_id = operation or hashed, event["event_id"], event.get("prompt_id")
-            tool = event["payload"].get("tool_name") if kind in CORE_EVENT_TYPES else None
+            tool = event["payload"].get("tool_name") if kind in V2_CORE_EVENT_TYPES else None
             if tool and key:
                 if tools.setdefault(key, tool) != tool:
                     problems.append(f"{where}: tool {tool} differs from {tools[key]} for the same operation")
@@ -222,6 +231,8 @@ def check_semantics(events: list[dict]) -> list[str]:
                 elif event["payload"].get("outcome") != "still_unknown":
                     unknown[key] = None
         problems += [f"{key}: attempt has no recorded outcome (missing or truncated evidence)" for key in open_attempts]
+        if len({e["schema_version"] for e in stream}) > 1:
+            problems.append(f"{stream[0]['trace_id']}: one stream mixes trace contract versions")
         if any(e["evidence_class"] == "serving_observation" for e in stream):
             if [e["sequence"] for e in stream] != list(range(1, len(stream) + 1)):
                 problems.append(f"{stream[0]['trace_id']}: sequence is not 1..N without gaps (dropped or reordered events)")

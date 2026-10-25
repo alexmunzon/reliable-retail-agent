@@ -1,0 +1,11 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -349,7 +349,7 @@
+             self._event(conn, run_id, "blocked", {"title": "Unresolved change on this order",
+                                                   "reason": "resource_on_hold", "hold_state": hold["state"]}, **common)
+             return done(409, "resource_on_hold", "A previous change to this order is unresolved.")
+-        classification = classify_response(body["response"])
++        classification = "AFFIRM" if classify_response(body["response"]) != "REJECT" else "REJECT"  # MUTANT
+         response_hash = sha256(body["response"].encode("utf-8")).hexdigest()
+         if classification == "REJECT":
+             conn.execute("UPDATE proposals SET state='rejected', decided_at=?, response_sha256=?, "

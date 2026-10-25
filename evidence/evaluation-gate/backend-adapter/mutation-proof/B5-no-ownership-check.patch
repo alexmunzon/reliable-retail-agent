@@ -1,0 +1,12 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -197,8 +197,7 @@
+                             "WHERE h.tenant_id=? AND h.resource_id=?", (tenant_id, resource_id)).fetchone()
+ 
+     def _owned_run(self, conn, principal: Principal, run_id: str) -> sqlite3.Row:
+-        row = conn.execute("SELECT * FROM runs WHERE run_id=? AND tenant_id=? AND actor_id=?",
+-                           (run_id, principal.tenant_id, principal.actor_id)).fetchone()
++        row = conn.execute("SELECT * FROM runs WHERE run_id=?", (run_id,)).fetchone()  # MUTANT
+         if row is None:
+             raise ServiceError(404, "not_found", "Run not found.")
+         return row

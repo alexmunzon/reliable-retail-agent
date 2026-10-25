@@ -1,0 +1,61 @@
+{
+  "baseline": "86e1900969cb304ce890a61e58a770c1fab9931d",
+  "probes": [
+    {
+      "scenario": "malformed_json",
+      "observed": {
+        "exception": "JSONDecodeError",
+        "message": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      }
+    },
+    {
+      "scenario": "nonobject_table",
+      "observed": {
+        "visible_requests": 53,
+        "set_problems": [
+          {
+            "case": "malformed-line",
+            "code": "unparseable_line",
+            "count": 1
+          },
+          {
+            "case": "oversize-line",
+            "code": "line_too_large",
+            "count": 1
+          },
+          {
+            "case": "healthy-redelivered",
+            "code": "artifact_redelivery_ignored"
+          },
+          {
+            "case": null,
+            "code": "pricing_table_rejected"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "impossible_usage_date",
+      "date": "2026-02-30T12:00:00Z",
+      "validation": [],
+      "estimate": {
+        "amount": "0.00750",
+        "currency": "USD",
+        "table_id": "synthetic-2026-01-01",
+        "reason": null
+      }
+    },
+    {
+      "scenario": "impossible_usage_date",
+      "date": "2026-99-01T00:00:00Z",
+      "validation": [],
+      "estimate": {
+        "amount": "0.00690",
+        "currency": "USD",
+        "table_id": "synthetic-2026-11-01",
+        "reason": null
+      }
+    }
+  ],
+  "baseline_visible_requests": 53
+}

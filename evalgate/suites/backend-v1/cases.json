@@ -1,0 +1,1400 @@
+{
+ "cases": [
+  {
+   "case_id": "bk-positive-once",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-no-consent",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "awaiting_consent"
+     ],
+     "timeout": 15
+    }
+   ]
+  },
+  {
+   "case_id": "bk-consent-before-prompt",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "forged",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-reject-then-yes",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "no",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-ambiguous",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "maybe, let me think",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes if the price is right",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-other-principal",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "bob",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "dave",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "carol",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unregistered-tool",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "request_type": "cancel_order",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-stale-binding",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "prompt_id": "forged"
+     }
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "proposal_version": 2
+     }
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "payload_hash": "intent:B"
+     }
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-superseded-revision",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "invalidated",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-expired-prompt",
+   "env": {
+    "RRA_PROPOSAL_TTL_SECONDS": "2"
+   },
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "sleep",
+     "seconds": 2.5
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-duplicate-same-key",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-concurrent-approvals",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "count": 6,
+     "op": "consent_burst",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-duplicate-after-restart",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "restart_app"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    }
+   ]
+  },
+  {
+   "case_id": "bk-crash-after-claim",
+   "steps": [
+    {
+     "failpoints": [
+      "crash_after_claim"
+     ],
+     "op": "start_app"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_exit"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-crash-after-response",
+   "steps": [
+    {
+     "failpoints": [
+      "crash_after_provider_response"
+     ],
+     "op": "start_app"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_exit"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-effect-reconciled",
+   "steps": [
+    {
+     "actions": [
+      "lose_response_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-no-effect-then-new",
+   "steps": [
+    {
+     "actions": [
+      "lose_request_before_arrival"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-received-no-effect",
+   "steps": [
+    {
+     "actions": [
+      "accept_then_drop_before_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-unresolved-hold",
+   "env": {
+    "RRA_RECONCILE_MAX_ATTEMPTS": "2"
+   },
+   "steps": [
+    {
+     "actions": [
+      "lose_response_after_effect",
+      "status_unavailable_always"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "outcome_unknown"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "intent": "C",
+     "op": "new_run",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "capture": "r3",
+     "op": "snapshot",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "binding": "r3",
+     "op": "consent",
+     "response": "yes",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "op": "wait",
+     "run": "r3",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-definite-refusal",
+   "steps": [
+    {
+     "actions": [
+      "reject_before_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-persistence-failure-after-effect",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "intent": "C",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "carol",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "op": "db_fault"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "op": "await_ready",
+     "status": "degraded"
+    },
+    {
+     "actor": "carol",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "op": "db_repair"
+    },
+    {
+     "op": "await_ready",
+     "status": "ready"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-persistence-failure-then-crash",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "op": "db_fault"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "op": "await_ready",
+     "status": "degraded"
+    },
+    {
+     "op": "kill_app"
+    },
+    {
+     "op": "db_repair"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-stale-backup-restore",
+   "env": {
+    "RRA_COMPLETION_RETRY_SECONDS": "1",
+    "RRA_PROVIDER_TIMEOUT_SECONDS": "10",
+    "RRA_RECOVERY_PROBE_SECONDS": "1"
+   },
+   "steps": [
+    {
+     "actions": [
+      "hold_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_provider_effect"
+    },
+    {
+     "command": "backup",
+     "op": "cli"
+    },
+    {
+     "op": "release_provider"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "stop_app"
+    },
+    {
+     "command": "restore",
+     "op": "cli"
+    },
+    {
+     "command": "verify-restore",
+     "op": "cli"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-second-instance-refused",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "start_second_app"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-x-restore-backup-before-approval",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "command": "backup",
+     "op": "cli"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "stop_app"
+    },
+    {
+     "command": "restore",
+     "op": "cli"
+    },
+    {
+     "command": "verify-restore",
+     "op": "cli"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed",
+      "invalidated",
+      "expired"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  }
+ ],
+ "intents": {
+  "A": {
+   "actor": "alice",
+   "address": {
+    "apartment": "2A",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00000",
+    "state": "CA",
+    "street": "18 Example Lane"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "B": {
+   "actor": "alice",
+   "address": {
+    "apartment": "",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00002",
+    "state": "CA",
+    "street": "42 Second Avenue"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "C": {
+   "actor": "carol",
+   "address": {
+    "apartment": "9",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00003",
+    "state": "CA",
+    "street": "5 Third Court"
+   },
+   "order_id": "SYN-ORDER-1043",
+   "tenant": "acme"
+  }
+ },
+ "provenance": {
+  "applicable_policy": "evalgate-backend-policy-v1",
+  "authored_by": "Claude Opus 5.5, builder role (single session)",
+  "created": "2026-10-24",
+  "evidence_class": "scripted_fixture: scripted HTTP calls against the real backend process and an independent synthetic provider; no model calls",
+  "independence": "builder-authored regression suite; the builder had read the backend code; no sealed or held-out labels",
+  "license": "same terms as this repository",
+  "origin": "project-original synthetic fixtures",
+  "revisions": [
+   {
+    "before_acceptance": false,
+    "date": "2026-10-24",
+    "reason": "Backend mutation proof on r2: mutant B11 (admission control removed) survived. In bk-persistence-failure-after-effect the read-only database also blocks the approval's write, so the backend crashed with 500 internal_error instead of the controlled 503 service_degraded, the provider saw nothing either way, and allowed_5xx_steps accepted any 5xx. The label now also requires step 10 to be refused with code service_degraded (new label field expected_refusals, new failure class uncontrolled_refusal). Stricter only; no other case or expectation changed. Pre-fix evidence: evidence/evaluation-gate/backend-adapter/pre-fix-B11/.",
+    "revision": "r3"
+   },
+   {
+    "before_acceptance": false,
+    "date": "2026-10-24",
+    "reason": "Alex's merge-readiness review. (1) bk-unknown-no-effect-then-new now loses the request BEFORE it reaches the provider (lose_request_before_arrival), so the specified count of received requests for it is 0 instead of 1 (stricter); the old scenario, received then dropped before any effect, is kept as the new case bk-unknown-received-no-effect. (2) The exploratory bk-x-definite-refusal is promoted to the gating bk-definite-refusal: its trace must record the refusal as trace-v2 dispatch_rejected. (3) Recovery and topology cases added: persistence failure after an external effect (with and without a crash), restore from a stale mid-dispatch backup, a competing second instance (must be refused), and an exploratory restore of a backup taken before the approval. No other case or expectation changed. r1 evidence is kept in evidence/evaluation-gate/backend-adapter/.",
+    "revision": "r2"
+   },
+   {
+    "before_acceptance": true,
+    "date": "2026-10-24",
+    "reason": "Initial backend suite (19 cases: 18 normative, 1 exploratory) for the backend adapter of contracts/HANDOFF.md step 4. Each scorer check is shown to catch a planted failure that passes without it (tests/test_evalgate_backend.py CheckAblationTests), and planted backend bugs are killed (evidence/evaluation-gate/backend-adapter/). During development, before acceptance, bk-unknown-unresolved-hold only tried to create a second run on the held order; a backend ignoring holds (mutant B7) stayed green, so the case now also delivers and approves that second change.",
+    "revision": "r1"
+   }
+  ],
+  "split": "dev"
+ },
+ "schema_version": "backend-cases-v1",
+ "suite_id": "backend-v1"
+}

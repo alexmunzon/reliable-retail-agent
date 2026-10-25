@@ -1,0 +1,10 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -645,6 +645,7 @@
+                 self._event(conn, run_id, "serving.dispatch_failed_no_effect",
+                             {"title": "Provider reported a definite no-effect failure", "code": outcome.code}, **common)
+         else:
++            conn.execute("DELETE FROM resource_holds WHERE operation_id=?", (operation_id,))  # MUTANT
+             self._run_state(conn, run_id, "outcome_unknown", from_states, now)
+             self._event(conn, run_id, "dispatch_uncertain",
+                         {"title": "Outcome uncertain; retry stopped", "code": outcome.code, "tool_name": TOOL_NAME,

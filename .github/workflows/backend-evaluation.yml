@@ -1,0 +1,68 @@
+name: Backend evaluation
+
+# Evaluates exactly the durable-backend commit pinned in evalgate/backend-pin.json, with its
+# hash-locked dependencies, against the backend-v1 suite (scripted fixtures, no model calls, no
+# secrets). Anything short of a real run is NOT_RUN (exit 3) and FAILS this check: no pinned
+# commit, the commit missing from the repository, a lock mismatch, or missing dependencies.
+# So the check can never be satisfied without actually evaluating the pinned backend.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-evaluation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-evaluation:
+    name: backend-evaluation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the tested revision (full history, so the pinned backend commit can be found by SHA)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up the Python the backend lock was compiled for
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+
+      - name: Install the pinned backend's hash-locked dependencies
+        run: |
+          set -euo pipefail
+          commit=$(python3 -c 'import json; print(json.load(open("evalgate/backend-pin.json"))["commit"] or "")')
+          lock=$(python3 -c 'import json; print(json.load(open("evalgate/backend-pin.json"))["lock_file"])')
+          if [ -z "$commit" ]; then
+            echo "::error::NOT_RUN: no backend commit is pinned in evalgate/backend-pin.json, so this check fails."
+            exit 0  # the evaluation step below reports NOT_RUN (exit 3) and fails the job
+          fi
+          git cat-file -e "$commit^{commit}" 2>/dev/null || { echo "::error::NOT_RUN: pinned commit $commit is not in this repository."; exit 0; }
+          python -m venv "$RUNNER_TEMP/backend-venv"
+          git show "$commit:$lock" > "$RUNNER_TEMP/backend-lock.txt"
+          "$RUNNER_TEMP/backend-venv/bin/python" -m pip install --disable-pip-version-check --no-deps --require-hashes \
+            -r "$RUNNER_TEMP/backend-lock.txt"
+
+      - name: Run current serving, crash-recovery, authentication and dashboard tests
+        run: |
+          test -x "$RUNNER_TEMP/backend-venv/bin/python"
+          "$RUNNER_TEMP/backend-venv/bin/python" -B scripts/ci_serving.py
+
+      - name: Run the pinned backend evaluation (exit 0 PASS, 1 FAIL, 2 INVALID, 3 NOT_RUN; only 0 passes)
+        run: |
+          set -uo pipefail
+          env -i PATH="/usr/bin:/bin" PYTHONDONTWRITEBYTECODE=1 python3 -m evalgate backend --pinned \
+            --backend-git "$GITHUB_WORKSPACE" --backend-python "$RUNNER_TEMP/backend-venv/bin/python" \
+            --out "$RUNNER_TEMP/evalgate" | tee "$RUNNER_TEMP/backend.log"
+          status=${PIPESTATUS[0]}
+          latest=$(ls -td "$RUNNER_TEMP"/evalgate/*-backend-* 2>/dev/null | head -1)
+          if [ -n "$latest" ]; then cat "$latest/summary.md" >> "$GITHUB_STEP_SUMMARY"; else tail -20 "$RUNNER_TEMP/backend.log" >> "$GITHUB_STEP_SUMMARY"; fi
+          echo "Exit $status (0 PASS, 1 FAIL, 2 INVALID, 3 NOT_RUN). Only PASS satisfies this check. No artifacts are uploaded." >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
