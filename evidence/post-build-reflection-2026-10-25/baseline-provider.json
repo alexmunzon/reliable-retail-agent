@@ -1,0 +1,44 @@
+{
+  "baseline_commit": "86e1900969cb304ce890a61e58a770c1fab9931d",
+  "scope": "Temporary real SQLite; httpx MockTransport; no actual provider effects or network calls.",
+  "malformed_code": {
+    "calls": [
+      "POST"
+    ],
+    "loop_task_errors": [
+      "TypeError"
+    ],
+    "operation": [
+      [
+        "dispatching",
+        1
+      ]
+    ],
+    "holds": 1,
+    "inflight": 0,
+    "reconciliation_due": [],
+    "ready_predicate": true
+  },
+  "missing_status_effect_id": {
+    "classified_outcome": {
+      "state": "succeeded",
+      "code": "status_applied",
+      "result": {
+        "effect_id": null,
+        "revision": 2
+      }
+    },
+    "operation": [
+      [
+        "succeeded",
+        "{\"effect_id\":null,\"revision\":2}"
+      ]
+    ],
+    "holds": 0
+  },
+  "loopback_url": {
+    "accepted_url": "http://127.0.0.1:8766@external.invalid",
+    "httpx_host": "external.invalid",
+    "network_request_made": false
+  }
+}

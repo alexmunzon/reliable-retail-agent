@@ -1,0 +1,10 @@
+test_bad_date_is_quarantined_with_unknown_total_not_zero (tests.test_observability_pricing_failures.CalendarDateFailures.test_bad_date_is_quarantined_with_unknown_total_not_zero) ... ok
+test_impossible_usage_dates_are_rejected_and_never_priced (tests.test_observability_pricing_failures.CalendarDateFailures.test_impossible_usage_dates_are_rejected_and_never_priced) ... ok
+test_pricing_effective_dates_must_be_calendar_days (tests.test_observability_pricing_failures.CalendarDateFailures.test_pricing_effective_dates_must_be_calendar_days) ... ok
+test_utc_leap_day_and_nanosecond_usage_remain_valid (tests.test_observability_pricing_failures.CalendarDateFailures.test_utc_leap_day_and_nanosecond_usage_remain_valid) ... ok
+test_optional_pricing_corruption_preserves_business_evidence_without_stale_prices (tests.test_observability_pricing_failures.OptionalPricingFailures.test_optional_pricing_corruption_preserves_business_evidence_without_stale_prices) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.274s
+
+OK

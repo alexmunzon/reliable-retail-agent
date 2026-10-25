@@ -1,0 +1,280 @@
+{
+  "baseline-provider.json": {
+    "sha256": "3b9a7b622a49a7a6d5a69c4f0023c7659d9ba19a8874f2fd8a68b4daf0b402ba",
+    "original_sha256": "3b9a7b622a49a7a6d5a69c4f0023c7659d9ba19a8874f2fd8a68b4daf0b402ba",
+    "derivative": "byte-identical"
+  },
+  "baseline-provider-http.txt": {
+    "sha256": "a2556deb57dcdb384f796ea562ab4f6b4ed0147a6d935eaf7920cf5f65a0557e",
+    "original_sha256": "7ff3f7956f20117118865cc2ec67a433bb6607562ce1124f3673644407ece8bf",
+    "derivative": "host paths redacted"
+  },
+  "provider-focused.txt": {
+    "sha256": "40fd0d3801bd62ac512929c811ae7e43eafe47d87bfed1c96cb8d66abb9a9cbf",
+    "original_sha256": "40fd0d3801bd62ac512929c811ae7e43eafe47d87bfed1c96cb8d66abb9a9cbf",
+    "derivative": "byte-identical"
+  },
+  "baseline-receipt-probes.json": {
+    "sha256": "893155ff9ab929343c7ae8314f6dbdd26b2acb604d1f3bf2fe9fb979b1030459",
+    "original_sha256": "893155ff9ab929343c7ae8314f6dbdd26b2acb604d1f3bf2fe9fb979b1030459",
+    "derivative": "byte-identical"
+  },
+  "baseline-summary-probe.json": {
+    "sha256": "767e471813a666360ae5652a721cd0f35a944486594a54a71b3af9500a034390",
+    "original_sha256": "767e471813a666360ae5652a721cd0f35a944486594a54a71b3af9500a034390",
+    "derivative": "byte-identical"
+  },
+  "after-receipt-probes.json": {
+    "sha256": "e7c9a3eb08ad396d930f9448fd9b84e63c74d066b66a4661ce19f8be680ea97e",
+    "original_sha256": "e7c9a3eb08ad396d930f9448fd9b84e63c74d066b66a4661ce19f8be680ea97e",
+    "derivative": "byte-identical"
+  },
+  "baseline-pricing.json": {
+    "sha256": "714ba4cfb267b28ad34621eb38f35cc60626f24b480433b1ae6b22e07dd19937",
+    "original_sha256": "714ba4cfb267b28ad34621eb38f35cc60626f24b480433b1ae6b22e07dd19937",
+    "derivative": "byte-identical"
+  },
+  "pricing-after.txt": {
+    "sha256": "824579f96ff7ef787e2f6fd48ceb45733d1cb11394d7673fea4a7ea2ff56d07a",
+    "original_sha256": "824579f96ff7ef787e2f6fd48ceb45733d1cb11394d7673fea4a7ea2ff56d07a",
+    "derivative": "byte-identical"
+  },
+  "baseline-ui-races.json": {
+    "sha256": "339646f41f11ae2a878f65d719b8fb540dda4501dd3af89e6e6a53ab28d51db3",
+    "original_sha256": "339646f41f11ae2a878f65d719b8fb540dda4501dd3af89e6e6a53ab28d51db3",
+    "derivative": "byte-identical"
+  },
+  "after-ui-races.json": {
+    "sha256": "ceb1b0384ad722191305c95950662278be575ec1ad6dab4c6bba7e5adb7f14d2",
+    "original_sha256": "ceb1b0384ad722191305c95950662278be575ec1ad6dab4c6bba7e5adb7f14d2",
+    "derivative": "byte-identical"
+  },
+  "browser-baseline.json": {
+    "sha256": "6eba28b62b39fce8276d1d4d0a1699cb3bb21ad6a25ece25a661929f3516f349",
+    "original_sha256": "6eba28b62b39fce8276d1d4d0a1699cb3bb21ad6a25ece25a661929f3516f349",
+    "derivative": "byte-identical"
+  },
+  "browser-after.json": {
+    "sha256": "bd31d96d5efee3dd49ff5b563f6eba05a9dca48f3644cb06ab2e078a007ad60f",
+    "original_sha256": "bd31d96d5efee3dd49ff5b563f6eba05a9dca48f3644cb06ab2e078a007ad60f",
+    "derivative": "byte-identical"
+  },
+  "browser-damaged-pricing.json": {
+    "sha256": "60b1c4886499295c621da8a4303301dbcf5c4d1c37bb479d42463ce78e7c5958",
+    "original_sha256": "60b1c4886499295c621da8a4303301dbcf5c4d1c37bb479d42463ce78e7c5958",
+    "derivative": "byte-identical"
+  },
+  "offline-in-place-failure.txt": {
+    "sha256": "6d5f9605fc54f6e5aa218076169c1c7d2bb1861b3a00765aa62a60c161f88e0c",
+    "original_sha256": "0b23258188014b26539275003e57b346f6035309f6d677201e6ff366231da440",
+    "derivative": "host paths redacted"
+  },
+  "offline-clean.txt": {
+    "sha256": "a1843ec86dd47f899a5b1eee2df5e38ec787909c0d7cf96b73b70862d4526da8",
+    "original_sha256": "a1843ec86dd47f899a5b1eee2df5e38ec787909c0d7cf96b73b70862d4526da8",
+    "derivative": "byte-identical"
+  },
+  "serving.txt": {
+    "sha256": "8203e4b23f3ae4ae01695ce63dad0ec6e897960b62845da5c618a24f4d5801c3",
+    "original_sha256": "8203e4b23f3ae4ae01695ce63dad0ec6e897960b62845da5c618a24f4d5801c3",
+    "derivative": "byte-identical"
+  },
+  "receipt-current-pin.txt": {
+    "sha256": "81db5efeb85b5172a463c9d4961efe49b8a046296c9207db01cdc827d68f82c0",
+    "original_sha256": "81db5efeb85b5172a463c9d4961efe49b8a046296c9207db01cdc827d68f82c0",
+    "derivative": "byte-identical"
+  },
+  "mutant-validation.json": {
+    "sha256": "15420ec7f31be8b1946238d07c183a7d787763d9395d07cef3c68a175e0a39d9",
+    "original_sha256": "15420ec7f31be8b1946238d07c183a7d787763d9395d07cef3c68a175e0a39d9",
+    "derivative": "byte-identical"
+  },
+  "20261025T170554Z-backend-c9f9ce78/metrics.json": {
+    "sha256": "c70f486c0ae0767074ece15327484c9a91847c7dc99c1d7d78445c2d8617f7d0",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/request.json": {
+    "sha256": "60f9d846b1cc06b420296eeeebae65521fe581982f56c56dd7d6465efcd1a166",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/summary.md": {
+    "sha256": "4f2ed84249ca1ce414b78cbdac12399eda49f2357c4419939411da0225cf98d3",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/records.jsonl": {
+    "sha256": "995388c3e9f5a077c8c4345ff38e5bfc563aadc390c977ef6d05cf3fbf9199c7",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/traces.jsonl": {
+    "sha256": "a47b86737a57920db9287c9d716d8e7157b30a5b77ea97969f961b17a1482098",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/observations.json": {
+    "sha256": "a5e458b8c369c9127a78fe939de26eccdcc7a9348d7f5e6508a64db6dc72b1b2",
+    "derivative": "byte-identical raw receipt"
+  },
+  "20261025T170554Z-backend-c9f9ce78/manifest.json": {
+    "sha256": "2dc7bf7517a2b2d0f985520889938896006f98fc5df9151b1a9e58aa5977f0b7",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/B9-report-unknown-as-success.patch": {
+    "sha256": "0e5cb72c200bca5e66cd2192a783e61b3732d2638dd00a4d91611935405b17af",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/receipts.json": {
+    "sha256": "07e03caf151759bb634693883410bfe689309847947fe412091260edd0e0174d",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/B1-retry-after-unknown.patch": {
+    "sha256": "ad476e2472eb957cd76761b011e9f514284e399cb74950b8015f723b5459f2ee",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/B2-not-found-means-success.patch": {
+    "sha256": "a4f26f1cff9a45576667243036bf4df699da412d11f33c90e56bc3fe0845681e",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/B8-never-dispatch.patch": {
+    "sha256": "5288d08916f2a303b43a8e545ad3b39481e6053cebf689c91edc87ee3c3a3381",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/metrics.json": {
+    "sha256": "e3c65019311cbc8449d3ac5e1c5738d0c648faa303f4da83824e7d02d724edb5",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/request.json": {
+    "sha256": "49ea87182b2d8879d90744b95f452ffdba614e1e40ef3ff199117ca635647b05",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/summary.md": {
+    "sha256": "b2c14334bb5ff9aacb6ac750c72652e83281f42f9c668915e23dfd1395110653",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/records.jsonl": {
+    "sha256": "48890e30ae958c119d37c9409ab82e8625209ed9ad41e9b5e6cca9a1938b2998",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/traces.jsonl": {
+    "sha256": "81f99ac5d04fccf1a41e4267d32cac3245cc7893ab05915277adaa2429239a79",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/observations.json": {
+    "sha256": "408b7084786fea69c6715698d18d82b5a5fb27165c058c079cd693ac93404287",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170554Z-b1-retry-after-unknown-8c04175d/manifest.json": {
+    "sha256": "589d830202a13e1f83f045c81d9b50c3b2f475bf38066a9987592cddd69d252c",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/metrics.json": {
+    "sha256": "f74b643b098546f9b83e1dcd8ddab671d81649c7324f47b77191b511cd35ed3e",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/request.json": {
+    "sha256": "0187f94e452926e779f05ea7d322e8f89828c509bc84557c3aebc2bba58d92ab",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/summary.md": {
+    "sha256": "8c33a931400aa6893a9bea48bcc2bc09ffbf383b827c8965d3383773494cf93d",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/records.jsonl": {
+    "sha256": "872e808ee89206b831e6a713f3b8d179392fdbf97076b332a19a8c86f8d7cc76",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/traces.jsonl": {
+    "sha256": "05d165e72ea82d10f0a277f63b14670b6bf93a64efbd0841c0f852780979bcdc",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/observations.json": {
+    "sha256": "50d657317e4d58c76ab6bebb29190ebff9baf25280569937f5c5975827f357b9",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170559Z-b2-not-found-means-success-644bbe6d/manifest.json": {
+    "sha256": "38db21900359796cb2a04c72b4cafdc1f8bc4b74bc900e8187932b316f0e0edc",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/metrics.json": {
+    "sha256": "c92b1f036ed9e2412c1e35c8370e608ef450bdff2f675c45e232556ea28cb89a",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/request.json": {
+    "sha256": "b15474a11769758364dd7cec54990d42be9586b7080d5b6d2eac15c025dd162e",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/summary.md": {
+    "sha256": "c047d90c447f3e9652b9654a25bd3de3a7c6f0b0b0bcda7c245dea0969982f2e",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/records.jsonl": {
+    "sha256": "e94189860ce6149f75a9dd2a3a9a4435db8f2d10aa5031b71d409de269d0e3e3",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/traces.jsonl": {
+    "sha256": "d74aed7e574a7f891e52caa56a92797ad3115976e5509de805c47f04713d7c0d",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/observations.json": {
+    "sha256": "adc08d27853f75a23e74e637739af6fcbdd75e10d5323f63e129210e50b01450",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170608Z-b8-never-dispatch-1b91c4bf/manifest.json": {
+    "sha256": "56d8acd949f182dc07e85027de13636878f14725909630393c897c814073a184",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/metrics.json": {
+    "sha256": "5b358951966f85136ee63f9d6f819235f923a9b7d123103f3425c89c130b8997",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/request.json": {
+    "sha256": "ffdb129d9da54cc5c376f6fcdcb10d0072ee545128264513142b38c9c0e75b9f",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/summary.md": {
+    "sha256": "90329ae23c001467d2b8c8b52844a8be09e10548fcad526387b7a78503c56328",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/records.jsonl": {
+    "sha256": "2c4664a11c8d4217730ecda8d15bec7ee3f5c72cd7d6c6d23cad63ef1252e46c",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/traces.jsonl": {
+    "sha256": "417386fc5a9c7773415c30e2a110fc3b45d7710990cd516eb47c7edf1f6e899f",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/observations.json": {
+    "sha256": "46e035520313a0d02b868c40742c32932419543e73d273124413bb4a3f7f755f",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170519Z-unmutated-5f3da420/manifest.json": {
+    "sha256": "3c3077ef3c57f4cd1e2e2b42397959becb0bd048ef7f8bfb3e0bf144fefc1997",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/metrics.json": {
+    "sha256": "60e8239c1b4c36254f05563bf504a29e432a84cbf62da05987f9253e2139beb2",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/request.json": {
+    "sha256": "4409730b6888cb003d477e290e29d65d6e4cf439dfdaea5bbcf3312465060b4f",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/summary.md": {
+    "sha256": "c1b2e3718211b02abb0eaf9e7b5d7b3b2a32864837c01fd0ca19f9ac42efa600",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/records.jsonl": {
+    "sha256": "cf8d6861a944bf8f15cec3fca08751e4ab2ac306cbc2c03a923744750cf15366",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/traces.jsonl": {
+    "sha256": "574fd7f0b0d9fb5bacfb3bb4c5bb015072b19d45cb628918f279835fff5050d1",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/observations.json": {
+    "sha256": "361c125fc598ce21b948439550b25f454bcd1ab4a718eda2db98771858349a26",
+    "derivative": "byte-identical raw receipt"
+  },
+  "backend-mutants/runs/20261025T170626Z-b9-report-unknown-as-success-9e21e767/manifest.json": {
+    "sha256": "64d3f057faf7e4df43c63ebd43cf6f8862c127bdc16cecc6a6d554175d1a8c4c",
+    "derivative": "byte-identical raw receipt"
+  }
+}

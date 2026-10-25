@@ -1,0 +1,73 @@
+{
+  "scope": "Existing raw observations replayed through v3 writer/validator for comparison; NOT a new backend execution.",
+  "results": [
+    {
+      "variant": "unaltered",
+      "problems": [],
+      "decision": "PASS",
+      "valid": true
+    },
+    {
+      "variant": "empty_trace",
+      "problems": [
+        "exported traces do not regenerate from the raw observations"
+      ],
+      "decision": "PASS",
+      "valid": false
+    },
+    {
+      "variant": "invalid_json_trace",
+      "problems": [
+        "evidence unreadable: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "decision": "PASS",
+      "valid": false
+    },
+    {
+      "variant": "false_suite_hashes",
+      "problems": [
+        "run used a different suite than the trusted policy"
+      ],
+      "decision": "PASS",
+      "valid": false
+    },
+    {
+      "variant": "false_backend_pin",
+      "problems": [
+        "backend commit differs from the trusted pin",
+        "backend repository differs from the trusted pin",
+        "backend pin_sha256 differs from the trusted pin",
+        "backend lock_sha256 differs from the trusted pin",
+        "pinned backend Python differs from the trusted pin",
+        "pinned backend package inventory is malformed",
+        "summary does not regenerate from the scored raw observations"
+      ],
+      "decision": "PASS",
+      "valid": false
+    },
+    {
+      "variant": "unknown_extra_observation",
+      "problems": [
+        "raw observations do not cover exactly the scheduled cases"
+      ],
+      "decision": "PASS",
+      "valid": false
+    },
+    {
+      "variant": "null_manifest",
+      "problems": [
+        "manifest must be an object"
+      ],
+      "decision": null,
+      "valid": false
+    },
+    {
+      "variant": "false_summary",
+      "problems": [
+        "summary does not regenerate from the scored raw observations"
+      ],
+      "decision": "PASS",
+      "valid": false
+    }
+  ]
+}

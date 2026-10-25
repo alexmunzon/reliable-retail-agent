@@ -1,5 +1,7 @@
 # Retail integration: claims, evidence and remaining limits
 
+Current post-build follow-up: [POST_BUILD_REFLECTION.md](POST_BUILD_REFLECTION.md). Earlier receipts and claims below retain their original version and runtime; harness-v3 and the new pin are documented in the follow-up.
+
 **Local verification complete: 2026-10-25.** The backend is pinned to
 `87970608892a0d130a18f9c6bc31bdfcf0e9e471`, with its dependency-lock digest. All three tracks
 are integrated on `claude/backend-adapter-6b82f6`; original source branches remain intact.

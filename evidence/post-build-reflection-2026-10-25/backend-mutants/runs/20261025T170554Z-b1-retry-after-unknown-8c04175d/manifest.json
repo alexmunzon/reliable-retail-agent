@@ -1,0 +1,184 @@
+{
+ "backend": {
+  "caveat": "results describe this copy of a working tree only, not any committed or merged backend",
+  "dirty": null,
+  "files": {
+   "adapters/__init__.py": "5a5904f228f82f125ffedf257f1c79642048411f55d631d4fafbcf156d114a4f",
+   "adapters/tau_dispatch.py": "8d8c9986a3ac5ff44612976f9bc8d7d5ce6575bbe267d74966b85aad3a545d20",
+   "observability/__init__.py": "5bc7a756d42a3b9391ceeb0838d99725bfa0e490e57ec9c8c347355e3068bb9c",
+   "observability/__main__.py": "bebf2e65463534bbc434ee21c26a00845149dc7a4c7538a84b762dd1fd127866",
+   "observability/costs.py": "b1a0abce017e7cf69c2af5638f8c612a9c28f46978e0425543826bd29dd20d86",
+   "observability/ingest.py": "cb5234b43aebbe6a6e98114078ea918ce612d620778331c812c7bd7bfb5aee67",
+   "observability/live.py": "aff4e9d4c3305ba86e05ecd2cb6c711c4ca0344e0bb436f40bcaed772617bb1e",
+   "observability/project.py": "2d66067e15b3579a21f95fec778532ef18fabb7e0911dabfb80dfae9a9d779c2",
+   "observability/report.py": "9147df43e177a0f73ff97651de9ff15584dbac10faa4acbfde8b7c9a8a1a1ce8",
+   "observability/server.py": "433e603e58dc5325f8db18af591c4baf8a3b6c7665e941974279ef5d142b6ca4",
+   "observability/sidecar.py": "9afc7209940bfb663aafe6ee50b694c8d69c452128738ad6df181c0824ac48cb",
+   "rra/__init__.py": "889502baf8d823cc9fc756b785548307f213db3cee20080ec1c430272446f1e3",
+   "rra/engine.py": "a035d953d54ddd6db55bfc01afd93c198dd681ec769bf93d0de6da26ec404b11",
+   "rra/gate.py": "a2aad154bc9378faadf6be8e3118b7b7fc35ac12869de14d6c11c9a9f5a978da",
+   "rra/scenarios.py": "59921b3a86234a1259ac044e1e64702a64f3a59a0802eafd758f6fc908bd7c12",
+   "rra/version.py": "7277bb1e2d1c943d30eb06444828d81c9ad4f236e2b8a1e917f8f53d84b3685e",
+   "scripts/backend_mutation_proof.py": "146cc9a16eab28312752adce0cbee3a29af3043990e350a662fe39790d6b144c",
+   "scripts/ci.py": "f12f04b43d179b38540fdbca85bcf743fe3183b1540e6a410f54eb161092c13d",
+   "scripts/ci_serving.py": "b9aba296282887b97a570c9b5784b623209f25347ecc623dfb457cdd68707ab7",
+   "scripts/mutation_proof.py": "d2f5afa1fcad5bfd07686789b4f2b56b1d449cb26c547ae86ee2e2fd6066d4fc",
+   "scripts/observability_bench.py": "af5961321caf3434983892de8a6db859a17bfc3b8a3d5827c8243343eb0052da",
+   "scripts/observability_fixtures.py": "d10863c50a7cd16c3006d2c82d905f4932a06630556724457d1aa0b61eb81269",
+   "scripts/reproduction.py": "f3e5ccf346c3f7e5607b9aaba44c418fda8f2330c50fdcb6426b4a41277dddcb",
+   "scripts/serving.py": "f6160b8db369dfa515d249265ced62d6fa9f4f25882a85337ae286080a27fd81",
+   "scripts/serving_bench.py": "ccab6a885ba7ca862a12cdac87be5df42735531b6a017c99f3bc1e3041cdf981",
+   "scripts/start.py": "06b236550913b23c5180e8c242f9cf675f24b76dd4a960997e1a2fe1233344f1",
+   "scripts/verify_dashboard_ui.py": "80bd712333e620fce2526899e4ac0658bd3bc7ce42ed675ded7b6df78bb63519",
+   "serving/__init__.py": "24e04bde9718fc19860d49f65d5f7a7fe437d132a80a025d05915ec253d7b66e",
+   "serving/api.py": "eb070b84b50a0c389147f9f4f1f99e2acfef8a553c81e265974ba82861dc8fe1",
+   "serving/app.py": "2a95fc2049d19339560100ba4b4b6f74b63a7fa4b86a0ef8fb15566dd0bf1fc3",
+   "serving/auth.py": "3b3adb3dc0202a04d152c2538e2c76891f1348ef8d203a2b138bb16692667201",
+   "serving/config.py": "1453c50dfb3d04a07b8ce3d4c3c155518c92abf081aede8e5c39494f88e39798",
+   "serving/observability_api.py": "91e80c01552002bc364ce8e9f30a10989ed68a8078301ee76cbce661cfc2c26f",
+   "serving/observability_projection.py": "ae6e6f1893b5afb707bbc470da6c54cb45ca8e00b825f8d93f9e5f9d53d83c3f",
+   "serving/provider.py": "c094a83623d94c35b979bf28e3de0611373141ccc89935f340ccb6992d68e76e",
+   "serving/service.py": "6d8591034dff4ea26cf78b26fe88fee63dfce13122fff8493ce54f07249ea467",
+   "serving/storage.py": "db8b0a31ddd77e77b3d6483c0073785b9d5758eb82ee598eae63e671d8258940",
+   "serving/streaming.py": "bcfefd6afa47bd8ea200ea3dc634e142fe6a7594839eefbb70094eef0e95b981",
+   "serving/telemetry.py": "14fcb3f5771e0b5217bbcec6b4cb176a3b0b034fa8b0336ccf334f8ca8c5a63a",
+   "serving/trace_export.py": "632d64be419ef6457382eba1416ea005a1ce6bab9367dab88292af0f70eb1b3c",
+   "serving/worker.py": "a764813c3527c0e46dbaf5419311c1959f00e85bf797a7b4a1ac0dcf56b71581",
+   "study/__init__.py": "78024884399d23d651a37e2ef648fa0343b52815dc0c5d6223d23fe9e7982f31",
+   "study/consent.py": "7f43dfb7a8e51b8145a17ccfb0b1b69ee4ef436fa965e19a8ad63d8e06558ee6",
+   "study/consent_as_well_candidate.py": "3e587d6c3575a6f87cb324229d92771bc8d91528733e8b9b66626716bc68dbe1",
+   "study/consent_candidate.py": "ec049c9966d6613b7d5ca40ccdc82c9e85705f873f3aece46b5ce934d2c2f0d3",
+   "study/consent_current.py": "93be930b9271ae3b419581511c86f80005678f9333614a4fa2467704ffef8e09",
+   "study/controller.py": "9f71522a7ad511da270be766ddc670260411604862450ee9fbadad8fc2020100",
+   "study/controller_current.py": "95d975506570a4cbee47f667d3b3aa3a12da4c29a6f64a4f26974122730c29e5",
+   "study/controller_v4.py": "bdffefadde30d7a6291c6f8657438214b278985c0618c449700a613d1ea5c385",
+   "study/evidence.py": "f3452f805b4990133c6b11bd2ebc496e64fb15bd2f26923b1167f361840c0c0e",
+   "study/gate.py": "6c0fc895ef88bec9b7bc5caab9c2b25087bb065faf2b24c250da5eae01036d4e",
+   "study/gate_current.py": "717861bd0c6dc0c9360cd579c4d4e1795896b94525642602de6f2d8d226d9218",
+   "study/gate_v4.py": "99677c1728479ce251d4e9ccab721323baf2d4d370406d761aa85bd6d6b1164c",
+   "study/intents.py": "e4df407ad3f4f9aa23d0de79ecf2e32c7ac74fbd6d386f9d9082051cc514875b",
+   "study/planning.py": "ce85d60a5554420ea214bdf343aeb37857d7399fc00b2b6557bd3edb93131a89",
+   "study/registry.py": "6a17fe423a3bbf75584ef2b2dfb761e73bf4d6b6e2a65266ab541b99445f5e58",
+   "study/termination_candidate.py": "ac104fac69531bed207e0acfccf9c57142f3fe44aeab46c093a70d07c594f44d",
+   "study/visible.py": "48b8a23fb2583e9b656898a84407a39666acda9153f2df472cd9830d2da9516c",
+   "study/visible_current.py": "34f2fa399b5a56fa62e845010e92c952c87e69fcad5c98245b8ceb37dd0c4547",
+   "study/visible_v4.py": "9f4a993523dd1212c267d934c8ad762f4e5e43ef9200b8cb27ed65cdf884ae9b"
+  },
+  "files_sha256": "caee5f5e884df0b72d4d78503dba4c13d348310ca6751b90a5a59d44f1efebc5",
+  "git_sha": null,
+  "lock_mismatches": [],
+  "lock_sha256": "dfcd019606601a0ffc97421d21b8b86722a9a289611c1c0c912dc6c4678d62e6",
+  "mode": "unpinned-working-tree",
+  "packages": [
+   [
+    "annotated-types",
+    "0.8.0"
+   ],
+   [
+    "anyio",
+    "4.15.1"
+   ],
+   [
+    "certifi",
+    "2026.7.22"
+   ],
+   [
+    "click",
+    "8.5.0"
+   ],
+   [
+    "fastapi",
+    "0.115.6"
+   ],
+   [
+    "h11",
+    "0.16.0"
+   ],
+   [
+    "httpcore",
+    "1.0.9"
+   ],
+   [
+    "httpx",
+    "0.28.1"
+   ],
+   [
+    "idna",
+    "3.20"
+   ],
+   [
+    "pydantic",
+    "2.13.5"
+   ],
+   [
+    "pydantic-core",
+    "2.46.5"
+   ],
+   [
+    "starlette",
+    "0.41.3"
+   ],
+   [
+    "typing-extensions",
+    "4.16.0"
+   ],
+   [
+    "typing-inspection",
+    "0.4.4"
+   ],
+   [
+    "uvicorn",
+    "0.32.1"
+   ]
+  ],
+  "python": "3.11.1",
+  "root_name": "B1-retry-after-unknown"
+ },
+ "comparison": "not applicable: no approved backend baseline",
+ "costs": "no model or paid calls",
+ "decision": "FAIL",
+ "duration_seconds": 5.1,
+ "evidence_class": "scripted_fixture",
+ "finished_at": "2026-10-25T17:05:59+00:00",
+ "harness": {
+  "backend_harness_version": "evalgate-backend-harness-v3",
+  "dirty": true,
+  "files_sha256": "be6da024ff6b61b46fe1dcd8540dce15cb1bb5b1864852557884039058104221",
+  "git_sha": "9549d37138abba0e142c8d12f354623182aadf30",
+  "version": "evalgate-harness-v1"
+ },
+ "outputs": {
+  "metrics.json": "e3c65019311cbc8449d3ac5e1c5738d0c648faa303f4da83824e7d02d724edb5",
+  "observations.json": "408b7084786fea69c6715698d18d82b5a5fb27165c058c079cd693ac93404287",
+  "records.jsonl": "48890e30ae958c119d37c9409ab82e8625209ed9ad41e9b5e6cca9a1938b2998",
+  "request.json": "49ea87182b2d8879d90744b95f452ffdba614e1e40ef3ff199117ca635647b05",
+  "summary.md": "b2c14334bb5ff9aacb6ac750c72652e83281f42f9c668915e23dfd1395110653",
+  "traces.jsonl": "81f99ac5d04fccf1a41e4267d32cac3245cc7893ab05915277adaa2429239a79"
+ },
+ "policy": {
+  "id": "evalgate-backend-policy-v1",
+  "sha256": "c3638886bc375ec6c8f7d016656d42975d600d50a918aed406bce820fd0d24dd"
+ },
+ "reasons": [
+  "bk-unknown-effect-reconciled: duplicate_effect, misreported_outcome"
+ ],
+ "record_type": "backend_run_manifest",
+ "run_id": "20261025T170554Z-b1-retry-after-unknown-8c04175d",
+ "runtime": {
+  "platform": "macOS-15.7.4",
+  "python": "3.11.1"
+ },
+ "schema_version": "backend-evaluation-v1",
+ "started_at": "2026-10-25T17:05:54+00:00",
+ "suite": {
+  "cases_sha256": "224534091a9ccc603dd5108b6c8620c3f19a2e4aa185c163fdad6b54cf2a7fd0",
+  "id": "backend-v1",
+  "independence": "builder-authored regression suite; the builder had read the backend code; no sealed or held-out labels",
+  "labels_sha256": "5c70613fc6244c1b72a5ef8afe57414f3a5c01b5c7cf863c46b8f25675898b3e",
+  "scheduled_cases": [
+   "bk-positive-once",
+   "bk-unknown-effect-reconciled"
+  ],
+  "subset": true
+ }
+}

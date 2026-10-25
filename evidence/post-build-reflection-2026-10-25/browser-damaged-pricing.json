@@ -1,0 +1,16 @@
+{
+  "source_commit": "9549d37138abba0e142c8d12f354623182aadf30",
+  "fixture_price_original_sha256": "efe8e93827e3558644a2769c095545a5a866e741afc544f5e8557e6a352da1a0",
+  "corruption": "newer optional pricing table replaced with one opening brace",
+  "scope": "local synthetic exposed browser regression; original fixture unchanged",
+  "returncode": 0,
+  "browser": {
+    "status": "PASS",
+    "visible_requests": 53,
+    "banner": "Fixture set notes: malformed-line: unparseable_line \u00d71 \u00b7 oversize-line: line_too_large \u00d71 \u00b7 healthy-redelivered: artifact_redelivery_ignored \u00b7 set: pricing_table_unparseable \u00b7 Pricing is incomplete: estimates are unavailable; traces and confirmed receipts remain visible.",
+    "estimated": "unknown \u2014 model_not_priced",
+    "confirmed": "USD 0.0074; complete for observed usage",
+    "external_requests": 0,
+    "browser_errors": []
+  }
+}

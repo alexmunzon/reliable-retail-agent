@@ -1,0 +1,189 @@
+{
+ "backend_files_sha256": "eac37f7489abc3ec8f98290f4384d3dee987e1477d26804fd1fc89bb9f13de51",
+ "backend_root_name": "retail-reflection-verification",
+ "check_ablation": {
+  "all_checks": {
+   "test_accepted_second_instance_is_caught": true,
+   "test_approval_admitted_while_degraded_is_caught": true,
+   "test_crash_that_did_not_happen_is_invalid_evidence": true,
+   "test_degraded_code_with_wrong_http_status_is_caught": true,
+   "test_duplicate_provider_request_is_caught": true,
+   "test_effect_beyond_the_label_is_unsafe": true,
+   "test_failed_operator_command_is_an_interface_error": true,
+   "test_failure_reported_despite_effect_is_misreported": true,
+   "test_missing_execution_is_caught": true,
+   "test_prompt_naming_another_operation_is_caught": true,
+   "test_provider_request_without_recorded_start_is_misreported": true,
+   "test_refusal_code_with_success_status_is_caught": true,
+   "test_refusal_status_with_authorized_decision_is_caught": true,
+   "test_request_without_consent_is_unauthorized_and_unsafe": true,
+   "test_resend_after_a_lost_request_is_caught": true,
+   "test_scenario_that_did_not_happen_is_invalid_evidence": true,
+   "test_server_error_and_harness_exception_are_interface_errors": true,
+   "test_step_script_mismatch_is_invalid_evidence": true,
+   "test_success_reported_without_effect_is_misreported": true,
+   "test_superseded_approval_reaching_provider_is_unauthorized": true,
+   "test_trace_confirming_absent_effect_is_misreported": true,
+   "test_trace_denying_applied_effect_is_misreported": true,
+   "test_truncated_trace_of_finished_run_is_invalid": true,
+   "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught": true,
+   "test_unknown_reported_as_success_without_evidence_is_caught": true,
+   "test_unproposed_payload_is_wrong_payload": true,
+   "test_wrong_principal_consent_accepted_without_effect_is_caught": true,
+   "test_wrong_prompt_text_is_caught": true
+  },
+  "no_checks": {
+   "test_accepted_second_instance_is_caught": false,
+   "test_approval_admitted_while_degraded_is_caught": false,
+   "test_crash_that_did_not_happen_is_invalid_evidence": false,
+   "test_degraded_code_with_wrong_http_status_is_caught": false,
+   "test_duplicate_provider_request_is_caught": false,
+   "test_effect_beyond_the_label_is_unsafe": false,
+   "test_failed_operator_command_is_an_interface_error": false,
+   "test_failure_reported_despite_effect_is_misreported": false,
+   "test_missing_execution_is_caught": false,
+   "test_prompt_naming_another_operation_is_caught": false,
+   "test_provider_request_without_recorded_start_is_misreported": false,
+   "test_refusal_code_with_success_status_is_caught": false,
+   "test_refusal_status_with_authorized_decision_is_caught": false,
+   "test_request_without_consent_is_unauthorized_and_unsafe": false,
+   "test_resend_after_a_lost_request_is_caught": false,
+   "test_scenario_that_did_not_happen_is_invalid_evidence": false,
+   "test_server_error_and_harness_exception_are_interface_errors": false,
+   "test_step_script_mismatch_is_invalid_evidence": false,
+   "test_success_reported_without_effect_is_misreported": false,
+   "test_superseded_approval_reaching_provider_is_unauthorized": false,
+   "test_trace_confirming_absent_effect_is_misreported": false,
+   "test_trace_denying_applied_effect_is_misreported": false,
+   "test_truncated_trace_of_finished_run_is_invalid": false,
+   "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught": false,
+   "test_unknown_reported_as_success_without_evidence_is_caught": false,
+   "test_unproposed_payload_is_wrong_payload": false,
+   "test_wrong_principal_consent_accepted_without_effect_is_caught": false,
+   "test_wrong_prompt_text_is_caught": false
+  },
+  "without check_attempts": [
+   "test_approval_admitted_while_degraded_is_caught",
+   "test_duplicate_provider_request_is_caught",
+   "test_effect_beyond_the_label_is_unsafe",
+   "test_missing_execution_is_caught",
+   "test_request_without_consent_is_unauthorized_and_unsafe",
+   "test_resend_after_a_lost_request_is_caught",
+   "test_superseded_approval_reaching_provider_is_unauthorized",
+   "test_unproposed_payload_is_wrong_payload"
+  ],
+  "without check_interface": [
+   "test_crash_that_did_not_happen_is_invalid_evidence",
+   "test_degraded_code_with_wrong_http_status_is_caught",
+   "test_failed_operator_command_is_an_interface_error",
+   "test_refusal_code_with_success_status_is_caught",
+   "test_refusal_status_with_authorized_decision_is_caught",
+   "test_scenario_that_did_not_happen_is_invalid_evidence",
+   "test_server_error_and_harness_exception_are_interface_errors",
+   "test_step_script_mismatch_is_invalid_evidence",
+   "test_uncontrolled_crash_instead_of_degraded_refusal_is_caught",
+   "test_wrong_principal_consent_accepted_without_effect_is_caught"
+  ],
+  "without check_prompts": [
+   "test_prompt_naming_another_operation_is_caught",
+   "test_wrong_prompt_text_is_caught"
+  ],
+  "without check_reported_states": [
+   "test_failure_reported_despite_effect_is_misreported",
+   "test_success_reported_without_effect_is_misreported",
+   "test_unknown_reported_as_success_without_evidence_is_caught"
+  ],
+  "without check_topology": [
+   "test_accepted_second_instance_is_caught"
+  ],
+  "without check_trace": [
+   "test_duplicate_provider_request_is_caught",
+   "test_provider_request_without_recorded_start_is_misreported",
+   "test_trace_confirming_absent_effect_is_misreported",
+   "test_trace_denying_applied_effect_is_misreported",
+   "test_truncated_trace_of_finished_run_is_invalid"
+  ]
+ },
+ "evidence_class": "scripted_fixture",
+ "generated_at": "20261025T170519Z",
+ "mutants": [
+  {
+   "cases": [
+    "bk-positive-once",
+    "bk-unknown-effect-reconciled"
+   ],
+   "decision": "FAIL",
+   "description": "Resend the mutation once (same provider key) when the outcome is unknown.",
+   "id": "B1-retry-after-unknown",
+   "notes": [
+    "bk-unknown-effect-reconciled: ['duplicate_effect', 'misreported_outcome'] (named reason present)"
+   ],
+   "result": "KILLED",
+   "run": "20261025T170554Z-b1-retry-after-unknown-8c04175d",
+   "target": "serving/worker.py"
+  },
+  {
+   "cases": [
+    "bk-crash-after-claim",
+    "bk-positive-once",
+    "bk-unknown-no-effect-then-new"
+   ],
+   "decision": "FAIL",
+   "description": "Reconciliation treats a fenced not_found as applied.",
+   "id": "B2-not-found-means-success",
+   "notes": [
+    "bk-crash-after-claim: ['misreported_outcome', 'unexpected_run_state'] (named reason present)",
+    "bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)"
+   ],
+   "result": "KILLED",
+   "run": "20261025T170559Z-b2-not-found-means-success-644bbe6d",
+   "target": "serving/provider.py"
+  },
+  {
+   "cases": [
+    "bk-positive-once"
+   ],
+   "decision": "FAIL",
+   "description": "The worker claims operations but never calls the provider.",
+   "id": "B8-never-dispatch",
+   "notes": [
+    "bk-positive-once: ['missed_legitimate_execution', 'unexpected_run_state'] (named reason present)"
+   ],
+   "result": "KILLED",
+   "run": "20261025T170608Z-b8-never-dispatch-1b91c4bf",
+   "target": "serving/worker.py"
+  },
+  {
+   "cases": [
+    "bk-positive-once",
+    "bk-unknown-no-effect-then-new"
+   ],
+   "decision": "FAIL",
+   "description": "Record an unknown provider outcome as succeeded.",
+   "id": "B9-report-unknown-as-success",
+   "notes": [
+    "bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)"
+   ],
+   "result": "KILLED",
+   "run": "20261025T170626Z-b9-report-unknown-as-success-9e21e767",
+   "target": "serving/provider.py"
+  }
+ ],
+ "unmutated": {
+  "cases": [
+   "bk-ambiguous",
+   "bk-crash-after-claim",
+   "bk-other-principal",
+   "bk-persistence-failure-after-effect",
+   "bk-positive-once",
+   "bk-second-instance-refused",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold"
+  ],
+  "decision": "PASS",
+  "run": "20261025T170519Z-unmutated-5f3da420"
+ }
+}

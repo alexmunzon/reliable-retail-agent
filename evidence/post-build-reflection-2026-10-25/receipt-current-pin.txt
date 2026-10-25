@@ -1,0 +1,19 @@
+test_commit_claim_without_pinned_mode_fails (tests.test_backend_receipt_integrity.PinnedReceiptProvenanceTests.test_commit_claim_without_pinned_mode_fails) ... ok
+test_forged_pin_source_and_environment_claims_fail (tests.test_backend_receipt_integrity.PinnedReceiptProvenanceTests.test_forged_pin_source_and_environment_claims_fail) ... ok
+test_genuine_pin_source_and_inventory_match (tests.test_backend_receipt_integrity.PinnedReceiptProvenanceTests.test_genuine_pin_source_and_inventory_match) ... ok
+test_missing_local_git_commit_is_not_silently_verified (tests.test_backend_receipt_integrity.PinnedReceiptProvenanceTests.test_missing_local_git_commit_is_not_silently_verified) ... ok
+test_excessive_json_nesting_is_invalid_without_traceback (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_excessive_json_nesting_is_invalid_without_traceback) ... ok
+test_extra_missing_or_wrong_shape_observations_fail (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_extra_missing_or_wrong_shape_observations_fail) ... ok
+test_forged_user_facing_summary_and_reasons_fail (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_forged_user_facing_summary_and_reasons_fail) ... ok
+test_genuine_control_and_unverified_execution_disclosure (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_genuine_control_and_unverified_execution_disclosure) ... ok
+test_hashed_but_empty_truncated_changed_reordered_and_non_json_exports_fail (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_hashed_but_empty_truncated_changed_reordered_and_non_json_exports_fail) ... ok
+test_malformed_nested_containers_fail_cleanly (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_malformed_nested_containers_fail_cleanly) ... ok
+test_null_manifest_is_invalid_cli_exit_two_without_traceback (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_null_manifest_is_invalid_cli_exit_two_without_traceback) ... ok
+test_trace_order_is_stable_across_sorted_json_serialization (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_trace_order_is_stable_across_sorted_json_serialization) ... ok
+test_unexpected_output_path_is_not_opened (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_unexpected_output_path_is_not_opened) ... ok
+test_wrong_declared_policy_suite_schema_and_version_fail (tests.test_backend_receipt_integrity.ReceiptIntegrityTests.test_wrong_declared_policy_suite_schema_and_version_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.791s
+
+OK

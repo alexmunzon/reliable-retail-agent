@@ -76,6 +76,8 @@ branch/worktree deletion, destructive history rewriting, real customer data and 
 mutations remain prohibited. Local test credential generation/rotation exercises the synthetic
 pilot only; it does not authorize changes to external accounts.
 
+The deferred [post-build reflection](docs/POST_BUILD_REFLECTION.md) records the current bounded improvement pass. Provider parsing failures preserve durable uncertainty; saved backend receipts use explicitly versioned validators. Keep historical receipts with their original source/pin.
+
 ## Session start and stop
 
 Read these instructions, the project state, relevant handoffs and Git status. Verify the target

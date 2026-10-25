@@ -1,5 +1,7 @@
 # Evaluation gate (milestone 1)
 
+Current post-build follow-up: [POST_BUILD_REFLECTION.md](POST_BUILD_REFLECTION.md). Earlier receipts and claims below retain their original version and runtime; harness-v3 and the new pin are documented in the follow-up.
+
 **Status: `MERGE_ENFORCED`.** On PR [#1](https://github.com/alexmunzon/reliable-retail-agent/pull/1), hosted [`evaluation-gate`](https://github.com/alexmunzon/reliable-retail-agent/actions/runs/40155951054) and [`test`](https://github.com/alexmunzon/reliable-retail-agent/actions/runs/40155950952) passed on head `311b2dd` (`CI_EXECUTED`). Since 2026-10-24, the repository ruleset "Require evaluation-gate and test on main" requires both checks before anything merges into `main`, with no bypass. All results below are deterministic scripted fixtures with no model calls.
 
 ## The claim, and its limits

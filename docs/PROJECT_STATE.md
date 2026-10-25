@@ -27,7 +27,11 @@ The dashboard's Git history was merged and the preserved staged backend source w
 drafts, source archives and earlier failure evidence remain intact. The local recovery inventory
 contains their paths and hashes; private coordination records are not public product evidence.
 
-## Current implementation and verification
+## Deferred post-build reflection
+
+The passing `86e1900` baseline is preserved. The separately requested review improved provider response recovery, receipt consistency and dashboard failure/ordering behavior. Runtime is pinned to `0dd21e0676c1ef306069edfffa6a1ec399fc994d`; current results are 361 offline, 8 native, 99 serving, 24/24 backend gating, 30 browser and 11 JS-race checks passing. Four affected backend mutants were killed with an 11-case passing control. See [the report](POST_BUILD_REFLECTION.md) and [raw evidence](../evidence/post-build-reflection-2026-10-25/README.md). Hosted status must be checked against the exact PR head. Twenty-three unrelated historical copies remain preserved and untracked; clean-checkout verification does not erase the recorded in-place import-boundary failure.
+
+## Historical integration implementation and verification
 
 See [integration and claims](INTEGRATION.md) for the implementation boundaries and current receipts.
 The historical dashboard hold is retained in [INTEGRATION_HOLD.md](observability/INTEGRATION_HOLD.md).

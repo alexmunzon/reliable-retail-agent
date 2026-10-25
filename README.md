@@ -77,6 +77,8 @@ For the optional original-author checks, install `requirements-offline.txt` in a
 
 The remaining validation boundaries include missing history after stale restore, broader consent-language coverage and a separately authorized prospective real-model evaluation. Local deterministic tests and measured synthetic workloads do not establish production reliability or model improvement.
 
+The deferred [post-build reflection](docs/POST_BUILD_REFLECTION.md) records the latest provider recovery, receipt-integrity and dashboard improvements with measured before/after evidence.
+
 ## Development and continuity
 
 Read [AGENTS.md](AGENTS.md), the shared instructions retained in [CLAUDE.md](CLAUDE.md), and [project state](docs/PROJECT_STATE.md) before editing. One user-facing ChatGPT/Astra session owns all three tracks, with scoped internal workers and bounded review loops. Preserved handoffs provide continuity; original conversation history was not migrated. These documents retain the architecture, authorization boundaries and unresolved holds.
