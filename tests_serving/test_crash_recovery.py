@@ -387,7 +387,8 @@ class CrashRecoveryTests(unittest.TestCase):
         s.start_app()
         settled = s.snapshot(applied["run_id"])
         self.assertEqual((settled["state"], settled["operation"]["reconciliation"]["code"]), ("succeeded", "status_applied"))
-        self.assertTrue(settled["operation"]["dispatch_started"])
+        self.assertFalse(settled["operation"]["dispatch_started"])
+        self.assertEqual(settled["operation"]["dispatch_history"], "missing_after_restore")
         self.assertEqual(s.snapshot(never_sent["run_id"], "carol")["state"], "invalidated")
         late = httpx.post(f"http://127.0.0.1:{s.provider_port}/v1/mutations",  # A delayed copy of that key.
                           headers={"Authorization": "Bearer " + (s.root / "app" / "provider.key").read_text().strip()},

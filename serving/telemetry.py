@@ -14,6 +14,7 @@ import time
 LOG_FIELDS = frozenset({"event", "request_id", "method", "route", "status", "duration_ms", "code",
                         "actor_id", "tenant_id", "run_id", "operation_id", "trace_id", "sequence",
                         "state", "count", "reason", "detail_code", "effect_id", "operation_ids"})
+MAX_DROPPED_LOGS = (1 << 63) - 1
 
 
 class Telemetry:
@@ -24,12 +25,18 @@ class Telemetry:
         self.gauges: dict[str, int] = {}
 
     def log(self, event: str, **fields) -> None:
-        record = {"ts": round(time.time(), 3), "event": event}
-        record.update({key: value for key, value in fields.items() if key in LOG_FIELDS and value is not None})
-        line = json.dumps(record, sort_keys=True, separators=(",", ":"))
         with self._lock:
-            self._stream.write(line + "\n")
-            self._stream.flush()
+            try:
+                record = {"ts": round(time.time(), 3), "event": event}
+                record.update({key: value for key, value in fields.items() if key in LOG_FIELDS and value is not None})
+                line = json.dumps(record, sort_keys=True, separators=(",", ":"))
+                self._stream.write(line + "\n")
+                self._stream.flush()
+            except Exception:
+                # Optional telemetry must never affect the durable dispatch/recording path.
+                # Do not recursively log the failure or retain exception text/customer data.
+                self.counters["telemetry_log_dropped"] = min(
+                    MAX_DROPPED_LOGS, self.counters["telemetry_log_dropped"] + 1)
 
     def count(self, name: str, amount: int = 1) -> None:
         with self._lock:

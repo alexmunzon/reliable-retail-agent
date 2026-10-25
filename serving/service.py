@@ -22,15 +22,15 @@ from rra.gate import ConfirmationGate, MutationIntent, canonical_json
 from rra.version import DEVELOPMENT_VERSION
 from study.consent_current import CLASSIFIER_VERSION, classify_response
 
-from . import storage
+from . import auth, storage
 from .auth import Principal
 from .config import Settings
 
 TOOL_NAME = "change_order_address"
 STATE_SCHEMA_VERSION = "serving-state-v1"
 CANONICAL_SCHEMA_VERSION = "rra-canonical-json-v1"
-POLICY_VERSION = f"serving-consent-policy-v1/{DEVELOPMENT_VERSION}"
-CONSENT_BINDING_VERSION = "consent-binding-v1"
+POLICY_VERSION = f"serving-consent-policy-v2/{DEVELOPMENT_VERSION}"
+CONSENT_BINDING_VERSION = "consent-binding-v2"
 # Provisional serving envelope. It carries every field of the milestone-1 trace
 # envelope list; mapping onto contracts/trace-v1 waits for the evaluation owner.
 EVENT_SCHEMA_VERSION = "rra-serving-event-v0-provisional"
@@ -77,9 +77,10 @@ def render_prompt(intent: MutationIntent) -> str:
     return ConfirmationGate({intent.tool_name: _never_called}).propose(intent).prompt
 
 
-def consent_binding_hash(row: sqlite3.Row | dict[str, Any]) -> str:
+def consent_binding_hash(row: sqlite3.Row | dict[str, Any], credential_verifier: str) -> str:
     """Versioned envelope binding server-known context to the unchanged payload_hash."""
-    return digest({"binding_version": CONSENT_BINDING_VERSION, "actor_id": row["actor_id"],
+    return digest({"binding_version": CONSENT_BINDING_VERSION, "credential_verifier": credential_verifier,
+                   "actor_id": row["actor_id"],
                    "tenant_id": row["tenant_id"], "session_id": row["session_id"],
                    "operation_id": row["operation_id"], "resource_id": row["resource_id"],
                    "resource_revision": row["resource_revision"], "payload_hash": row["payload_hash"],
@@ -196,25 +197,48 @@ class Service:
         return conn.execute("SELECT h.operation_id, o.state FROM resource_holds h JOIN operations o USING (operation_id) "
                             "WHERE h.tenant_id=? AND h.resource_id=?", (tenant_id, resource_id)).fetchone()
 
-    def _owned_run(self, conn, principal: Principal, run_id: str) -> sqlite3.Row:
-        row = conn.execute("SELECT * FROM runs WHERE run_id=? AND tenant_id=? AND actor_id=?",
+    @staticmethod
+    def authorize(conn, principal: Principal, scope: str) -> Principal:
+        """Check live identity and scope inside the transaction that reads or changes owned state."""
+        current = auth.refresh(conn, principal)
+        if current is None:
+            raise ServiceError(401, "unauthenticated", "A valid current bearer token is required.")
+        if not current.has(scope):
+            raise ServiceError(403, "insufficient_scope", f"This credential lacks the {scope} scope.")
+        return current
+
+    def _owned_run(self, conn, principal: Principal, run_id: str, scope: str = "runs:read") -> sqlite3.Row:
+        self.authorize(conn, principal, scope)
+        row = conn.execute("SELECT r.* FROM runs r JOIN sessions s ON s.session_id=r.session_id "
+                           "JOIN resources res ON res.tenant_id=s.tenant_id AND res.resource_id=s.resource_id "
+                           "WHERE r.run_id=? AND r.tenant_id=? AND r.actor_id=? "
+                           "AND s.tenant_id=r.tenant_id AND s.actor_id=r.actor_id AND res.owner_actor_id=r.actor_id",
                            (run_id, principal.tenant_id, principal.actor_id)).fetchone()
         if row is None:
             raise ServiceError(404, "not_found", "Run not found.")
         return row
+
+    def can_observe(self, principal: Principal, run_id: str) -> bool:
+        """Read-only stream revalidation, including current run/resource ownership."""
+        try:
+            self._read(self._owned_run, principal, run_id)
+            return True
+        except (ServiceError, sqlite3.Error):
+            return False
 
     # ------------------------------------------------------------------ commands
     def create_session(self, principal: Principal, key: str, body: dict[str, Any], now: float | None = None):
         return self._write(self._create_session, principal, key, body, time.time() if now is None else now)
 
     def _create_session(self, conn, principal, key, body, now):
-        request_hash, replay = self._idempotent(conn, principal, "POST /api/v1/sessions", key, body, now)
-        if replay:
-            return replay
+        self.authorize(conn, principal, "runs:write")
         resource = conn.execute("SELECT 1 FROM resources WHERE tenant_id=? AND resource_id=? AND owner_actor_id=?",
                                 (principal.tenant_id, body["resource_id"], principal.actor_id)).fetchone()
         if resource is None:
             raise ServiceError(404, "not_found", "Resource not found.")
+        request_hash, replay = self._idempotent(conn, principal, "POST /api/v1/sessions", key, body, now)
+        if replay:
+            return replay
         active = conn.execute("SELECT COUNT(*) FROM sessions WHERE actor_id=? AND expires_at>?",
                               (principal.actor_id, now)).fetchone()[0]
         if active >= self.settings.max_sessions_per_principal:
@@ -233,6 +257,7 @@ class Service:
 
         def check(conn):
             scope = f"POST /api/v1/sessions/{session_id}/runs"
+            self._owned_session(conn, principal, session_id)
             _, replay = self._idempotent(conn, principal, scope, key, body, now)
             if replay:
                 return replay, None
@@ -241,12 +266,15 @@ class Service:
             return None, session["resource_id"]
         return self._read(check)
 
-    def _owned_session(self, conn, principal, session_id, now):
-        session = conn.execute("SELECT * FROM sessions WHERE session_id=? AND tenant_id=? AND actor_id=?",
+    def _owned_session(self, conn, principal, session_id, now=None):
+        self.authorize(conn, principal, "runs:write")
+        session = conn.execute("SELECT s.* FROM sessions s JOIN resources res "
+                               "ON res.tenant_id=s.tenant_id AND res.resource_id=s.resource_id "
+                               "WHERE s.session_id=? AND s.tenant_id=? AND s.actor_id=? AND res.owner_actor_id=s.actor_id",
                                (session_id, principal.tenant_id, principal.actor_id)).fetchone()
         if session is None:
             raise ServiceError(404, "not_found", "Session not found.")
-        if session["expires_at"] <= now:
+        if now is not None and session["expires_at"] <= now:
             raise ServiceError(410, "session_expired", "Session expired; create a new session.")
         return session
 
@@ -256,6 +284,7 @@ class Service:
 
     def _create_run(self, conn, principal, session_id, key, body, order, now):
         scope = f"POST /api/v1/sessions/{session_id}/runs"
+        self._owned_session(conn, principal, session_id)
         request_hash, replay = self._idempotent(conn, principal, scope, key, body, now)
         if replay:
             return replay
@@ -310,11 +339,11 @@ class Service:
 
     def _consent(self, conn, principal, run_id, key, body, now):
         scope = f"POST /api/v1/runs/{run_id}/consents"
+        run = self._owned_run(conn, principal, run_id, "consent:write")
         request_hash, replay = self._idempotent(conn, principal, scope, key, body, now)
         if replay:
             return replay
         self._restore_guard(conn)
-        run = self._owned_run(conn, principal, run_id)
         proposal = conn.execute("SELECT * FROM proposals WHERE run_id=?", (run_id,)).fetchone()
 
         def done(status, decision, detail, **extra):
@@ -368,7 +397,7 @@ class Service:
         if pending >= self.settings.max_pending_operations:
             raise ServiceError(503, "queue_full", "Dispatch queue is full; retry later with the same Idempotency-Key.",
                                retryable=True, retry_after=5)
-        binding = consent_binding_hash(proposal)
+        binding = consent_binding_hash(proposal, principal.credential_verifier)
         updated = conn.execute("UPDATE proposals SET state='authorized', decided_at=?, consent_binding_hash=?, "
                                "response_sha256=?, response_classification=?, authorization_expires_at=? "
                                "WHERE operation_id=? AND state='awaiting_consent'",
@@ -398,12 +427,12 @@ class Service:
 
     def _cancel(self, conn, principal, run_id, key, now):
         scope = f"POST /api/v1/runs/{run_id}/cancel"
+        run = self._owned_run(conn, principal, run_id, "runs:write")
         request_hash, replay = self._idempotent(conn, principal, scope, key, {}, now)
         if replay:
             return replay
         # A restored row may be stale: "prevented dispatch" could be false until provider evidence settles it.
         self._restore_guard(conn)
-        run = self._owned_run(conn, principal, run_id)
         proposal = conn.execute("SELECT * FROM proposals WHERE run_id=?", (run_id,)).fetchone()
         operation = conn.execute("SELECT * FROM operations WHERE run_id=?", (run_id,)).fetchone()
         common = dict(now=now, operation_id=proposal["operation_id"], payload_hash=proposal["payload_hash"],
@@ -468,7 +497,9 @@ class Service:
                 return self._snapshot_in(conn, principal, run_id, locked_at)
             try:
                 result = self._write(deliver)
-            except Exception:  # A delivery that cannot be recorded is not made; consent stays refused.
+            except Exception as error:  # A delivery that cannot be recorded is not made; consent stays refused.
+                if isinstance(error, ServiceError) and error.status in {401, 403, 404}:
+                    raise  # Identity/ownership changed while waiting: do not return the earlier snapshot.
                 result["proposal"]["prompt"] = None
                 result["proposal"]["prompt_unavailable"] = "delivery_not_recorded"
         result.pop("_prompt_delivered")
@@ -498,10 +529,15 @@ class Service:
                   "_prompt_delivered": self._prompt_delivered(conn, run_id),
                   "links": {"events": f"/api/v1/runs/{run_id}/events"}}
         if operation is not None:
+            reconciliation = json.loads(operation["reconciliation"]) if operation["reconciliation"] else None
+            missing_history = (operation["state"] == "succeeded" and not operation["attempt_count"]
+                               and reconciliation and reconciliation.get("method") == "restore_provider_status_lookup")
             result["operation"] = {"state": operation["state"], "dispatch_started": bool(operation["attempt_count"]),
+                                   "dispatch_history": "missing_after_restore" if missing_history else
+                                   "recorded" if operation["attempt_count"] else "not_started",
                                    "error_code": operation["error_code"],
                                    "provider_result": json.loads(operation["provider_result"]) if operation["provider_result"] else None,
-                                   "reconciliation": json.loads(operation["reconciliation"]) if operation["reconciliation"] else None}
+                                   "reconciliation": reconciliation}
         return result
 
     def stream_start(self, principal: Principal, run_id: str, cursor: str | None) -> int:
@@ -550,6 +586,7 @@ class Service:
             return []
         rows = conn.execute(
             "SELECT o.operation_id, o.provider_key, r.state AS run_state, r.cancel_requested, pr.status AS principal_status, "
+            "pr.tenant_id AS principal_tenant, pr.scopes AS principal_scopes, pr.token_hash AS credential_verifier, "
             "res.owner_actor_id, res.known_revision, p.* FROM operations o JOIN proposals p USING (operation_id) "
             "JOIN runs r ON r.run_id=o.run_id JOIN principals pr ON pr.actor_id=p.actor_id "
             "JOIN resources res ON res.tenant_id=p.tenant_id AND res.resource_id=p.resource_id "
@@ -563,6 +600,10 @@ class Service:
             reason = None
             if row["principal_status"] != "active":
                 reason = "credential_revoked"
+            elif row["principal_tenant"] != row["tenant_id"]:
+                reason = "principal_tenant_changed"
+            elif not {"runs:write", "consent:write"}.issubset(json.loads(row["principal_scopes"])):
+                reason = "permission_revoked"
             elif row["owner_actor_id"] != row["actor_id"]:
                 reason = "ownership_changed"
             elif row["state"] != "authorized" or row["run_state"] != "queued" or row["cancel_requested"]:
@@ -570,7 +611,7 @@ class Service:
             elif (row["policy_version"], row["classifier_version"], row["canonical_schema_version"]) != \
                     (POLICY_VERSION, CLASSIFIER_VERSION, CANONICAL_SCHEMA_VERSION):
                 reason = "policy_or_schema_version_changed"
-            elif row["consent_binding_hash"] != consent_binding_hash(row):
+            elif row["consent_binding_hash"] != consent_binding_hash(row, row["credential_verifier"]):
                 reason = "consent_binding_mismatch"
             elif row["known_revision"] is not None and row["known_revision"] != row["resource_revision"]:
                 reason = "resource_revision_changed"
@@ -805,13 +846,13 @@ class Service:
                                                              "reason": "restored_from_backup"}, **common)
             return "invalidated"
         conn.execute("UPDATE operations SET state=?, finished_at=?, reconciliation=?, "
-                     "provider_result=COALESCE(?, provider_result), next_reconcile_at=NULL, "
-                     "attempt_count=CASE WHEN ?='succeeded' THEN 1 ELSE attempt_count END WHERE operation_id=?",
+                     "provider_result=COALESCE(?, provider_result), next_reconcile_at=NULL WHERE operation_id=?",
                      (outcome.state, now, evidence, canonical_json(outcome.result) if outcome.state == "succeeded" else None,
-                      outcome.state, operation_id))
+                      operation_id))
         if outcome.state == "succeeded":
-            conn.execute("UPDATE proposals SET state='consumed', consumed_at=COALESCE(consumed_at, ?) "
-                         "WHERE operation_id=?", (now, operation_id))
+            # Mark the proposal unusable, preserving any actual claim-time consumption timestamp.
+            # A provider receipt cannot reconstruct a consumption missing from the backup.
+            conn.execute("UPDATE proposals SET state='consumed' WHERE operation_id=?", (operation_id,))
         run_state = row["run_state"]
         if row["state"] == "dispatching":  # The snapshot caught it mid-dispatch: record that ambiguity first.
             self._run_state(conn, row["run_id"], "outcome_unknown", {"dispatching"}, now)
