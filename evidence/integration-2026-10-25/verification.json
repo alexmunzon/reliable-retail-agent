@@ -54,7 +54,8 @@
       "seconds": null,
       "log": "evaluation-mutants.log",
       "original_log_sha256": "f6917113f1ce3d3cf12ab8b0bac5d97637bf7c04ead129a15adba8c6fde59857",
-      "published_log_sha256": "3da008e900f8b1fe42b3213c84629143692bdbcbbfba2489b11c2fe1443660fe"
+      "published_log_sha256": "901cea15173274459a3f41f15923cbfbfc8e9b02a3a53582597b703dcd53bb06",
+      "transformation": "Local output path redacted and trailing spaces stripped; original digest retained."
     },
     "backend-mutants": {
       "result": "PASS",

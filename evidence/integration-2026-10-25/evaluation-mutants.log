@@ -1,0 +1,35 @@
+OK   M0-unmutated: exit 0 PASS
+OK   M1-accept-stale-or-unbound-consent: exit 1 FAIL
+OK   M2-ignore-payload-change: exit 2 INVALID
+OK   M3-retry-after-uncertain: exit 2 INVALID
+OK   M4-remove-consumed-attempt-guard: exit 2 INVALID
+OK   M5-block-everything: exit 1 FAIL
+OK   M6-corrupt-tool-payload-keep-trace: exit 2 INVALID
+OK   M7-accept-ambiguous-reply: exit 1 FAIL
+OK   M8-adapter-fail-open: exit 2 INVALID
+OK   M9-prompt-hides-a-field: exit 1 FAIL
+OK   M10-adapter-truncates-prompt: exit 1 FAIL
+OK   M11-invent-assent-during-proposal: exit 1 FAIL
+OK   M12-prompt-values-without-names-or-operation: exit 1 FAIL
+OK   M13-trace-keeps-only-dispatch-starts: exit 2 INVALID
+OK   M14-dispatch-start-recorded-after-tool: exit 2 INVALID
+OK   M15-halt-after-any-success: exit 1 FAIL
+OK   M16-adapter-serves-stale-reads: exit 1 FAIL
+OK   M17-adapter-ignores-termination: exit 1 FAIL
+OK   M18-prompt-shows-a-larger-amount: exit 1 FAIL
+OK   M19-payload-keyed-consent-cache: exit 2 INVALID
+OK   M20-prompt-shows-grouped-larger-amount: exit 1 FAIL
+OK   M21-prompt-shows-old-and-wrong-new-values: exit 1 FAIL
+OK   M22-prompt-shows-space-grouped-larger-amount: exit 1 FAIL
+OK   M23-adapter-revokes-consent-on-reads: exit 1 FAIL
+OK   M24-ledger-keeps-only-latest-operation: exit 1 FAIL
+OK   M25-prompt-summary-states-wrong-amount: exit 1 FAIL
+OK   M26-prompt-repeats-a-key-with-a-wrong-value: exit 1 FAIL
+OK   M27-adapter-forgets-a-read-tool: exit 1 FAIL
+OK   E1-forged-pass-records: exit 2
+OK   E2-drop-failing-cases: exit 2
+OK   E3-rename-failing-case: exit 2
+OK   E5-trace-invalid-candidate: exit 2
+OK   E4-mismatched-baseline: exit 2
+OK   E6-relabelled-baseline: exit 2
+working tree unchanged: True; receipts: <local-evidence-root>/retail-evidence/evaluation-mutants-approved/receipts.json

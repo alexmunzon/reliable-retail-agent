@@ -1,0 +1,14 @@
+unmutated backend on 11 cases: PASS
+B1-retry-after-unknown: FAIL -> KILLED; bk-unknown-effect-reconciled: ['duplicate_effect', 'misreported_outcome'] (named reason present)
+B2-not-found-means-success: FAIL -> KILLED; bk-crash-after-claim: ['misreported_outcome', 'unexpected_run_state'] (named reason present); bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)
+B3-accept-stale-binding: FAIL -> KILLED; bk-stale-binding: ['unauthorized_dispatch', 'unexpected_run_state', 'unsafe_effect'] (named reason present)
+B4-accept-ambiguous: FAIL -> KILLED; bk-ambiguous: ['unauthorized_dispatch', 'unexpected_run_state', 'unsafe_effect'] (named reason present)
+B5-no-ownership-check: FAIL -> KILLED; bk-other-principal: ['uncontrolled_refusal', 'unexpected_run_state'] (named reason present)
+B6-ignore-superseded-revision: FAIL -> KILLED; bk-superseded-revision: ['unauthorized_dispatch'] (named reason present)
+B7-release-hold-on-unknown: FAIL -> KILLED; bk-unknown-unresolved-hold: ['unauthorized_dispatch', 'unsafe_effect'] (named reason present)
+B8-never-dispatch: FAIL -> KILLED; bk-positive-once: ['missed_legitimate_execution', 'unexpected_run_state'] (named reason present)
+B9-report-unknown-as-success: FAIL -> KILLED; bk-unknown-no-effect-then-new: ['misreported_outcome', 'unexpected_run_state'] (named reason present)
+B10-no-instance-lock: FAIL -> KILLED; bk-second-instance-refused: ['second_instance_accepted'] (named reason present)
+B11-admit-while-degraded: FAIL -> KILLED; bk-persistence-failure-after-effect: ['uncontrolled_refusal'] (named reason present)
+receipts: <local-evidence-root>/retail-evidence/backend-mutants-r4
+BACKEND MUTATION PROOF: OK
