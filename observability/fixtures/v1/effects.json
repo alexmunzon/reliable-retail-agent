@@ -1,0 +1,133 @@
+{
+  "effects_version": "obs-effects-v1",
+  "source": "evalgate.simulator.RetailSimulator",
+  "note": "Independent ground truth per operation; the dashboard never reads this file.",
+  "operations": {
+    "op-cancel-late-1": {
+      "tool": "cancel_pending_order",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "2b740087a82e858dc253342e45f771fafb094970050a4fc4236febd14216a848"
+    },
+    "op-change-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "c85c8448adbb0b0f886f8e0b9b0bbdb163c4270932f696a0d7df98b2ea7dab2e"
+    },
+    "op-dupline-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-gap-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-healthy-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-late-confirm-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-lost-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-ooo-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-race-1": {
+      "tool": "cancel_pending_order",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "2b740087a82e858dc253342e45f771fafb094970050a4fc4236febd14216a848"
+    },
+    "op-recon-down-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-recon-none-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "error_before_effect",
+      "effect_applied": false,
+      "simulator_outcome": "error_before_effect",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-recon-ok-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-redact-1": {
+      "tool": "cancel_pending_order",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "2b740087a82e858dc253342e45f771fafb094970050a4fc4236febd14216a848"
+    },
+    "op-redispatch-1": {
+      "tool": "cancel_pending_order",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "2b740087a82e858dc253342e45f771fafb094970050a4fc4236febd14216a848"
+    },
+    "op-restart-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "uncertain_after_effect",
+      "effect_applied": true,
+      "simulator_outcome": "effect_then_lost_response",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-skew-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-tenantb-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    },
+    "op-trunc-1": {
+      "tool": "modify_pending_order_address",
+      "simulator_mode": "healthy",
+      "effect_applied": true,
+      "simulator_outcome": "succeeded",
+      "payload_hash": "3b63f1b6af15c61712c132c1c069791de822c6f2b5b3c8dfd393d7457f69cf0f"
+    }
+  }
+}
