@@ -115,7 +115,12 @@ def execute(sut_root: Path, request: dict, timeout: int) -> dict:
                                 env={"PATH": os.defpath, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": "0"})
     if result.returncode:
         raise EvaluationError("driver failed: " + result.stderr.strip()[-800:])
-    return strict_json(result.stdout)
+    output = strict_json(result.stdout)
+    if not (isinstance(output, dict) and output.get("protocol") == DRIVER_PROTOCOL and isinstance(output.get("loaded"), dict)
+            and isinstance(output.get("results"), list)
+            and all(isinstance(r, dict) and isinstance(r.get("case_id"), str) for r in output["results"])):
+        raise EvaluationError("driver output is not a well-formed evalgate-driver-v1 result")
+    return output
 
 
 def _write(folder: Path, name: str, text: str) -> None:

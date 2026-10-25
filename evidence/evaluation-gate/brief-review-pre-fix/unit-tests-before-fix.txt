@@ -1,0 +1,237 @@
+.FFEEFFEFFFFFFFF..EEE.
+======================================================================
+ERROR: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing) (text='null\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 633, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    problems, _ = trace.check_file(self.write(text))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 228, in check_file
+    return problems + validate_trace(events), events
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 234, in validate_trace
+    problems += [f"{event.get('event_id')}: {p}" for p in validate_event(event)]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 234, in <listcomp>
+    problems += [f"{event.get('event_id')}: {p}" for p in validate_event(event)]
+                    ^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing) (text='[]\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 633, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    problems, _ = trace.check_file(self.write(text))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 228, in check_file
+    return problems + validate_trace(events), events
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 234, in validate_trace
+    problems += [f"{event.get('event_id')}: {p}" for p in validate_event(event)]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 234, in <listcomp>
+    problems += [f"{event.get('event_id')}: {p}" for p in validate_event(event)]
+                    ^^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing) (text='{"schema_version": "trace-v1", "event_ty')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 633, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    problems, _ = trace.check_file(self.write(text))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 228, in check_file
+    return problems + validate_trace(events), events
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 243, in validate_trace
+    return problems + check_semantics(events)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/trace.py", line 174, in check_semantics
+    shown[key] = hashed
+    ~~~~~^^^^^
+TypeError: unhashable type: 'list'
+
+======================================================================
+ERROR: test_malformed_driver_output_is_invalid_not_a_harness_crash (tests.test_evalgate.TerminationTests.test_malformed_driver_output_is_invalid_not_a_harness_crash) (output='[]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 710, in test_malformed_driver_output_is_invalid_not_a_harness_crash
+    _, records, manifest, _ = self.evaluate(self.sut(f"malformed-{name}", code))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/tests/test_evalgate.py", line 683, in evaluate
+    folder, decision = runner.run(root, role="candidate", out_root=self.tmp / "runs", candidate_kind="mutant", policy_path=self.policy_path)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/runner.py", line 169, in run
+    observations = {r["case_id"]: r for r in output["results"]}
+                                             ~~~~~~^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str
+
+======================================================================
+ERROR: test_malformed_driver_output_is_invalid_not_a_harness_crash (tests.test_evalgate.TerminationTests.test_malformed_driver_output_is_invalid_not_a_harness_crash) (output='{}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 710, in test_malformed_driver_output_is_invalid_not_a_harness_crash
+    _, records, manifest, _ = self.evaluate(self.sut(f"malformed-{name}", code))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/tests/test_evalgate.py", line 683, in evaluate
+    folder, decision = runner.run(root, role="candidate", out_root=self.tmp / "runs", candidate_kind="mutant", policy_path=self.policy_path)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/runner.py", line 169, in run
+    observations = {r["case_id"]: r for r in output["results"]}
+                                             ~~~~~~^^^^^^^^^^^
+KeyError: 'results'
+
+======================================================================
+ERROR: test_malformed_driver_output_is_invalid_not_a_harness_crash (tests.test_evalgate.TerminationTests.test_malformed_driver_output_is_invalid_not_a_harness_crash) (output='{"protocol": "evalgate-driver-v1", "loaded": {}, "results": [1]}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 710, in test_malformed_driver_output_is_invalid_not_a_harness_crash
+    _, records, manifest, _ = self.evaluate(self.sut(f"malformed-{name}", code))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/tests/test_evalgate.py", line 683, in evaluate
+    folder, decision = runner.run(root, role="candidate", out_root=self.tmp / "runs", candidate_kind="mutant", policy_path=self.policy_path)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/runner.py", line 169, in run
+    observations = {r["case_id"]: r for r in output["results"]}
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/evalgate/runner.py", line 169, in <dictcomp>
+    observations = {r["case_id"]: r for r in output["results"]}
+                    ~^^^^^^^^^^^
+TypeError: 'int' object is not subscriptable
+
+======================================================================
+FAIL: test_dropped_lines_are_detected_and_empty_input_is_never_consistent (tests.test_evalgate.ServiceTraceTests.test_dropped_lines_are_detected_and_empty_input_is_never_consistent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 612, in test_dropped_lines_are_detected_and_empty_input_is_never_consistent
+    self.assertProblem(events[:3])  # tail cut between complete lines, before any attempt
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_extension_events_may_use_any_payload (tests.test_evalgate.ServiceTraceTests.test_extension_events_may_use_any_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 617, in test_extension_events_may_use_any_payload
+    self.assertEqual([], trace.validate_event(dict(self.stream()[0], payload={"prompt_sha256": None})))
+AssertionError: Lists differ: [] != ['invalid payload.prompt_sha256']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'invalid payload.prompt_sha256'
+
+- []
++ ['invalid payload.prompt_sha256']
+
+======================================================================
+FAIL: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing) (text='{"schema_version": "trace-v1", "event_ty')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 634, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    self.assertTrue(problems)
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing) (text='{"schema_version": "trace-v1", "event_ty')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 634, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    self.assertTrue(problems)
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing (tests.test_evalgate.ServiceTraceTests.test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 638, in test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing
+    self.assertEqual([], trace.check_file(self.write("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in titled)))[0])
+AssertionError: Lists differ: [] != ['line 2 is not one complete JSON value (t[178 chars]oad']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'line 2 is not one complete JSON value (truncated or corrupted)'
+
+- []
++ ['line 2 is not one complete JSON value (truncated or corrupted)',
++  'line 3 is not one complete JSON value (truncated or corrupted)',
++  'evt-0003: authorization does not answer a prior prompt for the same '
++  'operation and payload']
+
+======================================================================
+FAIL: test_only_the_current_prompt_can_be_approved (tests.test_evalgate.ServiceTraceTests.test_only_the_current_prompt_can_be_approved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 597, in test_only_the_current_prompt_can_be_approved
+    self.assertProblem(self.stream(old, new, authorized, started, outcome), "prompt")
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_reconciling_another_payload_does_not_resolve_an_unknown_outcome (tests.test_evalgate.ServiceTraceTests.test_reconciling_another_payload_does_not_resolve_an_unknown_outcome)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 584, in test_reconciling_another_payload_does_not_resolve_an_unknown_outcome
+    self.assertProblem(self.stream(*events, *self.consented(op="op-addr-2", prompt_id="prm-2")), "reconcil")
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_refusal_or_block_without_operation_id_revokes_the_approval (tests.test_evalgate.ServiceTraceTests.test_refusal_or_block_without_operation_id_revokes_the_approval) (kind='invalidated')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 590, in test_refusal_or_block_without_operation_id_revokes_the_approval
+    self.assertProblem(self.stream(prompt, authorized, self.event(kind, op=None, hashed=self.H, **payload), started, outcome))
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_refusal_or_block_without_operation_id_revokes_the_approval (tests.test_evalgate.ServiceTraceTests.test_refusal_or_block_without_operation_id_revokes_the_approval) (kind='rejected')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 590, in test_refusal_or_block_without_operation_id_revokes_the_approval
+    self.assertProblem(self.stream(prompt, authorized, self.event(kind, op=None, hashed=self.H, **payload), started, outcome))
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_refusal_or_block_without_operation_id_revokes_the_approval (tests.test_evalgate.ServiceTraceTests.test_refusal_or_block_without_operation_id_revokes_the_approval) (kind='blocked')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 590, in test_refusal_or_block_without_operation_id_revokes_the_approval
+    self.assertProblem(self.stream(prompt, authorized, self.event(kind, op=None, hashed=self.H, **payload), started, outcome))
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_serving_prompts_must_carry_the_shown_text_hash (tests.test_evalgate.ServiceTraceTests.test_serving_prompts_must_carry_the_shown_text_hash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 608, in test_serving_prompts_must_carry_the_shown_text_hash
+    self.assertProblem(self.stream(prompt, *rest), "prompt_sha256")
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+======================================================================
+FAIL: test_tool_names_must_agree_within_an_operation (tests.test_evalgate.ServiceTraceTests.test_tool_names_must_agree_within_an_operation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 603, in test_tool_names_must_agree_within_an_operation
+    self.assertProblem(self.stream(prompt, authorized, started, outcome), "tool")
+  File "<local-checkout>/tests/test_evalgate.py", line 575, in assertProblem
+    self.assertTrue(problems and any(fragment in p for p in problems), problems)
+AssertionError: [] is not true : []
+
+----------------------------------------------------------------------
+Ran 13 tests in 3.788s
+
+FAILED (failures=12, errors=6)

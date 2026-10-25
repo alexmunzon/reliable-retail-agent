@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 from evalgate import compare, runner, scoring, trace
@@ -395,7 +396,7 @@ class EvidenceTests(HarnessFixture):
         folder, decision = compare.compare(relabelled, self.candidate, self.tmp)
         self.assertEqual("INVALID", decision)
         self.assertIn("not the content of", (folder / "comparison.md").read_text())
-        claimed = runner.git_info(ROOT)["git_sha"]  # this working tree is dirty, so it is not exactly that commit
+        claimed = self.policy["approved_baseline_sha"]  # this tree's rra/gate.py differs from that commit's
         folder, decision = compare.compare(self.baseline, self.candidate, self.tmp, expect_candidate_sha=claimed)
         self.assertEqual("INVALID", decision)
         self.assertIn("not the content of", (folder / "comparison.md").read_text())
@@ -438,6 +439,7 @@ class ContractTests(HarnessFixture):
         self.assertEqual(set(trace.EVIDENCE_CLASSES), set(schema["properties"]["evidence_class"]["enum"]))
         self.assertEqual(trace.REQUIRED_KEYS, set(schema["required"]))
         self.assertEqual(trace.ENVELOPE_KEYS, set(schema["properties"]))
+        self.assertEqual(set(trace.RECONCILED_OUTCOMES), set(defs["payload_reconciled"]["properties"]["outcome"]["enum"]))
 
     def test_real_gate_traces_conform_and_cover_every_core_event(self):
         events = [json.loads(line) for line in (self.candidate / "traces.jsonl").read_text().splitlines()]
@@ -500,11 +502,223 @@ class ContractTests(HarnessFixture):
         result = json.loads((folder / "comparison.json").read_text())
         self.assertEqual(set(schema["comparison"]["required"]), set(result))
 
+    def test_invalid_examples_fail_for_their_stated_reason(self):
+        folder = ROOT / "contracts/examples/invalid"
+        expected = json.loads((folder / "expected.json").read_text())
+        self.assertEqual(set(expected), {p.name for p in folder.glob("*.jsonl")})
+        for name, spec in expected.items():
+            with self.subTest(name=name):
+                problems, _ = trace.check_file(folder / name)
+                self.assertTrue(any(spec["expected_problem"] in p for p in problems), problems)
+
+    def test_trace_check_reports_consistent_or_invalid_never_pass(self):
+        from evalgate.__main__ import main
+        for path in sorted((ROOT / "contracts/examples").glob("*.jsonl")):
+            with self.subTest(path=path.name):
+                self.assertEqual(0, main(["trace-check", str(path)]))
+        self.assertEqual(2, main(["trace-check", str(ROOT / "contracts/examples/invalid/empty.jsonl")]))
+        self.assertEqual(2, main(["trace-check", str(self.tmp / "no-such-trace.jsonl")]))
+        result = subprocess.run([sys.executable, "-m", "evalgate", "trace-check", str(ROOT / "contracts/examples/serving-success.jsonl")],
+                                capture_output=True, text=True, cwd=ROOT)
+        self.assertIn("CONSISTENT", result.stdout)
+        self.assertIn("This is not a PASS", result.stdout)
+
+    def test_ordering_rules_apply_to_offline_gate_traces_too(self):
+        events = [json.loads(line) for line in (self.candidate / "traces.jsonl").read_text().splitlines()]
+        stream = [e for e in events if e["trace_id"] == "legit-grammar-01"]
+        self.assertEqual([], trace.validate_trace(stream))
+        without_consent = [e for e in stream if e["event_type"] != "authorized"]
+        self.assertTrue(any("without a fresh authorization" in p for p in trace.validate_trace(without_consent)))
+        without_outcome = [e for e in stream if e["event_type"] != "dispatch_succeeded"]
+        self.assertTrue(any("no recorded outcome" in p for p in trace.validate_trace(without_outcome)))
+
     def test_examples_validate(self):
         for path in sorted((ROOT / "contracts/examples").glob("*.jsonl")):
             with self.subTest(path=path.name):
                 events = [json.loads(line) for line in path.read_text().splitlines()]
                 self.assertEqual([], trace.validate_trace(events))
+
+
+class ServiceTraceTests(unittest.TestCase):
+    """Regression tests for the gpt-6-astra review of the service-trace checker (findings 1-3, 5-10)."""
+    H, H2 = "9" * 64, "a" * 64
+
+    def event(self, kind, op="op-addr-1", hashed=None, prompt_id=None, **payload):
+        event = {"schema_version": "trace-v1", "event_type": kind, "evidence_class": "serving_observation", "run_id": "run-1",
+                 "trace_id": "run-1", "session_id": "sess-1", "occurred_at": "2026-11-02T18:04:05Z", "payload": payload,
+                 "source": {"component": "backend.service", "mapping_version": "backend-outbox-map-v1"}}
+        if op:
+            event["operation_id"] = op
+        if hashed or kind in ("prompt", "authorized", "rejected", "invalidated", "dispatch_started", "dispatch_succeeded",
+                              "dispatch_uncertain", "serving.reconciled"):
+            event["payload_hash"] = hashed or self.H
+        if prompt_id:
+            event["prompt_id"] = prompt_id
+        return event
+
+    def stream(self, *events, finish=True):
+        events = [self.event("serving.run_accepted", op=None)] + list(events)
+        if finish:
+            events.append(self.event("serving.run_finished", op=None))
+        for index, event in enumerate(events, 1):
+            event["sequence"], event["event_id"] = index, f"evt-{index:04d}"
+        return events
+
+    def consented(self, op="op-addr-1", hashed=None, prompt_id="prm-1", outcome="dispatch_succeeded"):
+        tool = {"tool_name": "modify_pending_order_address"}
+        return [self.event("prompt", op, hashed, prompt_id, prompt_sha256="8" * 64, **tool),
+                self.event("authorized", op, hashed, prompt_id, classifier_version="v5"),
+                self.event("dispatch_started", op, hashed, **tool), self.event(outcome, op, hashed, **tool)]
+
+    def assertProblem(self, events, fragment=""):
+        problems = trace.validate_trace(events)
+        self.assertTrue(problems and any(fragment in p for p in problems), problems)
+
+    def test_control_streams_are_consistent(self):
+        self.assertEqual([], trace.validate_trace(self.stream(*self.consented())))
+        unknown = self.consented(outcome="dispatch_uncertain") + [self.event("serving.reconciled", outcome="effect_confirmed")]
+        self.assertEqual([], trace.validate_trace(self.stream(*unknown, *self.consented(op="op-addr-2", prompt_id="prm-2"))))
+
+    def test_reconciling_another_payload_does_not_resolve_an_unknown_outcome(self):
+        events = self.consented(outcome="dispatch_uncertain") + [self.event("serving.reconciled", hashed=self.H2, outcome="effect_confirmed")]
+        self.assertProblem(self.stream(*events, *self.consented(op="op-addr-2", prompt_id="prm-2")), "reconcil")
+
+    def test_refusal_or_block_without_operation_id_revokes_the_approval(self):
+        for kind, payload in (("invalidated", {"reason": "revoked"}), ("rejected", {}), ("blocked", {"reason": "stale_consent"})):
+            with self.subTest(kind=kind):
+                prompt, authorized, started, outcome = self.consented()
+                self.assertProblem(self.stream(prompt, authorized, self.event(kind, op=None, hashed=self.H, **payload), started, outcome))
+
+    def test_only_the_current_prompt_can_be_approved(self):
+        tool = {"tool_name": "modify_pending_order_address"}
+        old = self.event("prompt", prompt_id="prm-1", prompt_sha256="8" * 64, **tool)
+        new = self.event("prompt", hashed=self.H2, prompt_id="prm-2", prompt_sha256="7" * 64, **tool)
+        _, authorized, started, outcome = self.consented()
+        self.assertProblem(self.stream(old, new, authorized, started, outcome), "prompt")
+        self.assertProblem(self.stream(old, self.event("rejected"), authorized, started, outcome), "prompt")
+
+    def test_tool_names_must_agree_within_an_operation(self):
+        prompt, authorized, started, outcome = self.consented()
+        started["payload"]["tool_name"] = "cancel_pending_order"
+        self.assertProblem(self.stream(prompt, authorized, started, outcome), "tool")
+
+    def test_serving_prompts_must_carry_the_shown_text_hash(self):
+        prompt, *rest = self.consented()
+        del prompt["payload"]["prompt_sha256"]
+        self.assertProblem(self.stream(prompt, *rest), "prompt_sha256")
+
+    def test_dropped_lines_are_detected_and_empty_input_is_never_consistent(self):
+        events = self.stream(*self.consented())
+        self.assertProblem(events[:3])  # tail cut between complete lines, before any attempt
+        self.assertProblem(events[:2] + events[3:])  # a middle line dropped
+        self.assertProblem([])
+
+    def test_extension_events_may_use_any_payload(self):
+        self.assertEqual([], trace.validate_event(dict(self.stream()[0], payload={"prompt_sha256": None})))
+
+    def write(self, text):
+        folder = Path(tempfile.mkdtemp(prefix="evalgate-trace-"))
+        self.addCleanup(shutil.rmtree, folder)
+        (folder / "trace.jsonl").write_text(text, encoding="utf-8")
+        return folder / "trace.jsonl"
+
+    def test_malformed_values_duplicate_keys_and_framing_fail_closed_without_crashing(self):
+        from evalgate.__main__ import main
+        lines = [json.dumps(e) for e in self.stream(*self.consented())]
+        duplicate = lines[-2].replace('"event_type": "dispatch_succeeded"', '"event_type": "dispatch_uncertain", "event_type": "dispatch_succeeded"')
+        bad_key = json.loads(lines[1]); bad_key["operation_id"] = ["op"]
+        for text in ("null\n", "[]\n", "\n".join(lines[:-2] + [duplicate, lines[-1]]) + "\n",
+                     "\u2028".join(lines) + "\n", "\n".join(lines[:1] + [json.dumps(bad_key)] + lines[2:]) + "\n"):
+            with self.subTest(text=text[:40]):
+                problems, _ = trace.check_file(self.write(text))
+                self.assertTrue(problems)
+                self.assertEqual(2, main(["trace-check", str(self.write(text))]))
+        titled = [json.loads(line) for line in lines]
+        titled[1]["source"]["raw_title"] = "line\u2028separator"
+        self.assertEqual([], trace.check_file(self.write("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in titled)))[0])
+        self.assertEqual([], trace.check_file(self.write("\r\n".join(lines) + "\r\n"))[0])
+
+
+class ReproducibilityTests(HarnessFixture):
+    def test_fixed_inputs_give_identical_verdicts_records_and_traces(self):
+        again, decision = runner.run(ROOT, role="candidate", out_root=self.tmp, candidate_kind="working-tree")
+        self.assertEqual(self.decision, decision)
+        def stable(folder, name):
+            text = (folder / name).read_text().replace(folder.name, "<run>")
+            return [json.loads(line) for line in text.splitlines()] if name.endswith(".jsonl") else json.loads(text)
+        for name in ("records.jsonl", "traces.jsonl", "metrics.json", "driver-output.json"):
+            with self.subTest(name=name):
+                self.assertEqual(stable(self.candidate, name), stable(again, name))
+        first, second = (compare.compare(self.baseline, run, self.tmp) for run in (self.candidate, again))
+        self.assertEqual(first[1], second[1])
+        self.assertEqual(*(json.loads((folder / "comparison.json").read_text())["changed_cases"] for folder, _ in (first, second)))
+
+
+class TerminationTests(unittest.TestCase):
+    """A hung or crashed system under test must end in an explicit INVALID result, never a hang or a silent omission."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = Path(tempfile.mkdtemp(prefix="evalgate-termination-"))
+        policy = json.loads(runner.POLICY_PATH.read_text())
+        policy["driver_timeout_seconds"] = 3
+        cls.policy_path = cls.tmp / "policy-short-timeout.json"
+        cls.policy_path.write_text(json.dumps(policy))
+        cls.labels = runner.load_suite(runner.load_policy(cls.policy_path))[1]["labels"]
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp)
+
+    def sut(self, name, appended_to_gate):
+        root = self.tmp / name
+        for package in ("rra", "study", "adapters"):
+            shutil.copytree(ROOT / package, root / package, ignore=shutil.ignore_patterns("__pycache__"))
+        with open(root / "rra/gate.py", "a", encoding="utf-8") as handle:
+            handle.write("\n" + appended_to_gate + "\n")
+        return root
+
+    def evaluate(self, root):
+        started = time.monotonic()
+        folder, decision = runner.run(root, role="candidate", out_root=self.tmp / "runs", candidate_kind="mutant", policy_path=self.policy_path)
+        elapsed = time.monotonic() - started
+        records = [json.loads(line) for line in (folder / "records.jsonl").read_text().splitlines()]
+        manifest = json.loads((folder / "manifest.json").read_text())
+        self.assertEqual("INVALID", decision)
+        self.assertEqual(sorted(l["case_id"] for l in self.labels), sorted(r["case_id"] for r in records))  # one explicit record per case
+        self.assertNotIn("pass", {r["verdict"] for r in records if r["status"] != "completed"})
+        return elapsed, records, manifest, folder
+
+    def test_hung_driver_times_out_as_invalid(self):
+        elapsed, records, manifest, folder = self.evaluate(self.sut("hang", "import time as _t\n_t.sleep(120)"))
+        self.assertLess(elapsed, 30)
+        self.assertEqual("incomplete", manifest["termination"])
+        self.assertEqual({"missing"}, {r["status"] for r in records})
+        self.assertIn("timed out", " ".join(manifest["reasons"]))
+        problems, _, _ = runner.validate_run(folder, self.policy_path)
+        self.assertTrue(any("did not complete" in p for p in problems))
+
+    def test_crashed_driver_process_is_invalid(self):
+        _, records, manifest, _ = self.evaluate(self.sut("exit", "import os as _o\n_o._exit(3)"))
+        self.assertEqual("incomplete", manifest["termination"])
+        self.assertEqual({"infrastructure_interruption"}, {c for r in records for c in r["failure_classes"]})
+
+    def test_malformed_driver_output_is_invalid_not_a_harness_crash(self):
+        for name, output in (("list", "[]"), ("object", "{}"), ("results", '{"protocol": "evalgate-driver-v1", "loaded": {}, "results": [1]}')):
+            with self.subTest(output=output):
+                code = f"import os as _o, sys as _s\n_s.stdout.write({output!r}); _s.stdout.flush(); _o._exit(0)"
+                _, records, manifest, _ = self.evaluate(self.sut(f"malformed-{name}", code))
+                self.assertEqual("incomplete", manifest["termination"])
+                self.assertEqual({"missing"}, {r["status"] for r in records})
+
+    def test_per_case_crash_is_an_explicit_invalid_record(self):
+        _, records, manifest, _ = self.evaluate(self.sut("ctor", "class ConfirmationGate(ConfirmationGate):\n"
+                                                                  "    def __init__(self, *args, **kwargs):\n"
+                                                                  "        raise RuntimeError('synthetic constructor crash')"))
+        self.assertEqual("complete", manifest["termination"])
+        crashed = [r for r in records if r["status"] == "crashed"]
+        self.assertTrue(crashed)
+        self.assertTrue(all(r["verdict"] == "invalid" and r["failure_classes"] == ["interface_error"] for r in crashed))
 
 
 class IsolationTests(unittest.TestCase):

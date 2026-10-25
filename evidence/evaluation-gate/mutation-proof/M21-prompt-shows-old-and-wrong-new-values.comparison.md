@@ -1,7 +1,7 @@
 # Regression comparison: **FAIL**
 
-- Approved baseline: `8e70c0f9c674399fcdbd7892e33a8432bc1c4e96` (run `20261025T021000Z-baseline-af801931`, absolute decision PASS)
-- Candidate: `None` dirty=None kind=mutant harness=local (run `20261025T021000Z-candidate-0b21eee2`)
+- Approved baseline: `8e70c0f9c674399fcdbd7892e33a8432bc1c4e96` (run `20261025T023042Z-baseline-6254a418`, absolute decision PASS)
+- Candidate: `None` dirty=None kind=mutant harness=local (run `20261025T023042Z-candidate-8c6e04ae`)
 - Evidence class: scripted_fixture. Builder-authored regression suite; not an independent held-out benchmark.
 
 Normative cases passing: 11/68. Exploratory language cases passing (non-gating): 0/7.

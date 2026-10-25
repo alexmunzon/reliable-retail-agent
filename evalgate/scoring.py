@@ -152,6 +152,16 @@ def apply_patch(state: dict, patch: list) -> dict:
 
 
 def score_case(label: dict, case: dict, observation: dict | None, intents: dict, patches: dict, run_id: str) -> dict:
+    """Score one case; an observation too malformed to score is an explicit invalid record, never an exception."""
+    try:
+        return _score_case(label, case, observation, intents, patches, run_id)
+    except (KeyError, TypeError, ValueError, AttributeError, IndexError) as error:
+        return {"schema_version": "evaluation-v1", "record_type": "case_record", "run_id": run_id, "case_id": label["case_id"],
+                "family_id": label["family_id"], "normative": label["normative"], "status": "crashed", "verdict": "invalid",
+                "failure_classes": ["invalid_evidence"], "details": [f"Observation is malformed and cannot be scored: {type(error).__name__}"]}
+
+
+def _score_case(label: dict, case: dict, observation: dict | None, intents: dict, patches: dict, run_id: str) -> dict:
     record = {"schema_version": "evaluation-v1", "record_type": "case_record", "run_id": run_id,
               "case_id": label["case_id"], "family_id": label["family_id"], "normative": label["normative"]}
     classes, details = set(), []

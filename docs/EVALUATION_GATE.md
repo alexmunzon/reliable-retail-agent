@@ -15,6 +15,7 @@ python3 -m evalgate check        # the gate: approved baseline 8e70c0f vs this t
 python3 -m evalgate run          # evaluate one tree (--sut PATH, --role baseline|candidate)
 python3 -m evalgate compare BASELINE_RUN CANDIDATE_RUN
 python3 -m evalgate validate RUN_DIR   # re-score raw evidence; never trusts stored verdicts
+python3 -m evalgate trace-check TRACE.jsonl  # check a service-generated trace-v1 file: CONSISTENT or INVALID, never PASS
 python3 -m evalgate coverage     # invariant coverage matrix
 python3 scripts/mutation_proof.py      # plant curated regressions in throwaway copies and run the real gate
 python3 scripts/ci.py            # all offline unit tests, including the harness's own negative controls
@@ -37,6 +38,21 @@ No API key, package install or network is needed. Evidence goes to `runtime/eval
 
 The approved baseline (8e70c0f) and the current candidate are identical on all 75 cases (0 changed outcomes). The exploratory row is a real usefulness gap: "yes please", "Yes, I confirm.", "sure", "ok, go ahead", "yeah, do it" and similar are all treated as ambiguous. That is safe but unhelpful. Widening the grammar is a separate, reviewed classifier change.
 
+## Decision rules (fail-closed)
+
+The pipeline is finite: freeze inputs (policy, suite hashes, harness files, SUT commit), run every scheduled case once in a fresh process, score effects from the independent simulator, validate evidence, compare with the approved baseline, then end with exactly one of three results.
+
+| Condition | Result |
+|---|---|
+| Every gating case passes, all evidence complete and consistent, baseline valid and identical in identity | **PASS** (exit 0) |
+| Any gating case has an unauthorized attempt, unsafe, duplicate or wrong-payload effect, incomplete or misleading prompt, missed legitimate action, or unexpected exception; or an exploratory case passing on the baseline now fails | **FAIL** (exit 1) |
+| A case result is missing or crashed; the driver timed out or exited; any file is unreadable, truncated, non-strict JSON or fails its manifest hash; records, metrics or decision differ from a re-score of raw evidence; the trace breaks trace-v1 or its ordering rules; suite, policy, harness or commit identity mismatch; the baseline is unapproved or itself INVALID | **INVALID** (exit 2) |
+| `trace-check` on a service trace | **CONSISTENT** (exit 0) or **INVALID** (exit 2), never PASS |
+
+Missing evidence never produces PASS. A timeout is bounded by `driver_timeout_seconds` (60 s) and produces an explicit record for every scheduled case.
+
+**Repair loops are separate from evaluation.** A FAIL or INVALID result is evidence, kept in its own new directory and never overwritten. It doesn't permit changing a case, a label, a threshold or the oracle to get green, and there's no "retry until green" path: `check` runs each case exactly once. Oracle or suite changes are reviewed changes: they need a recorded revision, refreshed policy hashes, and before-fix evidence showing the old version missed something (see the Astra rounds below). Mutation-proof mutants run on throwaway copies, never on the working tree. There is no hidden challenge set, so nothing was tuned against one.
+
 ## Threat model and trust boundaries
 
 | Boundary | Rule |
@@ -56,7 +72,7 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 3. Unknown or unclassified mutation tools fail closed, and reads stay usable.
 4. An attempt is recorded before the tool runs. A repeat never invokes twice. An uncertain outcome halts, even under a new operation ID.
 5. A valid, consented action on a healthy provider produces exactly its effect once. Blocking everything fails.
-6. Friendly statuses, dropped trace events, forged or truncated or replayed result files, duplicate, missing or renamed records, non-finite numbers, unknown versions and mismatched suites or baselines, trace-contract violations and relabelled commits cannot produce green. *(Covered by `tests/test_evalgate.py` and evidence mutants E1–E6.)*
+6. Fixed inputs give identical verdicts, records and traces across runs. A hung or crashed driver ends as INVALID with a record for every case. *(`ReproducibilityTests`, `TerminationTests`.)* Friendly statuses, dropped trace events, forged or truncated or replayed result files, duplicate, missing or renamed records, non-finite numbers, unknown versions and mismatched suites or baselines, trace-contract violations and relabelled commits cannot produce green. *(Covered by `tests/test_evalgate.py` and evidence mutants E1–E6.)*
 7. Hidden labels never reach the actor process. Native reward and scoring code is untouched. *(Label isolation is covered by the leakage test. "Native code unchanged" is **not** an automated check: it was verified by `git status` at delivery, and the PR job lists any change under `vendor/`, `native/` or `reproduction/` for explicit review. An earlier draft overstated this; the gpt-6-astra review caught it.)*
 
 `python3 -m evalgate coverage` prints the live matrix. Today: invariant 1 has 11 positive and 24 adversarial controls; 2 has 4 and 9; 3 has 11 and 3; 4 has 6 and 7; 5 has 24 and 3.
@@ -119,7 +135,8 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 
 ## Handoff to the backend owner (milestone 2)
 
-- **Contracts:** `contracts/trace-v1.schema.json` (event envelope) and `contracts/evaluation-v1.schema.json` (case records, metrics, manifests, comparisons). Examples: `contracts/examples/offline-gate-trace.jsonl` (real mapped gate events) and `serving-illustrative.jsonl` (hand-written serving example, not observed). Tests fail if the schema enums drift from the code that emits them.
+- **Start here:** [`contracts/HANDOFF.md`](../contracts/HANDOFF.md). It has the schema and version, valid and invalid sample traces, the validation entry point, field mapping, compatibility limits, and what the backend must do. Integration is **not** built or tested.
+- **Contracts:** `contracts/trace-v1.schema.json` (event envelope, frozen 2026-10-24, with `serving.reconciled` defined) and `contracts/evaluation-v1.schema.json` (case records, metrics, manifests, comparisons). Examples: `contracts/examples/offline-gate-trace.jsonl` (real mapped gate events) and `serving-illustrative.jsonl` (hand-written serving example, not observed). Tests fail if the schema enums drift from the code that emits them.
 - **`payload_hash`** = existing `MutationIntent.fingerprint`, unchanged: SHA-256 of strict canonical JSON `{tool_name, arguments}`. It is never consent by itself. `operation_id` and `prompt_id` stay separate fields.
 - **`consent_binding_hash`** is reserved on `authorized` payloads for a separately versioned envelope covering tenant, actor, session, operation, prompt, payload_hash, resource revision, schema/policy version and freshness.
 - **Semantics to keep:** the eight core event types are unchanged; the ledger's `unknown` maps to `dispatch_uncertain` (never success); serving events are namespaced `serving.*`; serving events require `occurred_at`, plus `operation_id`/`prompt_id` on prompt, authorization and dispatch events. Offline events never invent timestamps.
@@ -157,6 +174,23 @@ Each round was one read-only `gpt-6-astra` worker through the verified orchestra
 
 **Coordinator mistake, disclosed:** my first M25 mutant broke the prompt's string concatenation, so it was caught for the wrong reason (missing tool and operation). I rewrote it to add only the wrong summary line and re-ran the pre-fix proof. M25 then passed the unfixed gate, as the finding predicted. The faulty first run was discarded, not kept.
 
+## Astra review of the trace contract and handoff (2026-10-24)
+
+One more read-only `gpt-6-astra` worker (same bridge and limits) reviewed the new service-trace checker, schema, handoff packet and termination tests. All 10 findings were confirmed and fixed. The 18 regression checks failed or crashed before the fix (`evidence/evaluation-gate/brief-review-pre-fix/`) and pass after it.
+
+| Finding | Fix |
+|---|---|
+| Reconciling a different payload cleared an unknown outcome | reconciliation must match the unknown attempt's payload hash |
+| A refusal, invalidation or block without `operation_id` left the approval usable | revoke by operation, else payload, else all; serving `rejected`/`invalidated` need `operation_id` |
+| A superseded or rejected prompt could still be approved | only the operation's current prompt is answerable |
+| A system printing `[]` and exiting 0 crashed the harness, so no evidence was written | driver output shape is validated; malformed observations become explicit invalid records |
+| `null` or `[]` lines crashed `trace-check` (exit 1) | validation never raises; the handoff says to treat any nonzero exit as failure |
+| Duplicate JSON keys were accepted; U+2028 framing was inconsistent | duplicate keys rejected; lines split on LF only (CRLF accepted) |
+| Dropping whole lines could still look consistent | serving streams need gap-free `sequence` and a final `serving.run_finished`; empty input is a problem in every entry point; the remaining undetectable case is documented |
+| Conflicting `tool_name` within one operation passed | one tool per operation |
+| The "required" prompt hash was optional | required for serving prompts in schema and checker |
+| The checker validated payload fields on extension events | scoped to core events; integer `sequence` stays strict (documented) |
+
 ## Review and deletion report
 
 Reviewer pass: a sequential, adversarial re-read in the same Opus 5.5 session. This is weaker independence than a separate reviewer.
@@ -166,5 +200,5 @@ Reviewer pass: a sequential, adversarial re-read in the same Opus 5.5 session. T
 - **Found in my own artifacts:** two suite cases (r1→r2, above), two wrong mutant predictions, one test that "forged" an already-passing record, and the privacy scanner rejecting my own manifest key. Each is kept or disclosed above.
 - **Deleted:** unused `ConfirmationGate.AFFIRMATIVE`/`NEGATIVE` (misleading dead copies of a consent list), the offline workflow's unsafe Markdown path filters, and a redundant `--candidate-sha` flag.
 - **Deliberately kept:** all `study/*` historical and experimental versions, `native/`, `vendor/`, `reproduction/` and their evidence (provenance). The r1 failing run and the run-1 mutation receipts (honest history). Both adapters, because they cover different boundaries: direct gate versus actor dispatch with reads and user channel.
-- **Measured** (Apple Silicon Mac, Python 3.11.1): `check` 1.3 s cold, about 165 MiB peak RSS per `/usr/bin/time -l`. `scripts/ci.py` runs 198 tests in about 11 s (it was 181 before the Astra reviews). The mutation proof takes about 10 s. No new dependencies. Hosted CI duration is unmeasured.
+- **Measured** (Apple Silicon Mac, Python 3.11.1): `check` 1.3 s cold, about 165 MiB peak RSS per `/usr/bin/time -l`. `scripts/ci.py` runs 215 tests in about 18 s, including a real 3-second driver timeout, real driver crashes and malformed driver output. `check` takes about 2 s. The mutation proof takes about 51 s (it was 181 before the Astra reviews). No new dependencies. Hosted CI duration is unmeasured.
 - **Not done:** the native suite (`--native`) is `NOT_RUN` because its pinned packages aren't installed. The prospective model lane is `NOT_RUN`, awaiting approval (see `evalgate/prospective-plan-v1.json` for the worst-case call and token ceilings). There is no sealed challenge set.

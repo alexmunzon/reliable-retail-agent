@@ -1,6 +1,7 @@
-"""Command line: run, compare, check (both), validate, coverage.
+"""Command line: run, compare, check (both), validate, trace-check, coverage.
 
 Exit codes: 0 PASS, 1 FAIL (policy violation), 2 INVALID/INCOMPLETE evidence.
+trace-check exits 0 for CONSISTENT and 2 for INVALID; it never reports PASS.
 """
 from __future__ import annotations
 
@@ -9,7 +10,7 @@ from pathlib import Path
 import sys
 import tempfile
 
-from . import compare, runner
+from . import compare, runner, trace
 
 DEFAULT_OUT = runner.REPO / "runtime" / "evalgate"
 
@@ -69,6 +70,20 @@ def cmd_validate(args) -> int:
     return 0 if not problems else 2
 
 
+def cmd_trace_check(args) -> int:
+    """Check a service-generated trace-v1 file. Consistency is not a PASS: effects need independent evidence."""
+    problems, events = trace.check_file(Path(args.trace_file))
+    for problem in problems[:50]:
+        print(f"- {problem}")
+    if problems:
+        print(f"INVALID: {len(problems)} problem(s) in {len(events)} event(s)")
+        return 2
+    streams = len({(e.get("run_id"), e.get("trace_id")) for e in events})
+    print(f"CONSISTENT: {len(events)} event(s) in {streams} trace(s) follow trace-v1 and its ordering rules. "
+          "This is not a PASS: the trace is the system's own account, and effects need independent evidence (see contracts/HANDOFF.md).")
+    return 0
+
+
 def cmd_coverage(_args) -> int:
     policy = runner.load_policy()
     _, labels = runner.load_suite(policy)
@@ -109,6 +124,9 @@ def main(argv=None) -> int:
     p = sub.add_parser("validate", help="validate one run directory from raw evidence")
     p.add_argument("run_dir")
     p.set_defaults(func=cmd_validate)
+    p = sub.add_parser("trace-check", help="check a service-generated trace-v1 JSON Lines file (never reports PASS)")
+    p.add_argument("trace_file")
+    p.set_defaults(func=cmd_trace_check)
     p = sub.add_parser("coverage", help="print the invariant coverage matrix")
     p.set_defaults(func=cmd_coverage)
     args = parser.parse_args(argv)

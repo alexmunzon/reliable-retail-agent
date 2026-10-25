@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/alexmunzon/reliable-retail-agent/contracts/trace-v1.schema.json",
-  "title": "Reliable Retail Agent trace event, v1 (PROPOSAL, not frozen)",
-  "description": "One shared event envelope for offline evaluation (milestone 1) and the durable backend (milestone 2). payload_hash is an alias of the existing rra.gate.MutationIntent.fingerprint (SHA-256 of strict canonical JSON {tool_name, arguments}); it is not a new hashing algorithm and it is not consent by itself. operation_id and prompt_id remain separate bindings. Exported traces carry hashes, never complete tool arguments or prompt text; the authenticated owner's confirmation screen is a separate surface.",
+  "title": "Reliable Retail Agent trace event, v1 (frozen 2026-10-24)",
+  "description": "One shared event envelope for offline evaluation (milestone 1) and the durable backend (milestone 2). payload_hash is an alias of the existing rra.gate.MutationIntent.fingerprint (SHA-256 of strict canonical JSON {tool_name, arguments}); it is not a new hashing algorithm and it is not consent by itself. operation_id and prompt_id remain separate bindings. Exported traces carry hashes, never complete tool arguments or prompt text; the authenticated owner's confirmation screen is a separate surface. Version policy: trace-v1 is frozen; any added, removed or re-meant field or enum value is trace-v2. Ordering semantics that JSON Schema cannot express (approval of the operation's current prompt before an attempt, revocation by refusal/invalidation/block, one attempt and one tool per operation, one outcome per attempt, no attempt while an outcome is unknown and unreconciled, reconciliation only of an unknown outcome of the same payload, serving streams numbered 1..N and ending with serving.run_finished; JSON Lines with LF or CRLF, no duplicate keys) are normative and checked by evalgate.trace.check_semantics; see contracts/HANDOFF.md.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "event_id", "sequence", "event_type", "session_id", "run_id", "trace_id", "source", "evidence_class", "payload"],
@@ -56,8 +56,14 @@
      "then": {"required": ["payload_hash"], "properties": {"payload": {"$ref": "#/$defs/payload_empty"}}}},
     {"if": {"properties": {"event_type": {"enum": ["dispatch_started", "dispatch_succeeded", "dispatch_uncertain"]}}},
      "then": {"required": ["payload_hash"], "properties": {"payload": {"$ref": "#/$defs/payload_dispatch"}}}},
+    {"if": {"properties": {"event_type": {"const": "serving.reconciled"}}, "required": ["event_type"]},
+     "then": {"required": ["operation_id", "payload_hash"], "properties": {"payload": {"$ref": "#/$defs/payload_reconciled"}}}},
     {"if": {"properties": {"evidence_class": {"const": "serving_observation"}, "event_type": {"enum": ["prompt", "authorized"]}}},
      "then": {"required": ["operation_id", "prompt_id"]}},
+    {"if": {"properties": {"evidence_class": {"const": "serving_observation"}, "event_type": {"const": "prompt"}}},
+     "then": {"properties": {"payload": {"required": ["prompt_sha256"]}}}},
+    {"if": {"properties": {"evidence_class": {"const": "serving_observation"}, "event_type": {"enum": ["rejected", "invalidated"]}}},
+     "then": {"required": ["operation_id"]}},
     {"if": {"properties": {"evidence_class": {"const": "serving_observation"}, "event_type": {"enum": ["dispatch_started", "dispatch_succeeded", "dispatch_uncertain"]}}},
      "then": {"required": ["operation_id"], "properties": {"payload": {"required": ["tool_name"]}}}}
   ],
@@ -82,6 +88,10 @@
     "payload_blocked": {
       "type": "object", "additionalProperties": false, "required": ["reason"],
       "properties": {"reason": {"enum": ["unknown_tool", "stale_consent", "ambiguous_response", "unconfirmed_dispatch", "repeat_dispatch", "halted_after_uncertain", "wrong_source", "unclassified_tool", "unmapped_legacy_reason"]}}
+    },
+    "payload_reconciled": {
+      "type": "object", "additionalProperties": false, "required": ["outcome"],
+      "properties": {"outcome": {"enum": ["effect_confirmed", "no_effect_confirmed", "still_unknown"], "description": "Resolution of an earlier dispatch_uncertain for the same operation, from evidence outside the agent (provider ledger, operator check)."}, "by": {"type": "string", "maxLength": 64}}
     },
     "payload_dispatch": {
       "type": "object", "additionalProperties": false,
