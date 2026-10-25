@@ -1,0 +1,16 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -204,9 +204,11 @@
+                   "arguments": intent.arguments, "fingerprint": intent.fingerprint, "outcome": "invoking"}
+         self._ledger[intent.operation_id] = record
+         self._dispatches.append(record)
+-        self._event("dispatch_started", "Tool invocation started", "One attempt recorded before calling the registered tool.", intent)
+         try:
+-            result = self._registry[intent.tool_name](intent.arguments)
++            try:  # MUTANT
++                result = self._registry[intent.tool_name](intent.arguments)
++            finally:
++                self._event("dispatch_started", "Tool invocation started", "late", intent)
+         except Exception as error:
+             self._halted = True
+             record["outcome"] = "uncertain"

@@ -1,0 +1,15 @@
+--- a/serving/service.py
++++ b/serving/service.py
+@@ -214,11 +214,7 @@
+ 
+     def _owned_run(self, conn, principal: Principal, run_id: str, scope: str = "runs:read") -> sqlite3.Row:
+         self.authorize(conn, principal, scope)
+-        row = conn.execute("SELECT r.* FROM runs r JOIN sessions s ON s.session_id=r.session_id "
+-                           "JOIN resources res ON res.tenant_id=s.tenant_id AND res.resource_id=s.resource_id "
+-                           "WHERE r.run_id=? AND r.tenant_id=? AND r.actor_id=? "
+-                           "AND s.tenant_id=r.tenant_id AND s.actor_id=r.actor_id AND res.owner_actor_id=r.actor_id",
+-                           (run_id, principal.tenant_id, principal.actor_id)).fetchone()
++        row = conn.execute("SELECT * FROM runs WHERE run_id=?", (run_id,)).fetchone()  # MUTANT
+         if row is None:
+             raise ServiceError(404, "not_found", "Run not found.")
+         return row

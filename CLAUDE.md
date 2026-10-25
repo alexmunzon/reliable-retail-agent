@@ -5,8 +5,9 @@ with one user-facing session owning evaluation, durable serving and observabilit
 Claude sessions remain historical records; their conversation histories were not migrated.
 Continue from the preserved source and handoffs, never from an invented reconstruction.
 
-The integration branch is `claude/backend-adapter-6b82f6`; its legacy name does not designate
-an active Claude writer. Previous writers remain retired. Explicit user approval superseded
+The current completion branch is `chatgpt/retail-restore-evidence`, based on merged release
+`3856c89`. The original `claude/backend-adapter-6b82f6` branch is preserved; its legacy name does
+not designate an active Claude writer. Previous writers remain retired. Explicit user approval superseded
 the prior local-integration denial: the dashboard history and preserved backend source have
 been integrated locally. Original source branches/worktrees remain intact. Consult
 [project state](docs/PROJECT_STATE.md) for verification status; a merge is not a test receipt.
@@ -30,7 +31,8 @@ export; consumers needing a definite no-effect dispatch outcome explicitly reque
 Never reinterpret v1 or turn incomplete restored history into a valid trace by inventing events.
 Explicit trace-v3 restore observations follow [RESTORE_EVIDENCE.md](contracts/RESTORE_EVIDENCE.md):
 provider-observed effects and missing local history stay distinct; legacy exports and cases stay frozen.
-Restore-before-approval history remains an exploratory limitation. Freeze and test the exact
+The original v2 restore-before-approval case remains exploratory and failing; v3 separately records
+provider observations without reconstructing missing history. See [completion](docs/RESTORE_COMPLETION.md). Freeze and test the exact
 backend revision before pinning it; a mutable path is not a pinned CI result.
 
 The authenticated dashboard adapter is a read-only projection of the durable outbox plus

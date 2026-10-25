@@ -1,0 +1,11 @@
+--- a/adapters/tau_dispatch.py
++++ b/adapters/tau_dispatch.py
+@@ -21,7 +21,7 @@
+ ADDRESS_MUTATIONS = frozenset({"modify_pending_order_address"})
+ RETAIL_READ_TOOLS = frozenset({
+     "find_user_id_by_email", "find_user_id_by_name_zip", "get_order_details",
+-    "get_product_details", "get_user_details", "list_all_product_types",
++    "get_product_details", "list_all_product_types",  # MUTANT
+ })
+ 
+ 

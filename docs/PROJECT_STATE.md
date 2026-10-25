@@ -1,17 +1,28 @@
 # Retail integration state — 2026-10-25
 
 One ChatGPT/Astra project session now owns the evaluation adapter, durable serving backend and
-trace latency/cost dashboard. The branch remains `claude/backend-adapter-6b82f6`. Earlier Claude
+trace latency/cost dashboard. The current branch is `chatgpt/retail-restore-evidence`; the original adapter branch remains preserved. Earlier Claude
 writers were verified quiescent before integration; they remain retired. Original conversation
 history was not migrated. The migration handoff, complete original prompts and preserved local
 checkpoints supply continuity.
+
+## Current remaining-work completion
+
+Merged baseline PR#2 is `3856c89241bf9471358628052db1b3c0b7c528d9`. The next runtime is frozen at
+`503e95445fa09849fbfe22a589b23df295618fd3` with trace-v3 restore observations, generation-aware SSE,
+credential/request ordering guards, and unique preserved-backup names. [Completion report](RESTORE_COMPLETION.md)
+and [evidence](../evidence/restore-completion-2026-10-25/README.md) contain current verification.
+The original exploratory v2 case remains failing and frozen; v3 does not attest lost local consent.
+The new branch's exact hosted checks/PR state determine publication. No remote deployment target
+or no-cost persistent capacity has been identified. Historical sections below retain their original
+revisions and counts; they do not override the current runtime pin or release authority.
 
 ## Release authorization and current deployment boundary
 
 The later 2026-10-25 instruction authorizes merge and deployment when ready within a bounded
 synthetic portfolio/demo/test scope. It supersedes the earlier no-merge/no-deploy instruction below,
 without authorizing new hosting, billing, credentials, security settings or customer effects.
-Dependency PR #1 merged as `484e4e10a02db1ca849c19f4f8e88f40cd7f77ba`; PR #2 targets `main`.
+Dependency PR #1 merged as `484e4e10a02db1ca849c19f4f8e88f40cd7f77ba`; PR #2 merged as `3856c89`.
 Its live GitHub state and exact-revision checks are authoritative for merge completion. See
 [release readiness](RELEASE_READINESS.md) for target discovery, acceptance and rollback guidance.
 No established remote Retail deployment target was found; public hosting remains unverified.
@@ -37,7 +48,7 @@ The dashboard's Git history was merged and the preserved staged backend source w
 drafts, source archives and earlier failure evidence remain intact. The local recovery inventory
 contains their paths and hashes; private coordination records are not public product evidence.
 
-## Deferred post-build reflection
+## Prior deferred post-build reflection checkpoint
 
 The passing `86e1900` baseline is preserved. The separately requested review improved provider response recovery, receipt consistency and dashboard failure/ordering behavior. Runtime is pinned to `0dd21e0676c1ef306069edfffa6a1ec399fc994d`; current results are 361 offline, 8 native, 99 serving, 24/24 backend gating, 30 browser and 11 JS-race checks passing. Four affected backend mutants were killed with an 11-case passing control. See [the report](POST_BUILD_REFLECTION.md) and [raw evidence](../evidence/post-build-reflection-2026-10-25/README.md). Hosted status must be checked against the exact PR head. Twenty-three unrelated historical copies remain preserved and untracked; clean-checkout verification does not erase the recorded in-place import-boundary failure.
 

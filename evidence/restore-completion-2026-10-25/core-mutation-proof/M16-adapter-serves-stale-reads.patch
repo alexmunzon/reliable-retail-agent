@@ -1,0 +1,17 @@
+--- a/adapters/tau_dispatch.py
++++ b/adapters/tau_dispatch.py
+@@ -105,7 +105,13 @@
+                 # A later conversation turn may retract or qualify consent.
+                 # It cannot keep authorization from an earlier prompt alive.
+                 self._gate.respond("", prompt_id=None)
+-            return AdapterResult("passthrough", self._native_dispatch(action))
++            if action.name == "respond":
++                return AdapterResult("passthrough", self._native_dispatch(action))
++            cache = self.__dict__.setdefault("_mutant_cache", {})  # MUTANT
++            key = (action.name, repr(sorted(action.kwargs.items())))
++            if key not in cache:
++                cache[key] = self._native_dispatch(action)
++            return AdapterResult("passthrough", cache[key])
+ 
+     def request_confirmation(self, action: Any, *, operation_id: str) -> AdapterResult:
+         """Present the gate's entire payload, then consume ONLY its native reply.

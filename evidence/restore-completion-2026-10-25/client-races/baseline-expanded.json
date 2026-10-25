@@ -1,0 +1,92 @@
+{
+  "verification": "serving-client-ordering-v1",
+  "status": "FAIL",
+  "scope": "actual client.js with controlled fetch/DOM facade; exposed regressions, not browser or external-effect evidence",
+  "credentials_generated": false,
+  "network_requests": 0,
+  "source_sha256": "e6c57306e740e5d0d45c9a8e38751b6ebf56965256cd6a6e68de59e3e37a10fa",
+  "counts": {
+    "total": 16,
+    "passed": 3,
+    "failed": 13
+  },
+  "results": [
+    {
+      "name": "old credential snapshot cannot render after identity replacement",
+      "status": "FAIL",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(!h.node(\"prompt\").textContent.includes(\"OLD-IDENTITY\"))\n"
+    },
+    {
+      "name": "forget invalidates in-flight snapshot and clears sensitive view",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   proposal: {\n+     payload_hash: 'synthetic-payload-hash',\n+     prompt: 'LATE-PRIVATE-PROMPT',\n+     prompt_id: 'prompt-one',\n+     proposal_version: 1,\n+     state: 'awaiting_consent'\n+   },\n+   run_id: 'run-one',\n+   state: 'awaiting_consent'\n+ }\n- null\n"
+    },
+    {
+      "name": "identity A to B to A cannot apply the first A request's 401",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'test-identity-a'\n"
+    },
+    {
+      "name": "forget clears an unsubmitted credential draft",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'test-identity-b'\n- ''\n"
+    },
+    {
+      "name": "credential replacement resumes selected run only after a current owned snapshot",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '/api/v1/runs/run-one/events'\n- '/api/v1/runs/run-one'\n                       ^\n"
+    },
+    {
+      "name": "manual refresh superseding the ownership read still resumes the selected run",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '/api/v1/runs/run-one/events'\n- '/api/v1/runs/run-one'\n                       ^\n"
+    },
+    {
+      "name": "older same-run snapshot cannot replace a newer terminal snapshot",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'awaiting_consent'\n- 'succeeded'\n"
+    },
+    {
+      "name": "older snapshot failure cannot overwrite current feedback",
+      "status": "FAIL",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(!h.logs().includes(\"OLD-FAILED-READ\"))\n"
+    },
+    {
+      "name": "latest failed read does not allow an older prompt to reappear",
+      "status": "FAIL",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(!h.node(\"prompt\").textContent.includes(\"OLD-PROMPT\"))\n"
+    },
+    {
+      "name": "identity change stops the old session-to-run command chain",
+      "status": "FAIL",
+      "error": "no second mutation under the replacement identity\n\n2 !== 1\n"
+    },
+    {
+      "name": "old create-run answer cannot adopt a run under replacement identity",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'old-identity-run'\n- null\n"
+    },
+    {
+      "name": "old command completion cannot unlock a new identity's busy command",
+      "status": "FAIL",
+      "error": "new identity can begin its own command\n\n1 !== 2\n"
+    },
+    {
+      "name": "forget drops retry intent and ignores late command feedback",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   attempt: [AsyncFunction: attempt],\n+   label: 'Cancel',\n+   runId: 'run-one'\n+ }\n- null\n"
+    },
+    {
+      "name": "current-identity command retry preserves exact body and idempotency key",
+      "status": "PASS"
+    },
+    {
+      "name": "lost create-run response retries both original session and run keys",
+      "status": "PASS"
+    },
+    {
+      "name": "double submission sends only one command while current identity is busy",
+      "status": "PASS"
+    }
+  ]
+}

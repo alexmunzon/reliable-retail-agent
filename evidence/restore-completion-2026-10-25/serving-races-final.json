@@ -1,0 +1,79 @@
+{
+  "verification": "serving-client-ordering-v1",
+  "status": "PASS",
+  "scope": "actual client.js with controlled fetch/DOM facade; exposed regressions, not browser or external-effect evidence",
+  "credentials_generated": false,
+  "network_requests": 0,
+  "source_sha256": "81e468345863d1b8b811939d688e4bd5f845dbe85c4d815ff42df855bef2fe47",
+  "counts": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0
+  },
+  "results": [
+    {
+      "name": "old credential snapshot cannot render after identity replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "forget invalidates in-flight snapshot and clears sensitive view",
+      "status": "PASS"
+    },
+    {
+      "name": "identity A to B to A cannot apply the first A request's 401",
+      "status": "PASS"
+    },
+    {
+      "name": "forget clears an unsubmitted credential draft",
+      "status": "PASS"
+    },
+    {
+      "name": "credential replacement resumes selected run only after a current owned snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "manual refresh superseding the ownership read still resumes the selected run",
+      "status": "PASS"
+    },
+    {
+      "name": "older same-run snapshot cannot replace a newer terminal snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "older snapshot failure cannot overwrite current feedback",
+      "status": "PASS"
+    },
+    {
+      "name": "latest failed read does not allow an older prompt to reappear",
+      "status": "PASS"
+    },
+    {
+      "name": "identity change stops the old session-to-run command chain",
+      "status": "PASS"
+    },
+    {
+      "name": "old create-run answer cannot adopt a run under replacement identity",
+      "status": "PASS"
+    },
+    {
+      "name": "old command completion cannot unlock a new identity's busy command",
+      "status": "PASS"
+    },
+    {
+      "name": "forget drops retry intent and ignores late command feedback",
+      "status": "PASS"
+    },
+    {
+      "name": "current-identity command retry preserves exact body and idempotency key",
+      "status": "PASS"
+    },
+    {
+      "name": "lost create-run response retries both original session and run keys",
+      "status": "PASS"
+    },
+    {
+      "name": "double submission sends only one command while current identity is busy",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+--- a/serving/worker.py
++++ b/serving/worker.py
+@@ -110,6 +110,7 @@
+     async def _dispatch(self, claim: Claim) -> None:
+         if self.settings.failpoint("crash_after_claim"):
+             os._exit(70)  # Test-only: die after the claim commit, before any provider I/O.
++        return  # MUTANT: dispatch disabled
+         started = time.monotonic()
+         provider_start_ns = time.monotonic_ns()
+         self.telemetry.count("provider_attempts")
