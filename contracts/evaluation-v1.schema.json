@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alexmunzon/reliable-retail-agent/contracts/evaluation-v1.schema.json",
+  "title": "Reliable Retail Agent evaluation records, v1",
+  "description": "Records written by `python3 -m evalgate` (milestone 1) and to be reused by the backend's serving adapter (milestone 2). Verdicts are derived from independent simulator effects; validators must re-score raw evidence instead of trusting a stored verdict. A manifest hash proves content identity, not truth or authorship.",
+  "oneOf": [
+    {"$ref": "#/$defs/case_record"},
+    {"$ref": "#/$defs/run_manifest"},
+    {"$ref": "#/$defs/metric"},
+    {"$ref": "#/$defs/comparison"}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_sha": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "decision": {"enum": ["PASS", "FAIL", "INVALID"], "description": "PASS only when every normative case passes with complete valid evidence. INVALID covers missing, crashed, contradictory or mismatched evidence and unsupported comparisons."},
+    "failure_class": {"enum": ["unauthorized_dispatch", "unsafe_effect", "duplicate_effect", "wrong_payload", "incomplete_consent_prompt",
+                               "missed_legitimate_execution", "invalid_evidence", "interface_error", "infrastructure_interruption"],
+                      "description": "Classified by consequence. unauthorized_dispatch is an attempt; unsafe_effect is a completed state change."},
+    "evidence_class": {"enum": ["scripted_fixture", "synthetic_simulator", "serving_observation", "retrospective_author_trajectory", "prospective_model"]},
+    "case_record": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "record_type", "run_id", "case_id", "family_id", "normative", "status", "verdict", "failure_classes", "details"],
+      "if": {"properties": {"status": {"const": "completed"}}},
+      "then": {"required": ["observed", "expected"]},
+      "properties": {
+        "schema_version": {"const": "evaluation-v1"},
+        "record_type": {"const": "case_record"},
+        "run_id": {"$ref": "#/$defs/id"},
+        "case_id": {"$ref": "#/$defs/id"},
+        "family_id": {"$ref": "#/$defs/id", "description": "Leakage group: paraphrases and copies share one family."},
+        "normative": {"type": "boolean", "description": "false = exploratory coverage, reported but not gating."},
+        "status": {"enum": ["completed", "crashed", "missing"]},
+        "verdict": {"enum": ["pass", "fail", "invalid"]},
+        "failure_classes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/failure_class"}},
+        "details": {"type": "array", "items": {"type": "string"}},
+        "observed": {
+          "type": "object", "additionalProperties": false,
+          "required": ["invocations", "unauthorized_attempts", "duplicate_effects", "wrong_payload_effects", "unsafe_effect",
+                       "gate_false_blocks", "downstream_failures", "state_after_sha256", "state_matches_expected", "step_statuses", "step_errors"],
+          "properties": {
+            "invocations": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+              "required": ["tool", "payload_hash", "effect_applied", "outcome"],
+              "properties": {"tool": {"type": "string"}, "payload_hash": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"const": "unrepresentable"}]},
+                             "effect_applied": {"type": "boolean"},
+                             "outcome": {"enum": ["invoking", "succeeded", "rejected", "malformed", "error_before_effect", "effect_then_timeout", "effect_then_lost_response"]}}}},
+            "unauthorized_attempts": {"type": "integer", "minimum": 0},
+            "duplicate_effects": {"type": "integer", "minimum": 0},
+            "wrong_payload_effects": {"type": "integer", "minimum": 0},
+            "unsafe_effect": {"type": "boolean"},
+            "gate_false_blocks": {"type": "integer", "minimum": 0},
+            "downstream_failures": {"type": "integer", "minimum": 0},
+            "state_after_sha256": {"$ref": "#/$defs/sha256"},
+            "state_matches_expected": {"type": "boolean"},
+            "step_statuses": {"type": "array", "items": {"type": ["string", "null"]}},
+            "step_errors": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "expected": {
+          "type": "object", "additionalProperties": false, "required": ["invocations", "state_sha256"],
+          "properties": {
+            "invocations": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["tool", "payload_hash"],
+              "properties": {"tool": {"type": "string"}, "payload_hash": {"$ref": "#/$defs/sha256"}}}},
+            "state_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      }
+    },
+    "metric": {
+      "description": "Valid only inside a run directory, linked to its run by that run's manifest output hash; metrics carry no run identity of their own.",
+      "type": "object", "additionalProperties": false,
+      "required": ["metric_id", "stratum", "numerator", "denominator", "value", "case_ids", "applicable_case_ids", "excluded", "complete", "evidence_class"],
+      "properties": {
+        "metric_id": {"enum": ["dangerous_dispatch_attempts", "unsafe_effect_episodes", "duplicate_effects", "wrong_payload_effects",
+                               "legitimate_gate_false_blocks", "legitimate_downstream_failures", "correct_legitimate_execution", "completed_valid_records"]},
+        "stratum": {"enum": ["normative", "exploratory"]},
+        "numerator": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 0, "description": "Declared ahead of time from the case contract, so a block-all or no-op SUT cannot shrink it."},
+        "value": {"type": ["number", "null"], "description": "null when the denominator is 0 (not applicable), never 0%."},
+        "case_ids": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "applicable_case_ids": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "excluded": {"type": "array", "items": {"type": "object", "required": ["case_id", "reason"]}},
+        "complete": {"type": "boolean"},
+        "evidence_class": {"$ref": "#/$defs/evidence_class"}
+      }
+    },
+    "run_manifest": {
+      "type": "object",
+      "required": ["schema_version", "record_type", "run_id", "role", "candidate_kind", "harness_trust", "started_at", "finished_at", "termination",
+                   "decision", "reasons", "harness", "policy", "suite", "sut", "runtime", "command", "evidence_class", "outputs"],
+      "properties": {
+        "schema_version": {"const": "evaluation-v1"},
+        "record_type": {"const": "run_manifest"},
+        "run_id": {"$ref": "#/$defs/id"},
+        "role": {"enum": ["baseline", "candidate"]},
+        "candidate_kind": {"enum": ["working-tree", "pr-head", "merge-revision", "approved-baseline", "mutant"]},
+        "harness_trust": {"enum": ["local", "base-revision", "bootstrap-candidate", "merged-main"]},
+        "termination": {"enum": ["complete", "incomplete"]},
+        "decision": {"$ref": "#/$defs/decision"},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "harness": {"type": "object", "required": ["version", "files_sha256", "git_sha", "dirty"]},
+        "policy": {"type": "object", "required": ["id", "sha256"]},
+        "suite": {"type": "object", "required": ["id", "cases_sha256", "labels_sha256", "scheduled_cases", "independence"]},
+        "sut": {"type": "object", "required": ["git_sha", "dirty", "components", "loaded_modules"],
+                "properties": {"git_sha": {"$ref": "#/$defs/git_sha"}}},
+        "runtime": {"type": "object", "required": ["python", "platform"]},
+        "evidence_class": {"$ref": "#/$defs/evidence_class"},
+        "outputs": {"type": "object", "additionalProperties": {"$ref": "#/$defs/sha256"}}
+      },
+      "not": {"anyOf": [{"required": ["environment"]}, {"required": ["api_key"]}, {"required": ["authorization"]}]}
+    },
+    "comparison": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "record_type", "decision", "reasons", "policy_sha256", "baseline", "candidate", "changed_cases"],
+      "properties": {
+        "schema_version": {"const": "evaluation-v1"},
+        "record_type": {"const": "comparison"},
+        "decision": {"$ref": "#/$defs/decision"},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "baseline": {"type": "object", "required": ["run_id", "sut_git_sha", "absolute_decision", "manifest_sha256"]},
+        "candidate": {"type": "object", "required": ["run_id", "sut_git_sha", "sut_dirty", "candidate_kind", "harness_trust", "manifest_sha256"]},
+        "changed_cases": {"type": "array", "items": {"type": "object", "required": ["case_id", "normative", "baseline", "candidate", "details"]}}
+      }
+    }
+  }
+}

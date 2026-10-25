@@ -1,0 +1,11 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -202,7 +202,7 @@
+         self._authorized = None
+         record = {"id": intent.operation_id, "tool_name": intent.tool_name,
+                   "arguments": intent.arguments, "fingerprint": intent.fingerprint, "outcome": "invoking"}
+-        self._ledger[intent.operation_id] = record
++        self._ledger = {intent.operation_id: record}  # MUTANT
+         self._dispatches.append(record)
+         self._event("dispatch_started", "Tool invocation started", "One attempt recorded before calling the registered tool.", intent)
+         try:

@@ -1,0 +1,13 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -208,6 +208,10 @@
+         try:
+             result = self._registry[intent.tool_name](intent.arguments)
+         except Exception as error:
++            try:  # MUTANT: automatic retry
++                self._registry[intent.tool_name](intent.arguments)
++            except Exception:
++                pass
+             self._halted = True
+             record["outcome"] = "uncertain"
+             self._event("dispatch_uncertain", "Outcome uncertain; retry stopped", f"{type(error).__name__}: {error}", intent)

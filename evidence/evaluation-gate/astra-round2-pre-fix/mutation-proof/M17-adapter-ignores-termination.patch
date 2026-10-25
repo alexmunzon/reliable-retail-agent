@@ -1,0 +1,22 @@
+--- a/adapters/tau_dispatch.py
++++ b/adapters/tau_dispatch.py
+@@ -93,9 +93,7 @@
+     def dispatch(self, action: Any, *, operation_id: str | None = None) -> AdapterResult:
+         """Try an actor action; a blocked mutation never calls native env.step."""
+         with self._lock:
+-            if self._terminated:
+-                return AdapterResult("terminated")
+-            if action.name in self._mutations:
++            if action.name in self._mutations:  # MUTANT: termination guard removed
+                 self._mutation_response = None
+                 decision = self._gate.dispatch(self._intent(action, operation_id))
+                 return AdapterResult(decision.status, self._mutation_response, decision)
+@@ -122,7 +120,7 @@
+                 return AdapterResult(proposal.status, gate_result=proposal)
+             prompt_action = self._action_factory(name="respond", kwargs={"content": proposal.prompt})
+             response = self._native_dispatch(prompt_action)
+-            if response.done or getattr(response.info, "source", None) != "user":
++            if getattr(response.info, "source", None) != "user":  # MUTANT
+                 return AdapterResult("no_fresh_user_confirmation", response, proposal)
+             decision = self._gate.respond(response.observation, prompt_id=proposal.prompt_id)
+             return AdapterResult(decision.status, response, decision)

@@ -1,0 +1,23 @@
+...............................FF............
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='Amount to issue: $250\nComplete arguments:\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 189, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 250, "amount_usd": 25,')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 189, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+----------------------------------------------------------------------
+Ran 44 tests in 10.848s
+
+FAILED (failures=2)
+- run decision is INVALID
+INVALID 20261025T020455Z-candidate-390412f1

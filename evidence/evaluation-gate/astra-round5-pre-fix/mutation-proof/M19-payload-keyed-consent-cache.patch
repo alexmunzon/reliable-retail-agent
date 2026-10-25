@@ -1,0 +1,20 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -138,6 +138,9 @@
+             return self._result("already_attempted", "This operation has already consumed its one dispatch attempt.")
+         if self._active == intent and self.status in {"awaiting_confirmation", "authorized", "ambiguous", "stale_consent"}:
+             return self._result(self.status, "Existing exact-payload prompt remains active.")
++        if intent.fingerprint == getattr(self, "_mutant_consented", None):  # MUTANT: consent cached by payload
++            self._active, self._authorized = intent, (intent.operation_id, intent.fingerprint, self._prompt_id)
++            return self._result("authorized", "Previously approved payload.")
+         changed = self._active is not None and self._active != intent
+         self._authorized = None
+         self._active = intent
+@@ -175,6 +178,7 @@
+             self._event("blocked", "Ambiguous response blocked", text, self._active)
+             return self._result("ambiguous", "An unambiguous affirmative to the exact prompt is required.")
+         self._authorized = (self._active.operation_id, self._active.fingerprint, self._prompt_id)
++        self._mutant_consented = self._active.fingerprint  # MUTANT
+         self._event("authorized", "Fresh exact-payload consent", "Customer affirmed the active prompt.", self._active)
+         return self._result("authorized", "The exact operation is authorized for one dispatch attempt.")
+ 

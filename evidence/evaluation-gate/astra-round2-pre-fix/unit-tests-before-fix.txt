@@ -1,0 +1,161 @@
+..FFFFFFF..F............F......FF.....FFFF...FF...F..
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='invalid source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='invalid source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='invalid source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='invalid source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='consent_binding_version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='authorized', fragment='classifier_version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_invalid_events_are_rejected (tests.test_evalgate.ContractTests.test_invalid_events_are_rejected) (kind='dispatch_uncertain', fragment='error_class')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 458, in test_invalid_events_are_rejected
+    self.assertTrue(any(fragment in p for p in trace.validate_event(event)), trace.validate_event(event))
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_claimed_commit_must_match_the_evaluated_content (tests.test_evalgate.EvidenceTests.test_claimed_commit_must_match_the_evaluated_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 376, in test_claimed_commit_must_match_the_evaluated_content
+    self.assertEqual("INVALID", decision)
+AssertionError: 'INVALID' != 'PASS'
+- INVALID
++ PASS
+
+
+======================================================================
+FAIL: test_trace_invalid_runs_cannot_compare_pass (tests.test_evalgate.EvidenceTests.test_trace_invalid_runs_cannot_compare_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 367, in test_trace_invalid_runs_cannot_compare_pass
+    self.assertEqual("INVALID", compare.compare(self.baseline, self.trace_invalid_copy(self.candidate), self.tmp)[1])
+AssertionError: 'INVALID' != 'PASS'
+- INVALID
++ PASS
+
+
+======================================================================
+FAIL: test_forged_or_misdirected_read_record_is_invalid (tests.test_evalgate.OracleTests.test_forged_or_misdirected_read_record_is_invalid) (forged='bogus')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 221, in test_forged_or_misdirected_read_record_is_invalid
+    self.assertEqual("fail", record["verdict"])
+AssertionError: 'fail' != 'pass'
+- fail
++ pass
+
+
+======================================================================
+FAIL: test_forged_or_misdirected_read_record_is_invalid (tests.test_evalgate.OracleTests.test_forged_or_misdirected_read_record_is_invalid) (forged='get_order_details')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 221, in test_forged_or_misdirected_read_record_is_invalid
+    self.assertEqual("fail", record["verdict"])
+AssertionError: 'fail' != 'pass'
+- fail
++ pass
+
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 250')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 184, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 25.5')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 184, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='op-credit-10')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 184, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='issue_store_credit_v2')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 184, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_reordered_step_ranges_are_invalid (tests.test_evalgate.OracleTests.test_reordered_step_ranges_are_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 202, in test_reordered_step_ranges_are_invalid
+    self.assertIn("invalid_evidence", self.score("legit-two-operations", observation)["failure_classes"])
+AssertionError: 'invalid_evidence' not found in []
+
+======================================================================
+FAIL: test_snapshot_at_invoke_must_match_the_final_trace (tests.test_evalgate.OracleTests.test_snapshot_at_invoke_must_match_the_final_trace)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 211, in test_snapshot_at_invoke_must_match_the_final_trace
+    self.assertIn("invalid_evidence", self.score("legit-grammar-01", observation)["failure_classes"])
+AssertionError: 'invalid_evidence' not found in []
+
+======================================================================
+FAIL: test_two_calls_in_one_dispatch_cannot_stand_in_for_a_later_operation (tests.test_evalgate.OracleTests.test_two_calls_in_one_dispatch_cannot_stand_in_for_a_later_operation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 194, in test_two_calls_in_one_dispatch_cannot_stand_in_for_a_later_operation
+    self.assertIn("duplicate_effect", record["failure_classes"])
+AssertionError: 'duplicate_effect' not found in []
+
+----------------------------------------------------------------------
+Ran 43 tests in 6.428s
+
+FAILED (failures=18)

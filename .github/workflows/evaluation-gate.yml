@@ -1,0 +1,74 @@
+name: Evaluation gate
+
+# Runs on EVERY pull request (no path filters, so Markdown policy/prompt edits
+# cannot skip it) and on main. No secrets, no model calls, no artifacts.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evaluation-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluation-gate:
+    name: evaluation-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out the tested revision (PR merge revision or main)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: candidate
+          fetch-depth: 0 # the pinned approved baseline and PR base must be present by SHA
+          persist-credentials: false
+
+      - name: Select the trusted harness
+        id: trust
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "pull_request" ]; then
+            git -C candidate worktree add --detach "$RUNNER_TEMP/trusted" "$BASE_SHA"
+            if [ -f "$RUNNER_TEMP/trusted/evalgate/__main__.py" ]; then
+              echo "harness=$RUNNER_TEMP/trusted" >> "$GITHUB_OUTPUT"
+              echo "trust=base-revision" >> "$GITHUB_OUTPUT"
+            else
+              echo "::warning::Bootstrap: the PR base has no evaluation harness, so this PR's own harness is used. Review evalgate/ and contracts/ by hand."
+              echo "harness=$GITHUB_WORKSPACE/candidate" >> "$GITHUB_OUTPUT"
+              echo "trust=bootstrap-candidate" >> "$GITHUB_OUTPUT"
+            fi
+            changed=$(git -C candidate diff --name-only "$BASE_SHA" HEAD -- evalgate contracts .github scripts/ci.py scripts/mutation_proof.py vendor native reproduction || true)
+            if [ -n "$changed" ]; then
+              { echo "### Gate-controlling or native/historical files changed in this PR (need explicit review)"; echo '```'; echo "$changed"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "harness=$GITHUB_WORKSPACE/candidate" >> "$GITHUB_OUTPUT"
+            echo "trust=merged-main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run the regression gate (approved baseline vs candidate)
+        working-directory: ${{ steps.trust.outputs.harness }}
+        env:
+          TRUST: ${{ steps.trust.outputs.trust }}
+          KIND: ${{ github.event_name == 'pull_request' && 'merge-revision' || 'working-tree' }}
+        run: |
+          set -uo pipefail
+          env -i PATH="/usr/bin:/bin" PYTHONDONTWRITEBYTECODE=1 python3 -m evalgate check \
+            --candidate "$GITHUB_WORKSPACE/candidate" --repo "$GITHUB_WORKSPACE/candidate" \
+            --candidate-kind "$KIND" --harness-trust "$TRUST" --expect-candidate-sha "$GITHUB_SHA" \
+            --out "$RUNNER_TEMP/evalgate" | tee "$RUNNER_TEMP/gate.log"
+          status=${PIPESTATUS[0]}
+          latest=$(ls -td "$RUNNER_TEMP"/evalgate/*-comparison-* 2>/dev/null | head -1)
+          if [ -n "$latest" ]; then cat "$latest/comparison.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          candidate=$(ls -td "$RUNNER_TEMP"/evalgate/*-candidate-* 2>/dev/null | head -1)
+          if [ -n "$candidate" ]; then cat "$candidate/summary.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          echo "Exit $status (0 PASS, 1 FAIL, 2 INVALID). Trust: $TRUST. Full evidence stays on the runner; no artifacts are uploaded." >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"

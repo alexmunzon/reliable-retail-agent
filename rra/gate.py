@@ -96,9 +96,6 @@ class ConfirmationGate:
     This in-memory ledger provides at-most-once invocation within this instance,
     not durable exactly-once guarantees across crashes or multiple processes.
     """
-    AFFIRMATIVE = frozenset({"yes", "yes.", "confirm", "confirm.", "i confirm", "i confirm.", "approved", "proceed"})
-    NEGATIVE = frozenset({"no", "no.", "cancel", "cancel.", "reject", "do not proceed", "don't proceed"})
-
     def __init__(self, registry: Mapping[str, Callable[[dict[str, Any]], Any]]):
         self._registry = dict(registry)
         if any(not isinstance(name, str) or not name or not callable(tool)

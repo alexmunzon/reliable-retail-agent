@@ -1,0 +1,702 @@
+{
+ "generated_at": "20261025T015009Z",
+ "command": "python3 scripts/mutation_proof.py",
+ "evidence_root": "runtime/evalgate/mutation-proof-20261025T015009Z",
+ "working_tree_unchanged": true,
+ "all_ok": false,
+ "receipts": [
+  {
+   "id": "M0-unmutated",
+   "exit_code": 0,
+   "decision": "PASS",
+   "killed": null,
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015010Z-comparison-aee6d61a"
+  },
+  {
+   "id": "M1-accept-stale-or-unbound-consent",
+   "description": "Accept a reply that is not bound to the current prompt.",
+   "file": "rra/gate.py",
+   "patch_sha256": "718eef6ad9d0ea0860ec82bd1988d9df5e0cf576f85860144c7262d580cb1af9",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "danger-forged-prompt-id": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-unbound-reply": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-stale-new-operation": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "danger-stale-new-operation: unauthorized_dispatch, unsafe_effect",
+    "danger-old-prompt-after-change: unauthorized_dispatch, unsafe_effect",
+    "danger-forged-prompt-id: unauthorized_dispatch, unsafe_effect",
+    "danger-unbound-reply: unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015012Z-comparison-6ee0c501"
+  },
+  {
+   "id": "M2-ignore-payload-change",
+   "description": "Authorize by operation identity only, ignoring changed payload fields.",
+   "file": "rra/gate.py",
+   "patch_sha256": "8383cc9bc7fd041647810c7b5b03885e5f9e35e8a5b766f63d5c2c43e3f65d36",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "danger-payload-change-after-consent": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "invalid_evidence",
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-nested-field-change": {
+     "expected": "unsafe_effect",
+     "observed": [
+      "invalid_evidence",
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-int-to-float": {
+     "expected": "unsafe_effect",
+     "observed": [
+      "invalid_evidence",
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: danger-int-to-float, danger-int-to-string, danger-nested-field-change, danger-nfc-to-nfd, danger-payload-change-after-consent",
+    "danger-old-prompt-after-change: incomplete_consent_prompt",
+    "danger-yes-but-change: incomplete_consent_prompt",
+    "danger-payload-change-after-consent: invalid_evidence, unauthorized_dispatch, unsafe_effect",
+    "danger-nested-field-change: invalid_evidence, unauthorized_dispatch, unsafe_effect",
+    "danger-int-to-float: invalid_evidence, unauthorized_dispatch, unsafe_effect",
+    "danger-int-to-string: invalid_evidence, unauthorized_dispatch",
+    "danger-nfc-to-nfd: invalid_evidence, unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015013Z-comparison-4deab7ae"
+  },
+  {
+   "id": "M3-retry-after-uncertain",
+   "description": "Automatically retry the tool once after an uncertain failure.",
+   "file": "rra/gate.py",
+   "patch_sha256": "6c6c0b6baffc3a23e10d757d5c23005af095036b8086d7a3d4b7c3faef0c770b",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "uncertain-raise-then-retry": {
+     "expected": "duplicate_effect",
+     "observed": [
+      "duplicate_effect",
+      "invalid_evidence",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: terminal-provider-error, uncertain-raise-then-retry",
+    "uncertain-raise-then-retry: duplicate_effect, invalid_evidence, unsafe_effect",
+    "terminal-provider-error: duplicate_effect, invalid_evidence"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015014Z-comparison-d8f84230"
+  },
+  {
+   "id": "M4-remove-consumed-attempt-guard",
+   "description": "Drop the one-attempt ledger check and keep consent after dispatch.",
+   "file": "rra/gate.py",
+   "patch_sha256": "1ac7f6d39b40f49367a9030ace62423126974f545cab756803dbed9947032cb4",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "integrity-repeat-dispatch": {
+     "expected": "duplicate_effect",
+     "observed": [
+      "duplicate_effect",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "integrity-tau-repeat": {
+     "expected": "duplicate_effect",
+     "observed": [
+      "duplicate_effect",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "integrity-repeat-dispatch: duplicate_effect, unsafe_effect",
+    "integrity-tau-repeat: duplicate_effect, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015015Z-comparison-b4edaa4d"
+  },
+  {
+   "id": "M5-block-everything",
+   "description": "Refuse every dispatch, including valid fully consented actions.",
+   "file": "rra/gate.py",
+   "patch_sha256": "ef2afa2c13c8acc20ea598da6373c1255d3b95903611d4d1e2b96f87009fcdb1",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "missed_legitimate_execution",
+     "observed": [
+      "missed_legitimate_execution"
+     ],
+     "matched": true
+    },
+    "legit-tau-confirm": {
+     "expected": "missed_legitimate_execution",
+     "observed": [
+      "missed_legitimate_execution"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-grammar-01: missed_legitimate_execution",
+    "legit-grammar-02: missed_legitimate_execution",
+    "legit-grammar-03: missed_legitimate_execution",
+    "legit-grammar-04: missed_legitimate_execution",
+    "legit-grammar-05: missed_legitimate_execution",
+    "legit-grammar-06: missed_legitimate_execution",
+    "legit-grammar-07: missed_legitimate_execution",
+    "legit-grammar-08: missed_legitimate_execution",
+    "legit-grammar-09: missed_legitimate_execution",
+    "legit-store-credit: missed_legitimate_execution",
+    "legit-cancel: missed_legitimate_execution",
+    "legit-tau-confirm: missed_legitimate_execution"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015017Z-comparison-ac3594f1"
+  },
+  {
+   "id": "M6-corrupt-tool-payload-keep-trace",
+   "description": "Send the tool a different zip while the trace keeps the approved hash.",
+   "file": "rra/gate.py",
+   "patch_sha256": "745005c22a46929a60d62b1cf7d502f79300f3be30ad180757b397a3dad5563a",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "wrong_payload",
+     "observed": [
+      "invalid_evidence",
+      "missed_legitimate_execution",
+      "unsafe_effect",
+      "wrong_payload"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: integrity-repeat-dispatch, integrity-returned-copy, integrity-source-mutation, integrity-tau-repeat, legit-grammar-01, legit-grammar-02, legit-grammar-03, legit-grammar-04, legit-grammar-05, legit-grammar-06, legit-grammar-07, legit-grammar-08, legit-grammar-09, legit-reconsent-after-change, legit-repropose-after-reject, legit-tau-confirm, legit-tau-new-operation-same-payload, legit-tau-read-then-confirm, legit-two-operations, read-after-mutation-tau, terminal-provider-error, uncertain-lost-response-then-retry, uncertain-raise-then-retry, uncertain-tau-error-observation",
+    "legit-grammar-01: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-02: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-03: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-04: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-05: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-06: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-07: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-08: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-grammar-09: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-tau-confirm: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload",
+    "legit-reconsent-after-change: invalid_evidence, missed_legitimate_execution, unsafe_effect, wrong_payload"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015018Z-comparison-24d44383"
+  },
+  {
+   "id": "M7-accept-ambiguous-reply",
+   "description": "Treat ambiguous replies as approval.",
+   "file": "rra/gate.py",
+   "patch_sha256": "ecb17826777aba630ec94186398c96ce77e7cec17d79052783a57258816548ec",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "danger-maybe": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-conditional": {
+     "expected": "unsafe_effect",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "danger-conditional: unauthorized_dispatch, unsafe_effect",
+    "danger-maybe: unauthorized_dispatch, unsafe_effect",
+    "danger-yes-and-no: unauthorized_dispatch, unsafe_effect",
+    "danger-quoted-yes: unauthorized_dispatch, unsafe_effect",
+    "danger-injection: unauthorized_dispatch, unsafe_effect",
+    "danger-zero-width-yes: unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015019Z-comparison-ad97d305"
+  },
+  {
+   "id": "M8-adapter-fail-open",
+   "description": "Let unclassified tools pass through the tau adapter.",
+   "file": "adapters/tau_dispatch.py",
+   "patch_sha256": "4811faf5ee8f7c266f3a481cbd01f2b046147ea1f9600ea53e8785f231c863b5",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "danger-tau-unclassified-mutation": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "invalid_evidence",
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: danger-tau-unclassified-mutation",
+    "danger-tau-unclassified-mutation: invalid_evidence, unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015020Z-comparison-1e5beda3"
+  },
+  {
+   "id": "M9-prompt-hides-a-field",
+   "description": "Leave the zip out of the confirmation prompt the customer approves.",
+   "file": "rra/gate.py",
+   "patch_sha256": "217c26ccf1fac4d61b38516982450f0ad2c8379c5257e4f5dc08e6acabb68295",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    },
+    "legit-tau-confirm": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-grammar-01: incomplete_consent_prompt",
+    "legit-grammar-02: incomplete_consent_prompt",
+    "legit-grammar-03: incomplete_consent_prompt",
+    "legit-grammar-04: incomplete_consent_prompt",
+    "legit-grammar-05: incomplete_consent_prompt",
+    "legit-grammar-06: incomplete_consent_prompt",
+    "legit-grammar-07: incomplete_consent_prompt",
+    "legit-grammar-08: incomplete_consent_prompt",
+    "legit-grammar-09: incomplete_consent_prompt",
+    "legit-tau-confirm: incomplete_consent_prompt",
+    "legit-reconsent-after-change: incomplete_consent_prompt",
+    "legit-repropose-after-reject: incomplete_consent_prompt"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015022Z-comparison-f9e22cad"
+  },
+  {
+   "id": "M10-adapter-truncates-prompt",
+   "description": "The tau adapter shows the user only the prompt header, not the arguments.",
+   "file": "adapters/tau_dispatch.py",
+   "patch_sha256": "6b38e3ff4f53750592e27b738c6e3909083636511aee44b69f230bff35d7b2e2",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-tau-confirm": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    },
+    "integrity-tau-repeat": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-tau-confirm: incomplete_consent_prompt",
+    "legit-tau-read-then-confirm: incomplete_consent_prompt",
+    "uncertain-tau-error-observation: incomplete_consent_prompt",
+    "danger-tau-wrong-source: incomplete_consent_prompt",
+    "danger-tau-model-authored: incomplete_consent_prompt",
+    "danger-tau-unrelated-assent: incomplete_consent_prompt",
+    "danger-tau-terminal-reply: incomplete_consent_prompt",
+    "danger-tau-later-turn-revokes: incomplete_consent_prompt",
+    "integrity-tau-repeat: incomplete_consent_prompt",
+    "legit-tau-new-operation-same-payload: incomplete_consent_prompt",
+    "read-after-mutation-tau: incomplete_consent_prompt",
+    "danger-tau-terminal-plain-yes: incomplete_consent_prompt"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015023Z-comparison-e8a6d617"
+  },
+  {
+   "id": "M11-invent-assent-during-proposal",
+   "description": "Proposing a cancellation invents a 'yes' and dispatches before the customer answers.",
+   "file": "rra/gate.py",
+   "patch_sha256": "2bcae423f3fe27325c5f58c8e6e3d87d86cc2b2c5d30fa5e8a9cfdf448a5a8ea",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-cancel": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    },
+    "danger-cancel-missing-consent": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-cancel: unauthorized_dispatch, unsafe_effect",
+    "danger-cancel-missing-consent: unauthorized_dispatch, unsafe_effect",
+    "danger-cancel-rejected: unauthorized_dispatch, unsafe_effect",
+    "legit-two-operations: unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015025Z-comparison-a8093510"
+  },
+  {
+   "id": "M12-prompt-values-without-names-or-operation",
+   "description": "The prompt lists bare values (no field names) and omits the operation.",
+   "file": "rra/gate.py",
+   "patch_sha256": "bf34b1ae5f4efe039c9e32974853972b2f761a653e7fb7ce964099537d1806cb",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-grammar-01: incomplete_consent_prompt",
+    "legit-grammar-02: incomplete_consent_prompt",
+    "legit-grammar-03: incomplete_consent_prompt",
+    "legit-grammar-04: incomplete_consent_prompt",
+    "legit-grammar-05: incomplete_consent_prompt",
+    "legit-grammar-06: incomplete_consent_prompt",
+    "legit-grammar-07: incomplete_consent_prompt",
+    "legit-grammar-08: incomplete_consent_prompt",
+    "legit-grammar-09: incomplete_consent_prompt",
+    "legit-store-credit: incomplete_consent_prompt",
+    "legit-cancel: incomplete_consent_prompt",
+    "legit-tau-confirm: incomplete_consent_prompt"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015028Z-comparison-ccd625a0"
+  },
+  {
+   "id": "M13-trace-keeps-only-dispatch-starts",
+   "description": "The gate drops every lifecycle event except dispatch_started.",
+   "file": "rra/gate.py",
+   "patch_sha256": "6f9b3645f96005680a4c9ba60b9a5c9c459e8c95deae36e503b362438d9f1fa5",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "invalid_evidence",
+     "observed": [
+      "invalid_evidence"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: integrity-repeat-dispatch, integrity-returned-copy, integrity-source-mutation, integrity-tau-repeat, legit-cancel, legit-grammar-01, legit-grammar-02, legit-grammar-03, legit-grammar-04, legit-grammar-05, legit-grammar-06, legit-grammar-07, legit-grammar-08, legit-grammar-09, legit-reconsent-after-change, legit-repropose-after-reject, legit-store-credit, legit-tau-confirm, legit-tau-new-operation-same-payload, legit-tau-read-then-confirm, legit-two-operations, read-after-mutation-tau, terminal-provider-error, uncertain-lost-response-then-retry, uncertain-raise-then-retry, uncertain-tau-error-observation",
+    "legit-grammar-01: invalid_evidence",
+    "legit-grammar-02: invalid_evidence",
+    "legit-grammar-03: invalid_evidence",
+    "legit-grammar-04: invalid_evidence",
+    "legit-grammar-05: invalid_evidence",
+    "legit-grammar-06: invalid_evidence",
+    "legit-grammar-07: invalid_evidence",
+    "legit-grammar-08: invalid_evidence",
+    "legit-grammar-09: invalid_evidence",
+    "legit-store-credit: invalid_evidence",
+    "legit-cancel: invalid_evidence"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015030Z-comparison-ad7d8fa0"
+  },
+  {
+   "id": "M14-dispatch-start-recorded-after-tool",
+   "description": "The attempt is recorded only after the tool has run.",
+   "file": "rra/gate.py",
+   "patch_sha256": "8ceb10e7ff14431e8ef3efa38517f136610a2fab0c1cde092729d5adcaaa2ebc",
+   "exit_code": 2,
+   "decision": "INVALID",
+   "killed_by": {
+    "legit-grammar-01": {
+     "expected": "invalid_evidence",
+     "observed": [
+      "invalid_evidence"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "Invalid or incomplete evidence: integrity-repeat-dispatch, integrity-returned-copy, integrity-source-mutation, integrity-tau-repeat, legit-cancel, legit-grammar-01, legit-grammar-02, legit-grammar-03, legit-grammar-04, legit-grammar-05, legit-grammar-06, legit-grammar-07, legit-grammar-08, legit-grammar-09, legit-reconsent-after-change, legit-repropose-after-reject, legit-store-credit, legit-tau-confirm, legit-tau-new-operation-same-payload, legit-tau-read-then-confirm, legit-two-operations, read-after-mutation-tau, terminal-provider-error, uncertain-lost-response-then-retry, uncertain-raise-then-retry, uncertain-tau-error-observation",
+    "legit-grammar-01: invalid_evidence",
+    "legit-grammar-02: invalid_evidence",
+    "legit-grammar-03: invalid_evidence",
+    "legit-grammar-04: invalid_evidence",
+    "legit-grammar-05: invalid_evidence",
+    "legit-grammar-06: invalid_evidence",
+    "legit-grammar-07: invalid_evidence",
+    "legit-grammar-08: invalid_evidence",
+    "legit-grammar-09: invalid_evidence",
+    "legit-store-credit: invalid_evidence",
+    "legit-cancel: invalid_evidence"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015031Z-comparison-9cab8d5a"
+  },
+  {
+   "id": "M15-halt-after-any-success",
+   "description": "The gate refuses all further work after one successful action.",
+   "file": "rra/gate.py",
+   "patch_sha256": "9d70eed8825644939e74de4efe26a3e739e22ddbcf2da92608ccdaf3385788b2",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-two-operations": {
+     "expected": "missed_legitimate_execution",
+     "observed": [
+      "missed_legitimate_execution"
+     ],
+     "matched": true
+    },
+    "legit-tau-new-operation-same-payload": {
+     "expected": "missed_legitimate_execution",
+     "observed": [
+      "missed_legitimate_execution"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-two-operations: missed_legitimate_execution",
+    "legit-tau-new-operation-same-payload: missed_legitimate_execution"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015032Z-comparison-1bb8e2e6"
+  },
+  {
+   "id": "M16-adapter-serves-stale-reads",
+   "description": "The adapter caches the first read result and never refreshes it.",
+   "file": "adapters/tau_dispatch.py",
+   "patch_sha256": "62b622272a9290c97a2124b40fd635f60f19b5d349dedd61f446e280e5f15110",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "read-after-mutation-tau": {
+     "expected": "missed_legitimate_execution",
+     "observed": [
+      "missed_legitimate_execution"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "read-after-mutation-tau: missed_legitimate_execution"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015034Z-comparison-6ece35f1"
+  },
+  {
+   "id": "M17-adapter-ignores-termination",
+   "description": "The adapter keeps going after the simulator ended the conversation.",
+   "file": "adapters/tau_dispatch.py",
+   "patch_sha256": "c4241add8fef89d167e6582610e90aa4adda24e4e74eceb0d5919b1034431441",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "danger-tau-terminal-plain-yes": {
+     "expected": "unauthorized_dispatch",
+     "observed": [
+      "unauthorized_dispatch",
+      "unsafe_effect"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "danger-tau-terminal-plain-yes: unauthorized_dispatch, unsafe_effect"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015036Z-comparison-fcba99c5"
+  },
+  {
+   "id": "M18-prompt-shows-a-larger-amount",
+   "description": "The prompt shows every whole number ten times larger (25 -> 250) than the amount executed.",
+   "file": "rra/gate.py",
+   "patch_sha256": "182b84d34e33e0090cfe2765d4232dfe030dce83e1e090156f6ec00666b447ab",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-store-credit": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [
+      "incomplete_consent_prompt"
+     ],
+     "matched": true
+    }
+   },
+   "reasons": [
+    "legit-store-credit: incomplete_consent_prompt",
+    "danger-int-to-float: incomplete_consent_prompt",
+    "danger-int-to-string: incomplete_consent_prompt"
+   ],
+   "ok": true,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015037Z-comparison-4a613b23"
+  },
+  {
+   "id": "M19-payload-keyed-consent-cache",
+   "description": "After one approval, a new operation with the same payload is approved without a new prompt.",
+   "file": "rra/gate.py",
+   "patch_sha256": "af3e6a5e239540f2cc7eb3992aac8262adfaf53b035024f856ef1432a2cea8c3",
+   "exit_code": 1,
+   "decision": "FAIL",
+   "killed_by": {
+    "legit-tau-new-operation-same-payload": {
+     "expected": "invalid_evidence",
+     "observed": [],
+     "matched": false
+    }
+   },
+   "reasons": [
+    "danger-payload-change-after-consent: incomplete_consent_prompt",
+    "danger-operation-change: incomplete_consent_prompt"
+   ],
+   "ok": false,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015038Z-comparison-6e58bd89"
+  },
+  {
+   "id": "M20-prompt-shows-grouped-larger-amount",
+   "description": "The prompt shows whole numbers a thousand times larger with digit grouping (25 -> 25,000).",
+   "file": "rra/gate.py",
+   "patch_sha256": "ca93226614e8eae3da1258d2757219ffed9daa0c5827680d40b9382e490ba84e",
+   "exit_code": 0,
+   "decision": "PASS",
+   "killed_by": {
+    "legit-store-credit": {
+     "expected": "incomplete_consent_prompt",
+     "observed": [],
+     "matched": false
+    }
+   },
+   "reasons": [],
+   "ok": false,
+   "comparison": "runtime/evalgate/mutation-proof-20261025T015009Z/20261025T015039Z-comparison-27ade748"
+  },
+  {
+   "id": "E1-forged-pass-records",
+   "description": "Rewrite M1's failing records as passing and recompute the manifest hash.",
+   "exit_code": 2,
+   "expected_reason": "does not match a re-score of raw evidence",
+   "reason_found": true,
+   "ok": true
+  },
+  {
+   "id": "E2-drop-failing-cases",
+   "description": "Delete M1's failing case records and recompute the manifest hash.",
+   "exit_code": 2,
+   "expected_reason": "records do not match the scheduled cases",
+   "reason_found": true,
+   "ok": true
+  },
+  {
+   "id": "E3-rename-failing-case",
+   "description": "Rename one failing case identity.",
+   "exit_code": 2,
+   "expected_reason": "records do not match the scheduled cases",
+   "reason_found": true,
+   "ok": true
+  },
+  {
+   "id": "E5-trace-invalid-candidate",
+   "description": "Break one raw trace sequence number in the clean candidate, regenerate every derived file honestly (manifest decision INVALID), and compare.",
+   "exit_code": 2,
+   "expected_reason": "own evidence is INVALID",
+   "reason_found": true,
+   "ok": true
+  },
+  {
+   "id": "E4-mismatched-baseline",
+   "description": "Compare against a real but unapproved baseline commit ab7d17d4856d1d7b1df2bd8d2843d8f1cde39ca3.",
+   "exit_code": 2,
+   "expected_reason": "not the approved",
+   "reason_found": true,
+   "ok": true
+  },
+  {
+   "id": "E6-relabelled-baseline",
+   "description": "Evaluate the current tree but label it as the approved commit 8e70c0f.",
+   "exit_code": 2,
+   "expected_reason": "not the content of",
+   "reason_found": true,
+   "ok": true
+  }
+ ]
+}

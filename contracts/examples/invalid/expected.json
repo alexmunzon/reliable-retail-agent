@@ -1,0 +1,70 @@
+{
+ "attempt-without-consent.jsonl": {
+  "expected_problem": "attempt without a fresh authorization",
+  "why": "dispatch_started has no authorized event before it."
+ },
+ "consent-for-other-payload.jsonl": {
+  "expected_problem": "authorization does not answer",
+  "why": "The approval is for a different payload than the prompt and the attempt."
+ },
+ "second-attempt-same-operation.jsonl": {
+  "expected_problem": "second attempt for operation",
+  "why": "The same operation_id is prompted, approved and attempted twice."
+ },
+ "missing-outcome-truncated.jsonl": {
+  "expected_problem": "has no recorded outcome",
+  "why": "The trace ends after dispatch_started (truncated or lost evidence)."
+ },
+ "missing-run-finished.jsonl": {
+  "expected_problem": "must end with exactly one serving.run_finished",
+  "why": "Whole lines were cut from the end; the terminal event is missing."
+ },
+ "dropped-middle-event.jsonl": {
+  "expected_problem": "without gaps",
+  "why": "A complete line (the approval) was removed from the middle."
+ },
+ "reconciled-without-unknown.jsonl": {
+  "expected_problem": "reconciliation of an outcome that was not unknown",
+  "why": "A succeeded attempt is 'reconciled'."
+ },
+ "reconciled-other-payload.jsonl": {
+  "expected_problem": "reconciliation of an outcome that was not unknown",
+  "why": "The reconciliation names a different payload than the unknown attempt."
+ },
+ "attempt-while-outcome-unknown.jsonl": {
+  "expected_problem": "while an earlier outcome is unknown",
+  "why": "A new operation starts before the unknown outcome of op-addr-1 is reconciled."
+ },
+ "superseded-prompt-approved.jsonl": {
+  "expected_problem": "current prompt",
+  "why": "The customer is shown a newer prompt, but the approval answers the older one."
+ },
+ "tool-changed-mid-operation.jsonl": {
+  "expected_problem": "differs from",
+  "why": "The attempt names a different tool than the prompt the customer saw."
+ },
+ "leaks-prompt-text.jsonl": {
+  "expected_problem": "disallowed fields",
+  "why": "Traces carry hashes, never prompt text or arguments."
+ },
+ "serving-event-without-time.jsonl": {
+  "expected_problem": "require occurred_at",
+  "why": "Serving events must carry a real timestamp."
+ },
+ "duplicate-key.jsonl": {
+  "expected_problem": "duplicate keys",
+  "why": "One line states two outcomes; parsers disagree on which wins."
+ },
+ "truncated-line.jsonl": {
+  "expected_problem": "not one complete JSON value",
+  "why": "The last line was cut off mid-write."
+ },
+ "not-an-object.jsonl": {
+  "expected_problem": "event is not an object",
+  "why": "A line that is valid JSON but not an event."
+ },
+ "empty.jsonl": {
+  "expected_problem": "no events",
+  "why": "Missing evidence is never consistent."
+ }
+}
