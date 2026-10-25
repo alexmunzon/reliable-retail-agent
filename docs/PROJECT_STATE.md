@@ -34,10 +34,10 @@ The historical dashboard hold is retained in [INTEGRATION_HOLD.md](observability
 It describes the pre-integration checkpoint, not the current adapter.
 
 The three-track integration is locally verified. Runtime source and the immutable backend pin are
-`87970608892a0d130a18f9c6bc31bdfcf0e9e471`. Final results: 338 offline tests, 91 serving/crash tests,
+`87970608892a0d130a18f9c6bc31bdfcf0e9e471`. Final results: 342 offline tests, 91 serving/crash tests,
 8 native-author checks, 24/24 pinned backend gating cases, 33 core/evidence mutants, 11 backend
 mutants, 28 headless UI checks and 22 fresh-environment HTTP checks passed. Paired synthetic
-performance runs met the declared diagnostic budgets. See the linked evidence for scope and hashes.
+performance runs met the declared diagnostic budgets. See the linked evidence for scope and hashes. The [follow-up](../evidence/integration-2026-10-25-followup/README.md) records the r5 exact-refusal correction and deterministic storage-fault harness-v2 after an initial hosted INVALID result; runtime source and all deadlines remain unchanged.
 
 The authorized feature branch and existing draft PR #2 are the publication target. Check that PR's
 exact head and checks for current hosted status. Main requires the existing `evaluation-gate` and

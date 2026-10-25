@@ -1,9 +1,11 @@
 # Integrated retail verification, 2026-10-25
 
+**Historical r4/harness-v1 receipt.** The [final reflection/CI follow-up](../integration-2026-10-25-followup/README.md) supersedes the backend validation status below and retains these original artifacts unchanged.
+
 Runtime commit: `87970608892a0d130a18f9c6bc31bdfcf0e9e471`.
 
 - [Machine-readable verification](verification.json), with exact commands and log digests.
-- [Pinned backend summary](20261025T072223Z-backend-babb43f7/summary.md) and unchanged raw observations/traces/manifest. `python3 -m evalgate backend-validate evidence/integration-2026-10-25/20261025T072223Z-backend-babb43f7` verifies the evidence.
+- [Pinned backend summary](20261025T072223Z-backend-babb43f7/summary.md) and unchanged raw observations/traces/manifest. Validate this historical evidence with the original `8797060` harness/policy; the current stricter version deliberately rejects cross-version receipts.
 - [Offline tests](offline.log), [serving/crash tests](serving.log), [native-author checks](native.log), [fresh-environment HTTP checks](cleanroom.log).
 - [Core/evidence mutants](evaluation-mutants.log), [backend mutants](backend-mutants.log), [headless UI](headless-ui.json).
 - [Performance and limits](PERFORMANCE.md), [derived comparison](performance-comparison.json), [fixture dashboard benchmark](dashboard-bench.json).

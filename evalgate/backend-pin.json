@@ -6,5 +6,5 @@
  "lock_file": "requirements-serving.lock",
  "lock_sha256": "dfcd019606601a0ffc97421d21b8b86722a9a289611c1c0c912dc6c4678d62e6",
  "python": "3.11",
- "status": "Frozen integrated backend; 91 serving tests and all 24 backend-v1 r4 gating cases passed locally. Hosted verification is recorded separately."
+ "status": "Frozen integrated backend; source and dependency lock are immutable. Verification receipts are versioned separately."
 }

@@ -3,7 +3,7 @@
 **Local verification complete: 2026-10-25.** The backend is pinned to
 `87970608892a0d130a18f9c6bc31bdfcf0e9e471`, with its dependency-lock digest. All three tracks
 are integrated on `claude/backend-adapter-6b82f6`; original source branches remain intact.
-[Evidence](../evidence/integration-2026-10-25/README.md) records exact commands, counts and limitations.
+[Initial integration evidence](../evidence/integration-2026-10-25/README.md) and [final reflection/CI follow-up](../evidence/integration-2026-10-25-followup/README.md) records exact commands, counts and limitations.
 [Draft PR #2](https://github.com/alexmunzon/reliable-retail-agent/pull/2) carries the latest remote-head
 CI status. GitHub merges, deployment and repository security/settings changes remain prohibited.
 
@@ -35,13 +35,13 @@ reviews, not independent real-world collection.
 
 | Command/lane | Result on the integrated source | Evidence/limits |
 |---|---|---|
-| `python3 -B scripts/ci.py` | 338 passed; 21.377 s | Includes fixture dashboard oracles and eight planted dashboard mutants |
+| `python3 -B scripts/ci.py` | 342 passed; 20.700 s | Includes fixture dashboard oracles and eight planted dashboard mutants |
 | `python3 -B scripts/ci_serving.py` | 91 passed; 97.962 s | HTTP/SSE, process crashes, storage failures, restore, auth, trace-v1/v2 and live dashboard |
 | `scripts/ci.py --native` in existing exact-version environment | 338 core + 8 original-author checks passed | Native checks 3.717 s; synthetic completions, no model calls |
 | `python3 -m evalgate check` | 68/68 normative; 0 changed outcomes | 0/7 exploratory language cases; existing approved baseline unchanged |
-| `evalgate backend --pinned` from fresh environment | 24/24 gating cases passed | Exact commit and lock verified; one exploratory restore-before-approval failure retained |
+| `evalgate backend --pinned` from fresh environment | 24/24 gating cases passed under r5/harness-v2 | Exact commit and lock verified; one exploratory restore-before-approval failure retained |
 | Core/evidence mutation proof | 33/33 killed; unmutated control passed | Named semantic failure checks, including evidence tampering |
-| Backend mutation proof | 11/11 killed; control passed | Independent provider ledger; B5 checks exact refusal status and code |
+| Backend mutation proof | 11/11 killed under r4; affected B11 reverified under r5/v2 | Independent ledger; exact B5/B11 refusal status/code |
 | Headless UI | 28 checks passed | 101→100 sample disclosure, GET-only, empty browser storage, unchanged business state; no external requests |
 | Fresh archive + fresh offline hash-locked venv | 22 HTTP/dashboard tests passed; 18.282 s | 15 packages installed from existing cache; no downloads |
 | Predeclared serving workload | Both sources passed 54 diagnostic budget checks | 360/360 measured operations/effects per source; short accelerated local bursts |
@@ -51,7 +51,7 @@ reviews, not independent real-world collection.
 [performance report](../evidence/integration-2026-10-25/PERFORMANCE.md) gives samples, warmup,
 resource bounds, before/after results and limitations. The initial failures remain preserved.
 The B5 refusal gap was exposed during review and fixed with a declared label-only r4 update;
-no cases or state/effect gates were removed, and the original baseline was not automatically updated.
+no cases or state/effect gates were removed, and the original baseline was not automatically updated. Final reflection also found B11 accepted the right refusal code with the wrong HTTP status; r5 strengthens that label. Hosted CI exposed an ineffective chmod-only storage-fault phase. Harness-v2 holds a real SQLite write lock and guarantees cleanup; no readiness deadline or safety threshold was relaxed. The failed CI receipt and all earlier local results remain preserved.
 
 Delivery states remain distinct. Local verification is complete. Read the exact PR-head checks
 before claiming `CI_EXECUTED`. The existing main ruleset requires `evaluation-gate` and `test`;

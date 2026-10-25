@@ -1,0 +1,21 @@
+FF
+======================================================================
+FAIL: test_degraded_code_with_wrong_http_status_is_caught (tests.test_evalgate_backend.PlantedFailureTests.test_degraded_code_with_wrong_http_status_is_caught) (status=202)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_evalgate_backend.py", line 234, in test_degraded_code_with_wrong_http_status_is_caught
+    self.assertIn("uncontrolled_refusal", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
+AssertionError: 'uncontrolled_refusal' not found in []
+
+======================================================================
+FAIL: test_degraded_code_with_wrong_http_status_is_caught (tests.test_evalgate_backend.PlantedFailureTests.test_degraded_code_with_wrong_http_status_is_caught) (status=500)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_evalgate_backend.py", line 234, in test_degraded_code_with_wrong_http_status_is_caught
+    self.assertIn("uncontrolled_refusal", score("bk-persistence-failure-after-effect", observation)["failure_classes"])
+AssertionError: 'uncontrolled_refusal' not found in []
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=2)

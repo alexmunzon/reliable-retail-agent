@@ -149,7 +149,18 @@ Limits stated plainly: the simulator shares a process with the candidate, so a *
 - **Prompt contract:** the offline oracle pins the gate's exact confirmation text (`scoring.PROMPT_TEMPLATE`): operation, tool and one strict JSON argument object. A serving UI that renders consent differently needs its own reviewed oracle, not a loosened one.
 - **Integration path:** built as the opt-in backend adapter below. `check` still doesn't depend on FastAPI, a database or a browser.
 
-## Backend adapter (milestone 2 integration, `backend-v1` r3, policy `evalgate-backend-policy-v1`)
+## Current integrated backend evaluation
+
+The current label revision is r5 and the fault injector is `evalgate-backend-harness-v2`.
+The backend is immutably pinned; all 24 gating cases pass locally. Exact refusal status/code
+checks cover both wrong-principal consent and degraded admission. Storage-fault cases hold a
+real SQLite write lock as well as read-only permissions so already-open writers cannot bypass
+the injected fault. The original cases, deadlines, state/effect gates and exploratory restore
+classification remain unchanged. See [current integration](INTEGRATION.md) and the
+[reflection/CI follow-up](../evidence/integration-2026-10-25-followup/README.md) for evidence,
+failed runs, versioned provenance, required-check limits and hosted status.
+
+## Historical backend adapter checkpoint (milestone 2, `backend-v1` r3)
 
 **Status: built, run locally against an uncommitted working-tree copy of the durable backend, and currently INVALID for one stated reason.** The backend still exports trace-v1, so the now-gating definite-refusal case can't be expressed (below). Nothing here has run against a *finalized, pinned* backend commit or in hosted CI on one: the pin is unset, so the pinned run and its CI job are NOT_RUN, and NOT_RUN fails. Every result is a deterministic scripted fixture with no model calls.
 
@@ -193,7 +204,7 @@ trace-v1 has no core outcome for a definite no-effect provider refusal, so the b
 - `.github/workflows/backend-evaluation.yml` installs the pinned commit's lock with `pip --require-hashes` (actions pinned by SHA) and runs the pinned evaluation. **Only exit 0 passes the job**, so NOT_RUN, INVALID and FAIL all fail it.
 - **Today the pin is unset** (awaiting the backend owner's finalized commit), so the pinned run is NOT_RUN and the CI job fails by design. Making `backend-evaluation` a *required* check is a repository-settings change for Alex.
 
-### Current result (suite r3, unpinned working-tree copy, 2026-10-24)
+### Historical result (suite r3, unpinned working-tree copy, 2026-10-24)
 
 Decision **INVALID**, 24 gating + 1 exploratory cases in about 77 s. The only gating problem is `bk-definite-refusal` (trace-v1 export, above). Run: `evidence/evaluation-gate/backend-adapter/full-run/20261025T042450Z-backend-bbeb2882/`.
 
@@ -253,7 +264,7 @@ On 2026-10-24 the r1 suite (18 gating + 1 exploratory) passed on the backend wor
 
 ## Astra review of the backend adapter (prepared, not yet run)
 
-**Status: on hold.** The review is prepared as one read-only `gpt-6-astra` worker through the verified orchestrate-astra bridge: standard tier, existing ChatGPT login, network off, repo-only reads. Its focus has three questions. Is a request arriving confused with an applied effect anywhere? Does each mutant B1–B11 fail for its intended reason? Where do the backend and the scorer or provider share an assumption that a bug could hide behind? The preflight passed with no model call. The bridge's standing rule holds every Astra model call until Alex confirms, in his own words, that automatic top-ups are off and only his included allowance may be used. So no review has run, and **no independent review of the backend adapter is claimed.** This section will record its findings, verdicts and pre-fix evidence once it runs.
+**Historical pre-integration status: on hold.** The review is prepared as one read-only `gpt-6-astra` worker through the verified orchestrate-astra bridge: standard tier, existing ChatGPT login, network off, repo-only reads. Its focus has three questions. Is a request arriving confused with an applied effect anywhere? Does each mutant B1–B11 fail for its intended reason? Where do the backend and the scorer or provider share an assumption that a bug could hide behind? The preflight passed with no model call. The bridge's standing rule holds every Astra model call until Alex confirms, in his own words, that automatic top-ups are off and only his included allowance may be used. So no review has run, and **no independent review of the backend adapter is claimed.** This section will record its findings, verdicts and pre-fix evidence once it runs.
 
 ## Astra review rounds 2–5 (2026-10-24)
 

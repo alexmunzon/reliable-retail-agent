@@ -422,7 +422,7 @@
     }
    ],
    "expected_refusals": {
-    "10": "service_degraded"
+    "10": {"code": "service_degraded", "statuses": [503]}
    },
    "expected_run_states": {
     "r1": [

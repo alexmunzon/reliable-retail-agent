@@ -24,6 +24,7 @@ import platform
 import shutil
 import signal
 import socket
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -36,7 +37,7 @@ from . import scoring, trace
 from .backend_provider import TOOL, EvaluationProvider, initial_orders
 from .runner import PACKAGE, EvaluationError, export_revision, file_hash, git_info, harness_identity, new_run_dir, strict_json
 
-HARNESS_VERSION = "evalgate-backend-harness-v1"
+HARNESS_VERSION = "evalgate-backend-harness-v2"  # Real held SQLite write fault; chmod alone may leave writable FDs.
 POLICY_PATH = PACKAGE / "policy-backend-v1.json"
 PIN_PATH = PACKAGE / "backend-pin.json"
 EXIT = {"PASS": 0, "FAIL": 1, "INVALID": 2, "NOT_RUN": 3}
@@ -212,6 +213,7 @@ class Stack:
         self.others: list[subprocess.Popen] = []  # competing instances started on the same data directory
         self.provider: EvaluationProvider | None = None
         self.logs: list[Path] = []
+        self.storage_blocker: sqlite3.Connection | None = None
         init = subprocess.run(self.command("init"), cwd=scratch, env=self.env(provider_url="http://127.0.0.1:1"),
                               capture_output=True, text=True, timeout=120)
         if init.returncode:
@@ -299,6 +301,37 @@ class Stack:
         db = self.data / "serving.db"
         return [db.with_name(db.name + suffix) for suffix in ("", "-wal", "-shm")]
 
+    def fault_database(self) -> None:
+        """Keep a real write lock until repair, including across app crashes.
+
+        chmod alone cannot revoke already-open writable file descriptors on every OS.
+        The held transaction makes writes fail even through such a descriptor. Existing
+        retry/degraded-state deadlines stay unchanged; a missed phase still fails the case.
+        """
+        if self.storage_blocker is not None:
+            raise BackendError("database fault already active")
+        conn = sqlite3.connect(str(self.db_files()[0]), isolation_level=None, timeout=5)
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            self.db_files()[0].chmod(0o444)
+        except Exception:
+            conn.close()
+            raise
+        self.storage_blocker = conn
+
+    def repair_database(self) -> None:
+        try:
+            for path in self.db_files():
+                if path.exists():
+                    path.chmod(0o644)
+        finally:
+            blocker, self.storage_blocker = self.storage_blocker, None
+            if blocker is not None:
+                try:
+                    blocker.rollback()
+                finally:
+                    blocker.close()
+
     def cli(self, command: str) -> int:
         args = (command, str(self.scratch / "snapshot.db")) if command in ("backup", "restore") else (command,)
         return subprocess.run(self.command(*args), cwd=self.scratch, env=self.env(), capture_output=True, text=True,
@@ -313,15 +346,18 @@ class Stack:
         return code
 
     def close(self) -> None:
-        for other in self.others:
-            if other.poll() is None:
-                other.kill()
-                other.wait(timeout=10)
-        if self.running():
-            self.app.kill()
-            self.app.wait(timeout=10)
-        if self.provider is not None:
-            self.provider.stop()
+        try:
+            for other in self.others:
+                if other.poll() is None:
+                    other.kill()
+                    other.wait(timeout=10)
+            if self.running():
+                self.app.kill()
+                self.app.wait(timeout=10)
+            if self.provider is not None:
+                self.provider.stop()
+        finally:
+            self.repair_database()
 
 
 # ------------------------------------------------------------------ driver (actor-visible steps only)
@@ -389,12 +425,11 @@ def run_case(case: dict, intents: dict, code_root: Path, python: Path, scratch: 
                     stack.stop()
                 elif op == "kill_app":
                     stack.kill()
-                elif op == "db_fault":  # an operator-visible storage fault, as the backend's own storage tests induce it
-                    stack.db_files()[0].chmod(0o444)
+                elif op == "db_fault":
+                    stack.fault_database()
+                    record["mechanism"] = "held_sqlite_write_lock_and_readonly_database"
                 elif op == "db_repair":
-                    for path in stack.db_files():
-                        if path.exists():
-                            path.chmod(0o644)
+                    stack.repair_database()
                 elif op == "await_ready":
                     deadline, status = time.monotonic() + step.get("timeout", 15), None
                     while True:
@@ -702,7 +737,8 @@ def check_interface(label, case, observation, intents, classes, details, observe
             details.append(f"Step {index}: operator command failed (exit {step.get('exit_code')}).")
         if step["op"] in ("await_provider_effect", "await_ready") and not step.get("reached"):
             classes.add("invalid_evidence")
-            details.append(f"Step {index} ({step['op']}): the scheduled condition never happened, so the scenario did not run as written.")
+            details.append(f"Step {index} ({step['op']}): the scheduled condition never happened, so the scenario did not run as written. "
+                           f"Last observed state: {step.get('state')!r}; required: {case['steps'][index].get('status')!r}.")
         if step["op"] == "await_exit" and step.get("exit_code") in (None, 0):
             classes.add("invalid_evidence")
             details.append(f"Step {index}: the armed crash did not happen (exit {step.get('exit_code')}).")
