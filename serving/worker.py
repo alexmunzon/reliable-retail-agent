@@ -113,9 +113,17 @@ class Worker:
         started = time.monotonic()
         provider_start_ns = time.monotonic_ns()
         self.telemetry.count("provider_attempts")
-        outcome = await self.provider.mutate(provider_key=claim.provider_key, tenant=claim.tenant_id,
-                                             tool_name=claim.tool_name, arguments=claim.arguments,
-                                             expected_revision=claim.expected_revision)
+        try:
+            outcome = await self.provider.mutate(provider_key=claim.provider_key, tenant=claim.tenant_id,
+                                                 tool_name=claim.tool_name, arguments=claim.arguments,
+                                                 expected_revision=claim.expected_revision)
+        except Exception as error:
+            # The request may already have acted. Preserve the claim as unknown; never redispatch.
+            # CancelledError is a BaseException and remains owned by the shutdown/abandon path.
+            outcome = Outcome("unknown", "provider_client_error")
+            self.telemetry.count("provider_client_errors")
+            self.telemetry.log("worker.provider_client_error", operation_id=claim.operation_id,
+                               reason=type(error).__name__)
         provider_end_ns = time.monotonic_ns()
         if self.observation_spans is not None:
             try:
@@ -199,7 +207,15 @@ class Worker:
     async def _reconcile_batch(self) -> None:
         due = await to_thread.run_sync(self.service.due_reconciliations, 10)
         for operation_id, provider_key in due:
-            outcome = await self.provider.status(provider_key)
+            try:
+                outcome = await self.provider.status(provider_key)
+            except Exception as error:
+                # A client failure is an unsuccessful lookup, not a storage fault. Record it so
+                # the existing lookup budget still terminates with the resource held.
+                outcome = Outcome("unknown", "status_client_error")
+                self.telemetry.count("provider_status_client_errors")
+                self.telemetry.log("worker.provider_status_client_error", operation_id=operation_id,
+                                   reason=type(error).__name__)
             result = await to_thread.run_sync(self.service.record_reconciliation, operation_id, outcome)
             self.telemetry.count(f"reconciliation_{result}")
             self.telemetry.log("worker.reconciliation", operation_id=operation_id, state=result, detail_code=outcome.code)

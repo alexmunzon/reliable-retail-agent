@@ -97,6 +97,35 @@ function check(name, condition, detail) {
     check('narrow back restores request list', await page.locator('#request-list').isVisible());
     await page.setViewportSize({ width: 1280, height: 900 });
 
+    // Exercise real browser rendering with deliberately reversed HTTP completion.
+    // This is an exposed regression, not an independent data holdout.
+    async function delayedDetail(staleError) {
+      let release, arrived;
+      const gate = new Promise(resolve => { release = resolve; });
+      const captured = new Promise(resolve => { arrived = resolve; });
+      const target = `${config.fixture}api/requests/healthy/run-healthy`;
+      await page.route(target, async route => {
+        const response = await route.fetch();
+        arrived(); await gate;
+        if (staleError) await route.fulfill({ status: 500, contentType: 'application/json', body: '{"error":"synthetic_delayed_error"}' });
+        else await route.fulfill({ response });
+      });
+      await page.evaluate(() => {
+        window.__delayedDone = false;
+        void openRequest('healthy/run-healthy').finally(() => { window.__delayedDone = true; });
+      });
+      await captured;
+      await page.evaluate(() => { void openRequest('missing-tokens/run-missing-tokens'); });
+      await page.locator('#detail article[data-key="missing-tokens/run-missing-tokens"]').waitFor();
+      release();
+      await page.waitForFunction(() => window.__delayedDone);
+      check(staleError ? 'stale detail error cannot replace latest selection' : 'reversed detail response cannot replace latest selection',
+        await page.locator('#detail article').getAttribute('data-key') === 'missing-tokens/run-missing-tokens');
+      await page.unroute(target);
+    }
+    await delayedDetail(false);
+    await delayedDetail(true);
+
     let observationRequests = 0, badAuthorization = 0;
     page.on('request', request => {
       if (new URL(request.url()).pathname.startsWith('/api/v1/observability/')) {

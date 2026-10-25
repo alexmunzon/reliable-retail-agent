@@ -340,19 +340,31 @@ def load_fixture_set(root: Path, limits: Limits = Limits()) -> dict:
         streams.extend(case_streams)
         if len(streams) > limits.max_requests:
             raise ValueError("too_many_requests")
-    tables = []
+    tables, pricing_failed = [], False
     for relative in manifest.get("pricing", []):
         path = safe_path(root, relative, PRICING_FILE)
         raw, error = read_bounded(path, limits.max_manifest_bytes) if path else (None, "path_rejected")
         if error:
             problems.append({"case": None, "code": f"pricing_{error}"})
+            pricing_failed = True
             continue
-        table = json.loads(raw, object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+        try:
+            table = json.loads(raw, object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+        except (ValueError, UnicodeDecodeError, RecursionError):
+            problems.append({"case": None, "code": "pricing_table_unparseable"})
+            pricing_failed = True
+            continue
         from .costs import validate_table
         if validate_table(table):
             problems.append({"case": None, "code": "pricing_table_rejected"})
+            pricing_failed = True
             continue
         tables.append(table)
+    if pricing_failed:
+        # An unreadable table may supersede any surviving rate. Do not silently fall
+        # back to older prices; traces, measured usage and receipt charges still stand.
+        tables = []
+        problems.append({"case": None, "code": "pricing_set_incomplete"})
     access_path = safe_path(root, manifest.get("access"), re.compile(r"access\.json"))
     raw, error = read_bounded(access_path, limits.max_manifest_bytes) if access_path else (None, "access_missing")
     owners = {} if error else json.loads(raw, object_pairs_hook=_unique_object).get("owners", {})

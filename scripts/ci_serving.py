@@ -15,7 +15,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITES = ("tests_serving.test_units", "tests_serving.test_http_api", "tests_serving.test_crash_recovery",
-          "tests_serving.test_trace_contract", "tests_serving.test_durability_regressions", "tests_serving.test_observability_live")
+          "tests_serving.test_trace_contract", "tests_serving.test_durability_regressions", "tests_serving.test_observability_live",
+          "tests_serving.test_provider_boundary")
 
 
 def worker(names):

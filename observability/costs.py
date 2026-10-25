@@ -7,15 +7,26 @@ makes the estimate unknown (None), never $0. Only a billing receipt is a confirm
 """
 from __future__ import annotations
 
+from datetime import date
 from decimal import Decimal
 import re
 
 from . import PRICING_VERSION
-from .sidecar import CURRENCY, DECIMAL, LABEL, MODEL, TOKEN_CATEGORIES
+from .sidecar import CURRENCY, DECIMAL, LABEL, MODEL, TOKEN_CATEGORIES, valid_utc_timestamp
 
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 MILLION = Decimal(1_000_000)
 TABLE_KEYS = {"pricing_version", "table_id", "effective_from", "currency", "unit", "synthetic", "source", "assumptions", "models"}
+
+
+def _calendar_day(value):
+    if not (isinstance(value, str) and DATE.fullmatch(value)):
+        return False
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        return False
+    return True
 
 
 def validate_table(table) -> list[str]:
@@ -26,7 +37,7 @@ def validate_table(table) -> list[str]:
         p.append("pricing.unknown_version")
     if not (isinstance(table["table_id"], str) and LABEL.fullmatch(table["table_id"])):
         p.append("pricing.invalid_table_id")
-    if not (isinstance(table["effective_from"], str) and DATE.fullmatch(table["effective_from"])):
+    if not _calendar_day(table["effective_from"]):
         p.append("pricing.invalid_effective_from")
     if not (isinstance(table["currency"], str) and CURRENCY.fullmatch(table["currency"])):
         p.append("pricing.invalid_currency")
@@ -59,6 +70,8 @@ def select_table(tables: list[dict], model: str, provider: str, observed_at: str
     """The table in force on the usage's UTC date for this model; ambiguity or absence is unknown."""
     if not observed_at:
         return None, "no_usage_time"
+    if not valid_utc_timestamp(observed_at):
+        return None, "invalid_usage_time"
     day = observed_at[:10]
     candidates = [t for t in tables if t["effective_from"] <= day and model in t["models"]]
     if not candidates:

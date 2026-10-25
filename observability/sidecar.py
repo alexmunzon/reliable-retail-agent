@@ -6,6 +6,7 @@ Every problem is a fixed code; input values are never echoed.
 """
 from __future__ import annotations
 
+from datetime import datetime
 import re
 
 from . import SIDECAR_VERSION
@@ -42,6 +43,17 @@ FIELDS = {
 
 def _int(value, minimum=0) -> bool:
     return type(value) is int and value >= minimum
+
+
+def valid_utc_timestamp(value) -> bool:
+    """Keep the v1 UTC/nanosecond syntax and also require a real calendar instant."""
+    if not (isinstance(value, str) and TIME.fullmatch(value)):
+        return False
+    try:
+        datetime.fromisoformat(value[:-1])
+    except ValueError:
+        return False
+    return True
 
 
 def validate_record(record) -> list[str]:
@@ -124,7 +136,7 @@ def _check_usage(r: dict) -> list[str]:
     if not (isinstance(tokens, dict) and set(tokens) == set(TOKEN_CATEGORIES)
             and all(v is None or _int(v) for v in tokens.values())):
         p.append("usage.invalid_tokens")
-    if r["observed_at"] is not None and not (isinstance(r["observed_at"], str) and TIME.fullmatch(r["observed_at"])):
+    if r["observed_at"] is not None and not valid_utc_timestamp(r["observed_at"]):
         p.append("usage.invalid_observed_at")
     if not (isinstance(r["source"], str) and LABEL.fullmatch(r["source"])):
         p.append("usage.invalid_source")

@@ -35,9 +35,9 @@ from uuid import uuid4
 
 from . import scoring, trace
 from .backend_provider import TOOL, EvaluationProvider, initial_orders
-from .runner import PACKAGE, EvaluationError, export_revision, file_hash, git_info, harness_identity, new_run_dir, strict_json
+from .runner import PACKAGE, REPO, EvaluationError, export_revision, file_hash, git_info, harness_identity, new_run_dir, strict_json
 
-HARNESS_VERSION = "evalgate-backend-harness-v2"  # Real held SQLite write fault; chmod alone may leave writable FDs.
+HARNESS_VERSION = "evalgate-backend-harness-v3"  # Re-derived exports and verified pinned source provenance.
 POLICY_PATH = PACKAGE / "policy-backend-v1.json"
 PIN_PATH = PACKAGE / "backend-pin.json"
 EXIT = {"PASS": 0, "FAIL": 1, "INVALID": 2, "NOT_RUN": 3}
@@ -865,12 +865,19 @@ def run(backend_root: Path, python: Path, *, out_root: Path, only: list[str] | N
     return write_run(folder, run_id, policy, policy_path, cases, chosen, request, observations, backend, started, duration, only)
 
 
+def observation_traces(chosen: list[dict], observations: dict) -> list[dict]:
+    """Stable order survives the sorted-key JSON serialization of raw observations."""
+    return [event for label in chosen
+            for _, run in sorted((observations.get(label["case_id"]) or {}).get("runs", {}).items())
+            for event in run["trace"]]
+
+
 def write_run(folder, run_id, policy, policy_path, cases, chosen, request, observations, backend, started, duration, only):
     case_by_id = {c["case_id"]: c for c in cases["cases"]}
     records = [score_case(l, case_by_id[l["case_id"]], observations.get(l["case_id"]), cases["intents"], run_id) for l in chosen]
     metrics = compute_metrics(records, chosen)
     decision, reasons = decide(records, chosen)
-    traces = [e for l in chosen for run in (observations.get(l["case_id"]) or {}).get("runs", {}).values() for e in run["trace"]]
+    traces = observation_traces(chosen, observations)
     _write(folder, "request.json", _dumps(request))
     _write(folder, "observations.json", _dumps(observations))
     _write(folder, "records.jsonl", "".join(json.dumps(r, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n" for r in records))
@@ -922,52 +929,126 @@ def render_summary(run_id, decision, reasons, metrics, records, only, backend=No
     return "\n".join(lines) + "\n"
 
 
+def validate_backend_provenance(backend: dict, repo: Path = REPO) -> list[str]:
+    """Check a pinned source claim, not attest that the reported execution occurred.
+
+    Working-tree and synthetic receipts have no verified commit claim. A pinned claim
+    must agree with the trusted pin and immutable Git content available locally.
+    """
+    if not isinstance(backend, dict):
+        return ["backend provenance must be an object"]
+    if backend.get("mode") != "pinned-commit":
+        if "commit" in backend or "pin_sha256" in backend:
+            return ["backend commit claim lacks pinned-commit provenance"]
+        return []
+    pin = load_pin()
+    expected = {"commit": pin["commit"], "repository": pin["repository"],
+                "pin_sha256": file_hash(PIN_PATH), "lock_sha256": pin["lock_sha256"]}
+    problems = [f"backend {key} differs from the trusted pin" for key, value in expected.items()
+                if backend.get(key) != value]
+    if backend.get("lock_mismatches") != []:
+        problems.append("pinned backend reports dependency lock mismatches")
+    if ".".join(str(backend.get("python", "")).split(".")[:2]) != pin["python"]:
+        problems.append("pinned backend Python differs from the trusted pin")
+    packages = backend.get("packages")
+    if not isinstance(packages, list) or any(not isinstance(p, list) or len(p) != 2 or
+                                           not all(isinstance(v, str) for v in p) for p in packages):
+        problems.append("pinned backend package inventory is malformed")
+    elif len({p[0] for p in packages}) != len(packages):
+        problems.append("pinned backend package inventory has duplicate names")
+    if problems:
+        return problems
+    with tempfile.TemporaryDirectory(prefix="evalgate-validate-pin-") as scratch:
+        root = Path(scratch)
+        problems += export_pinned(repo, pin, root)
+        if not problems:
+            identity = backend_identity(root)
+            if any(backend.get(key) != value for key, value in identity.items()):
+                problems.append("backend evaluated-file hashes differ from the pinned Git source")
+            if lock_mismatches(root / pin["lock_file"], packages):
+                problems.append("backend package inventory differs from the pinned dependency lock")
+    return problems
+
+
 def validate_run(folder: Path, policy_path: Path = POLICY_PATH) -> tuple[list[str], dict]:
-    """Re-score raw observations before any stored verdict is trusted."""
+    """Return structured INVALID evidence errors, including malformed JSON containers."""
     try:
         manifest = strict_json((folder / "manifest.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, RecursionError) as error:
         return [f"manifest unreadable: {error}"], {}
+    if not isinstance(manifest, dict):
+        return ["manifest must be an object"], {}
+    try:
+        return _validate_run(folder, policy_path, manifest)
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, IndexError, RecursionError,
+            BackendError, EvaluationError, subprocess.SubprocessError) as error:
+        return [f"evidence malformed or unavailable: {type(error).__name__}: {error}"], manifest
+
+
+def _validate_run(folder: Path, policy_path: Path, manifest: dict) -> tuple[list[str], dict]:
+    """Re-derive every scored export before trusting its stored verdict."""
     problems = []
-    if manifest.get("record_type") != "backend_run_manifest" or manifest.get("harness", {}).get("backend_harness_version") != HARNESS_VERSION:
+    if (manifest.get("schema_version") != "backend-evaluation-v1" or
+            manifest.get("record_type") != "backend_run_manifest" or
+            manifest.get("harness", {}).get("backend_harness_version") != HARNESS_VERSION):
         problems.append("unknown manifest or harness version")
     if manifest.get("run_id") != folder.name:
         problems.append("manifest run_id does not match its directory")
     listed = manifest.get("outputs", {})
-    if set(listed) != set(OUTPUTS):
+    if not isinstance(listed, dict) or set(listed) != set(OUTPUTS):
         problems.append("manifest does not list exactly the expected outputs")
+        return problems, manifest
     for name, digest in listed.items():
         if not (folder / name).is_file() or file_hash(folder / name) != digest:
             problems.append(f"{name} is missing or does not match its manifest hash")
     if problems:
         return problems, manifest
     policy = load_policy(policy_path)
-    if manifest["policy"]["sha256"] != file_hash(policy_path):
+    if manifest["policy"] != {"id": policy["policy_id"], "sha256": file_hash(policy_path)}:
         problems.append("run used a different policy than the trusted one")
+    if any(manifest["suite"].get(key) != policy["suite"][key] for key in ("id", "cases_sha256", "labels_sha256")):
+        problems.append("run used a different suite than the trusted policy")
     cases, labels = load_suite(policy)
     try:
+        if type(manifest["suite"]["subset"]) is not bool:
+            return problems + ["suite subset must be a boolean"], manifest
         chosen = select(labels, manifest["suite"]["scheduled_cases"] if manifest["suite"]["subset"] else None)
         observations = strict_json((folder / "observations.json").read_text(encoding="utf-8"))
         records = [strict_json(line) for line in (folder / "records.jsonl").read_text(encoding="utf-8").splitlines()]
         metrics = strict_json((folder / "metrics.json").read_text(encoding="utf-8"))
         request = strict_json((folder / "request.json").read_text(encoding="utf-8"))
+        exported = [strict_json(line) for line in (folder / "traces.jsonl").read_text(encoding="utf-8").splitlines()]
     except (ValueError, BackendError) as error:
         return problems + [f"evidence unreadable: {error}"], manifest
     if [l["case_id"] for l in chosen] != manifest["suite"]["scheduled_cases"]:
         problems.append("scheduled cases differ from the suite")
+    if not isinstance(observations, dict) or set(observations) != {l["case_id"] for l in chosen}:
+        return problems + ["raw observations do not cover exactly the scheduled cases"], manifest
     if request != actor_request(cases, [l["case_id"] for l in chosen]):
         problems.append("request does not match the frozen actor-visible suite")
     if manifest.get("harness", {}).get("files_sha256") != harness_identity()["files_sha256"]:
         problems.append("run was produced by different harness files than the harness validating it")
+    regenerated = observation_traces(chosen, observations)
+    if scoring.canon(exported) != scoring.canon(regenerated):
+        problems.append("exported traces do not regenerate from the raw observations")
+    problems += validate_backend_provenance(manifest.get("backend"))
     case_by_id = {c["case_id"]: c for c in cases["cases"]}
     rescored = [score_case(l, case_by_id[l["case_id"]], observations.get(l["case_id"]), cases["intents"], manifest["run_id"]) for l in chosen]
     if scoring.canon(records) != scoring.canon(rescored):
         problems.append("stored records do not match a re-score of the raw observations")
-    if scoring.canon(metrics) != scoring.canon(compute_metrics(rescored, chosen)):
+    rescored_metrics = compute_metrics(rescored, chosen)
+    if scoring.canon(metrics) != scoring.canon(rescored_metrics):
         problems.append("stored metrics do not match re-scored records")
-    decision, _ = decide(rescored, chosen)
+    decision, reasons = decide(rescored, chosen)
     if manifest.get("decision") != decision:
         problems.append(f"manifest decision {manifest.get('decision')} does not match the re-derived decision {decision}")
+    if manifest.get("reasons") != reasons:
+        problems.append("manifest reasons do not match the re-derived decision reasons")
+    summary = render_summary(manifest["run_id"], decision, reasons, rescored_metrics, rescored,
+                             manifest["suite"]["scheduled_cases"] if manifest["suite"]["subset"] else None,
+                             manifest["backend"])
+    if (folder / "summary.md").read_text(encoding="utf-8") != summary:
+        problems.append("summary does not regenerate from the scored raw observations")
     return problems, manifest
 
 
@@ -1027,4 +1108,7 @@ def main_validate(args) -> int:
     for problem in problems:
         print(f"- {problem}")
     print("VALID" if not problems else "INVALID", manifest.get("run_id", ""), f"(decision {manifest.get('decision')})")
+    if not problems:
+        scope = "pinned source content checked" if manifest["backend"].get("mode") == "pinned-commit" else "unverified backend provenance"
+        print(f"Artifact consistency: {scope}; execution is not independently attested.")
     return 0 if not problems else 2

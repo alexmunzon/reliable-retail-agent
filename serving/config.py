@@ -5,6 +5,7 @@ from dataclasses import dataclass, fields
 import math
 import os
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATA_DIR = ROOT / "runtime" / "serving"
@@ -103,7 +104,16 @@ def load_settings(environ: dict[str, str] | None = None) -> Settings:
             kind = {"bool": bool, "int": int, "float": float, "Path": Path}.get(str(item.type), str)
             values[item.name] = _parse(kind, environ[name], name)
     settings = Settings(**values)
-    if not settings.provider_url.startswith(("http://127.0.0.1:", "http://localhost:")):
+    try:
+        url = urlsplit(settings.provider_url)
+        loopback = (url.scheme == "http" and url.hostname in {"127.0.0.1", "localhost"}
+                    and url.username is None and url.password is None and url.port is not None and url.port > 0
+                    and url.path in {"", "/"} and not url.query and not url.fragment
+                    and not any(character.isspace() or ord(character) < 32 or ord(character) == 127
+                                for character in settings.provider_url))
+    except ValueError:
+        loopback = False
+    if not loopback:
         raise ValueError("The local pilot only talks to a loopback synthetic provider")
     if settings.test_failpoints and not settings.test_mode:
         raise ValueError("RRA_TEST_FAILPOINTS requires RRA_TEST_MODE=1")

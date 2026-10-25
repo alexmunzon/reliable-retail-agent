@@ -32,3 +32,5 @@ jobs:
           "$RUNNER_TEMP/rra-ci/bin/python" -m pip install --disable-pip-version-check --no-cache-dir --timeout 15 --retries 1 -r requirements-offline.txt
       - name: Run demo, metrics, and original-author offline tests
         run: '"$RUNNER_TEMP/rra-ci/bin/python" scripts/ci.py --native'
+      - name: Verify dashboard response ordering without network access
+        run: node scripts/verify_dashboard_races.js

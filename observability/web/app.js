@@ -3,7 +3,8 @@
 
 const liveServing = location.pathname.startsWith("/observability/");
 let servingToken = "";
-const state = { page: 1, pageSize: 20, filters: {}, items: [], selected: null, meta: null };
+const state = { page: 1, pageSize: 20, filters: {}, items: [], selected: null, meta: null,
+  authRevision: 0, listRevision: 0, detailRevision: 0 };
 
 const STATUS_TEXT = {
   completed: "Completed", failed: "Failed", unknown_outcome: "Unknown outcome", cancelled: "Cancelled",
@@ -49,22 +50,19 @@ function moneyMap(map, empty) {
 }
 
 async function api(path) {
+  const authRevision = state.authRevision;
   const headers = { Accept: "application/json" };
   if (liveServing) { headers.Authorization = `Bearer ${servingToken}`; path = path.replace(/^\/api\//, "/api/v1/observability/"); }
   const response = await fetch(path, { headers, cache: "no-store" });
   const body = await response.json().catch(() => ({ error: "unreadable_response" }));
+  if (authRevision !== state.authRevision) throw new Error("credentials_changed");
   if (!response.ok) throw Object.assign(new Error(body.error || `http_${response.status}`), { status: response.status });
-  if (liveServing && body.sample) {
-    const banner = document.getElementById("set-banner");
-    banner.hidden = false;
-    banner.textContent = `Bounded live sample: newest ${body.sample.run_limit} owned runs; filters and denominators apply only to this sample. Older history is excluded. ${body.sample.truncated ? "More owned runs exist." : ""}`;
-  }
   return liveServing && body.groups ? body.groups : body;
 }
 
-function query(extra) {
+function query(extra, filters = state.filters) {
   const params = new URLSearchParams();
-  for (const [key, value] of Object.entries({ ...state.filters, ...extra })) if (value) params.set(key, value);
+  for (const [key, value] of Object.entries({ ...filters, ...extra })) if (value) params.set(key, value);
   const text = params.toString();
   return text ? `?${text}` : "";
 }
@@ -80,12 +78,16 @@ function statusChip(status) {
 // ---------- list
 
 async function loadList(focusIndex) {
+  const revision = ++state.listRevision, authRevision = state.authRevision;
+  const filters = { ...state.filters };
+  const current = () => revision === state.listRevision && authRevision === state.authRevision;
   const status = document.getElementById("list-status");
   const list = document.getElementById("request-list");
   status.textContent = "Loading requests…";
   list.setAttribute("aria-busy", "true");
   try {
-    const data = await api(`/api/requests${query({ page: state.page, page_size: state.pageSize })}`);
+    const data = await api(`/api/requests${query({ page: state.page, page_size: state.pageSize }, filters)}`);
+    if (!current()) return;
     state.items = data.items;
     state.page = data.page;
     list.replaceChildren(...data.items.map((item, index) => listRow(item, index)));
@@ -93,14 +95,20 @@ async function loadList(focusIndex) {
     document.getElementById("page-label").textContent = `Page ${data.page} of ${data.pages}`;
     document.getElementById("prev").disabled = data.page <= 1;
     document.getElementById("next").disabled = data.page >= data.pages;
+    if (liveServing && data.sample) {
+      const banner = document.getElementById("set-banner");
+      banner.hidden = false;
+      banner.textContent = `Bounded live sample: newest ${data.sample.run_limit} owned runs; filters and denominators apply only to this sample. Older history is excluded. ${data.sample.truncated ? "More owned runs exist." : ""}`;
+    }
     if (focusIndex !== undefined) focusRow(focusIndex);
   } catch (error) {
+    if (!current()) return;
     list.replaceChildren();
     status.textContent = `Could not load requests (${error.message}).`;
   } finally {
-    list.removeAttribute("aria-busy");
+    if (current()) list.removeAttribute("aria-busy");
   }
-  loadAggregates();
+  if (current()) loadAggregates(revision, authRevision, filters);
 }
 
 function listRow(item, index) {
@@ -130,16 +138,18 @@ function focusRow(index) {
   rows[Math.max(0, Math.min(index, rows.length - 1))].focus();
 }
 
-async function loadAggregates() {
+async function loadAggregates(revision = state.listRevision, authRevision = state.authRevision, filters = { ...state.filters }) {
+  const current = () => revision === state.listRevision && authRevision === state.authRevision;
   const box = document.getElementById("aggregates");
   box.replaceChildren(el("p", { class: "hint", text: "Loading aggregates…" }));
   try {
-    const filters = { from: state.filters.from, to: state.filters.to };
-    const groups = await api(`/api/aggregates${query(filters)}`);
+    const groups = await api(`/api/aggregates${query({ from: filters.from, to: filters.to }, filters)}`);
+    if (!current()) return;
     const names = Object.keys(groups);
     if (!names.length) { box.replaceChildren(el("p", { class: "hint", text: "No requests in this window." })); return; }
     box.replaceChildren(...names.map((name) => aggregateCard(name, groups[name])));
   } catch (error) {
+    if (!current()) return;
     box.replaceChildren(el("p", { class: "error", text: `Aggregates unavailable (${error.message}).` }));
   }
 }
@@ -167,6 +177,8 @@ function aggregateCard(name, agg) {
 // ---------- detail
 
 async function openRequest(key, { push = true } = {}) {
+  const revision = ++state.detailRevision, authRevision = state.authRevision;
+  const current = () => revision === state.detailRevision && authRevision === state.authRevision;
   const pane = document.getElementById("detail");
   state.selected = key;
   document.querySelectorAll("#request-list .row").forEach((row) => {
@@ -177,9 +189,11 @@ async function openRequest(key, { push = true } = {}) {
   if (push) history.replaceState(null, "", `#${encodeURIComponent(key)}`);
   try {
     const request = await api(`/api/requests/${key.split("/").map(encodeURIComponent).join("/")}`);
+    if (!current()) return;
     pane.replaceChildren(renderDetail(request));
     pane.focus();
   } catch (error) {
+    if (!current()) return;
     pane.replaceChildren(el("div", { class: "error" },
       el("h2", { text: error.status === 404 ? "Not found" : "Could not load request" }),
       el("p", { text: error.status === 404 ? "No request with this key is visible to this viewer." : error.message })));
@@ -187,6 +201,7 @@ async function openRequest(key, { push = true } = {}) {
 }
 
 function closeDetail() {
+  state.detailRevision++;
   document.body.classList.remove("showing-detail");
   const index = state.items.findIndex((item) => item.key === state.selected);
   focusRow(index < 0 ? 0 : index);
@@ -299,6 +314,7 @@ function costPanel(request) {
 }
 
 async function exportRequest(key) {
+  const authRevision = state.authRevision;
   try {
     const data = await api(`/api/export/${key.split("/").map(encodeURIComponent).join("/")}`);
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -308,7 +324,7 @@ async function exportRequest(key) {
     URL.revokeObjectURL(link.href);
     link.remove();
   } catch (error) {
-    alert(`Export failed (${error.message}).`);
+    if (authRevision === state.authRevision) alert(`Export failed (${error.message}).`);
   }
 }
 
@@ -332,9 +348,11 @@ function renderDetail(r) {
 // ---------- boot
 
 async function boot() {
+  const authRevision = state.authRevision;
   try {
     state.meta = await api("/api/meta");
   } catch (error) {
+    if (authRevision !== state.authRevision) return;
     document.getElementById("list-status").textContent = `Dashboard unavailable (${error.message}).`;
     return;
   }
@@ -347,13 +365,16 @@ async function boot() {
   const statusSelect = document.getElementById("f-status");
   meta.statuses.forEach((s) => statusSelect.append(el("option", { value: s, text: STATUS_TEXT[s] || s })));
   const routes = await api("/api/aggregates").then((g) => [...new Set(Object.keys(g).map((k) => k.split("/")[2]))]).catch(() => []);
+  if (authRevision !== state.authRevision) return;
   const routeSelect = document.getElementById("f-route");
   routes.sort().forEach((r) => routeSelect.append(el("option", { value: r, text: r })));
   if (meta.set_problems.length || meta.artifact_redeliveries) {
     const box = document.getElementById("set-banner");
     box.hidden = false;
     box.replaceChildren(el("strong", { text: "Fixture set notes: " }),
-      el("span", { text: meta.set_problems.map((p) => `${p.case || "set"}: ${p.code}${p.count ? ` ×${p.count}` : ""}`).join(" · ") }));
+      el("span", { text: meta.set_problems.map((p) => p.code === "pricing_set_incomplete"
+        ? "Pricing is incomplete: estimates are unavailable; traces and confirmed receipts remain visible."
+        : `${p.case || "set"}: ${p.code}${p.count ? ` ×${p.count}` : ""}`).join(" · ") }));
   }
   document.getElementById("filters").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -383,12 +404,12 @@ async function boot() {
 if (liveServing) {
   const token = el("input", { type: "password", autocomplete: "off", required: true, "aria-label": "Local serving bearer token" });
   const form = el("form", { class: "filters", onsubmit: async (event) => {
-    event.preventDefault(); servingToken = token.value.trim(); token.value = "";
+    event.preventDefault(); state.authRevision++; servingToken = token.value.trim(); token.value = "";
     form.remove(); await boot();
   } }, el("label", {}, "Local serving token (kept in page memory only)", token), el("button", { type: "submit", text: "Open observations" }));
   document.querySelector("header").after(form);
   document.querySelector("header").append(el("button", { type: "button", text: "Refresh observations", onclick: () => loadList() }),
-    el("button", { type: "button", text: "Clear token", onclick: () => { servingToken = ""; location.reload(); } }));
+    el("button", { type: "button", text: "Clear token", onclick: () => { state.authRevision++; servingToken = ""; location.reload(); } }));
   document.getElementById("origin-badge").textContent = "LIVE · SYNTHETIC PROVIDER";
   document.querySelector(".badge.held").textContent = "Authentication required";
 } else { boot(); }
