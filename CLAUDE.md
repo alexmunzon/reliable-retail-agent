@@ -70,8 +70,12 @@ fix in-scope unsupported claims, unnecessary code, performance and failure-handl
 completion. Do not add product agents/frameworks merely to imitate the development graph.
 
 No unattended foreground browser/UI automation; prefer existing offline/headless verification.
-Feature-branch pushes to verified existing user remotes and draft PR updates are authorized after
-tests and secrets/unrelated-data scans. GitHub merges, deployment, visibility/settings changes,
+Feature-branch pushes to verified existing user remotes and PR updates are authorized after
+tests and secrets/unrelated-data scans. The 2026-10-25 release authorization also permits normal
+GitHub merges after exact-head checks, stack and review verification, preserving source branches
+and existing protections. Deployment is limited to an identified, already-established authorized
+portfolio/demo/test target with synthetic data and safe modes; no such remote Retail target is
+currently verified. See [release readiness](docs/RELEASE_READINESS.md). Visibility/settings changes,
 branch/worktree deletion, destructive history rewriting, real customer data and external business
 mutations remain prohibited. Local test credential generation/rotation exercises the synthetic
 pilot only; it does not authorize changes to external accounts.

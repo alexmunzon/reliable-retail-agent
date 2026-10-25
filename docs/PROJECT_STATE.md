@@ -6,6 +6,16 @@ writers were verified quiescent before integration; they remain retired. Origina
 history was not migrated. The migration handoff, complete original prompts and preserved local
 checkpoints supply continuity.
 
+## Release authorization and current deployment boundary
+
+The later 2026-10-25 instruction authorizes merge and deployment when ready within a bounded
+synthetic portfolio/demo/test scope. It supersedes the earlier no-merge/no-deploy instruction below,
+without authorizing new hosting, billing, credentials, security settings or customer effects.
+Dependency PR #1 merged as `484e4e10a02db1ca849c19f4f8e88f40cd7f77ba`; PR #2 targets `main`.
+Its live GitHub state and exact-revision checks are authoritative for merge completion. See
+[release readiness](RELEASE_READINESS.md) for target discovery, acceptance and rollback guidance.
+No established remote Retail deployment target was found; public hosting remains unverified.
+
 ## Preservation and authorization history
 
 The original local dashboard merge was denied under the earlier no-merge rule and did not execute.

@@ -8,6 +8,8 @@
 
 ![Actual desktop demo](evidence/demo-desktop.jpg)
 
+[Release readiness and deployment boundary](docs/RELEASE_READINESS.md): repository integration can be merged after checks; an existing authorized remote demo/test host still needs to be identified. Local synthetic run instructions remain below.
+
 ## The engineering contribution
 
 The project turns a conversational confirmation requirement into executable state transitions at the dispatch boundary. It includes:
