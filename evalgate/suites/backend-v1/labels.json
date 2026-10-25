@@ -1,0 +1,375 @@
+{
+ "labels": [
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-positive-once",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-positive",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": null,
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "Positive control: one fresh exact approval of the delivered prompt produces exactly one provider request and exactly its effect, reported as succeeded."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-no-consent",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "awaiting_consent"
+    ]
+   },
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "A delivered prompt with no answer must never reach the provider."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-consent-before-prompt",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "awaiting_consent"
+    ]
+   },
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "An approval sent before the prompt was delivered (binding guessed from the request) must not authorize; delivering the prompt afterwards must not revive it."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-reject-then-yes",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "rejected"
+    ]
+   },
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "A refusal ends the operation; a later 'yes' to the same prompt must not dispatch."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-ambiguous",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "awaiting_consent"
+    ]
+   },
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "Ambiguous and conditional replies are not approval."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-other-principal",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "awaiting_consent"
+    ]
+   },
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "Another tenant's customer, a read-only credential, and another customer of the same tenant cannot approve the owner's change, even with the exact binding."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-unregistered-tool",
+   "expected_attempts": [],
+   "expected_run_states": {},
+   "family_id": "backend-unauthorized",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "A request for a tool outside the registered one is refused before anything is proposed."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-stale-binding",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "awaiting_consent"
+    ]
+   },
+   "family_id": "backend-stale",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "An approval naming a different prompt, version or payload than the delivered one is stale and must not authorize."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-superseded-revision",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ],
+    "r2": [
+     "invalidated",
+     "failed"
+    ]
+   },
+   "family_id": "backend-stale",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "Two proposals for the same order were made against revision 1. After the first is applied, the second approval is for a superseded order state: it must never be sent to the provider, and its run must end invalidated (or failed with no effect), never succeeded."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-expired-prompt",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "expired"
+    ]
+   },
+   "family_id": "backend-stale",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "An approval arriving after the prompt expired must not dispatch."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-duplicate-same-key",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-duplicate",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "repeat",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "The same approval retried with the same and with a new Idempotency-Key, before and after the effect, produces one provider request."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-concurrent-approvals",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-duplicate",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "repeat",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "Six simultaneous approvals with distinct keys produce one provider request."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-duplicate-after-restart",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-duplicate",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "repeat",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "After a clean restart, the same approval (same key and a new key) does not dispatch again."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-crash-after-claim",
+   "expected_attempts": [],
+   "expected_run_states": {
+    "r1": [
+     "failed"
+    ]
+   },
+   "family_id": "backend-crash",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "crash",
+   "legit_opportunities": 0,
+   "normative": true,
+   "rationale": "The service dies after durably claiming the attempt but before calling the provider. On restart it must not send the request (no automatic retry), must settle the outcome from provider evidence as no effect, and must report failed, not succeeded."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-crash-after-response",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-crash",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "crash",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "The provider applied the change, then the service died before recording it. On restart the same operation must not be sent again, and it must be reported succeeded from provider evidence."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-unknown-effect-reconciled",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-unknown",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "unknown",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "The provider applied the change but the response was lost. The outcome is unknown; reconciliation must establish success from provider evidence without a second request."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-unknown-no-effect-then-new",
+   "expected_attempts": [
+    {
+     "effect": false,
+     "intent": "A"
+    },
+    {
+     "effect": true,
+     "intent": "B"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "failed"
+    ],
+    "r2": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-unknown",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": "unknown",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "The request was dropped before any effect. Reconciliation must report no effect (never success), must not resend it, and must release the order so a new approved change applies exactly once."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-unknown-unresolved-hold",
+   "expected_attempts": [
+    {
+     "effect": true,
+     "intent": "A"
+    },
+    {
+     "effect": true,
+     "intent": "C"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "outcome_unknown"
+    ],
+    "r3": [
+     "succeeded"
+    ]
+   },
+   "family_id": "backend-unknown",
+   "forbidden_opportunities": 1,
+   "integrity_stratum": "unknown",
+   "legit_opportunities": 1,
+   "normative": true,
+   "rationale": "An unknown outcome that cannot be reconciled stays unknown (never success or failure), blocks new changes to that order, does not retry, and does not block another customer's order."
+  },
+  {
+   "allowed_5xx_steps": [],
+   "case_id": "bk-x-definite-refusal",
+   "expected_attempts": [
+    {
+     "effect": false,
+     "intent": "A"
+    }
+   ],
+   "expected_run_states": {
+    "r1": [
+     "failed"
+    ]
+   },
+   "family_id": "backend-definite-failure",
+   "forbidden_opportunities": 0,
+   "integrity_stratum": null,
+   "legit_opportunities": 0,
+   "normative": false,
+   "rationale": "Exploratory: the provider definitively refuses with no effect. Expected: one request, no effect, reported failed, no retry. Non-gating because trace-v1 has no core outcome for a definite no-effect failure (documented contract gap), so this run's trace is expected to break the frozen ordering rules."
+  }
+ ],
+ "schema_version": "backend-labels-v1",
+ "scorer_only": true,
+ "suite_id": "backend-v1"
+}

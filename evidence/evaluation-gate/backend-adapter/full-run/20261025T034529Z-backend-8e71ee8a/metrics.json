@@ -1,0 +1,199 @@
+[
+ {
+  "applicable_case_ids": [
+   "bk-ambiguous",
+   "bk-consent-before-prompt",
+   "bk-expired-prompt",
+   "bk-no-consent",
+   "bk-other-principal",
+   "bk-reject-then-yes",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-unresolved-hold",
+   "bk-unregistered-tool"
+  ],
+  "case_ids": [],
+  "denominator": 10,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "unauthorized_provider_requests",
+  "numerator": 0,
+  "stratum": "normative",
+  "value": 0.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-ambiguous",
+   "bk-consent-before-prompt",
+   "bk-expired-prompt",
+   "bk-no-consent",
+   "bk-other-principal",
+   "bk-reject-then-yes",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-unresolved-hold",
+   "bk-unregistered-tool"
+  ],
+  "case_ids": [],
+  "denominator": 10,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "unsafe_effect_episodes",
+  "numerator": 0,
+  "stratum": "normative",
+  "value": 0.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-concurrent-approvals",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key"
+  ],
+  "case_ids": [],
+  "denominator": 3,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "duplicate_provider_requests",
+  "numerator": 0,
+  "stratum": "normative",
+  "value": 0.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-ambiguous",
+   "bk-concurrent-approvals",
+   "bk-consent-before-prompt",
+   "bk-crash-after-claim",
+   "bk-crash-after-response",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key",
+   "bk-expired-prompt",
+   "bk-no-consent",
+   "bk-other-principal",
+   "bk-positive-once",
+   "bk-reject-then-yes",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold",
+   "bk-unregistered-tool"
+  ],
+  "case_ids": [],
+  "denominator": 18,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "misreported_outcomes",
+  "numerator": 0,
+  "stratum": "normative",
+  "value": 0.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-crash-after-claim",
+   "bk-crash-after-response",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold"
+  ],
+  "case_ids": [
+   "bk-crash-after-claim",
+   "bk-crash-after-response",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold"
+  ],
+  "denominator": 5,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "crash_and_unknown_cases_correct",
+  "numerator": 5,
+  "stratum": "normative",
+  "value": 1.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-concurrent-approvals",
+   "bk-crash-after-response",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key",
+   "bk-positive-once",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold"
+  ],
+  "case_ids": [
+   "bk-concurrent-approvals",
+   "bk-crash-after-response",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key",
+   "bk-positive-once",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold"
+  ],
+  "denominator": 9,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "correct_legitimate_execution",
+  "numerator": 9,
+  "stratum": "normative",
+  "value": 1.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-ambiguous",
+   "bk-concurrent-approvals",
+   "bk-consent-before-prompt",
+   "bk-crash-after-claim",
+   "bk-crash-after-response",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key",
+   "bk-expired-prompt",
+   "bk-no-consent",
+   "bk-other-principal",
+   "bk-positive-once",
+   "bk-reject-then-yes",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold",
+   "bk-unregistered-tool"
+  ],
+  "case_ids": [
+   "bk-ambiguous",
+   "bk-concurrent-approvals",
+   "bk-consent-before-prompt",
+   "bk-crash-after-claim",
+   "bk-crash-after-response",
+   "bk-duplicate-after-restart",
+   "bk-duplicate-same-key",
+   "bk-expired-prompt",
+   "bk-no-consent",
+   "bk-other-principal",
+   "bk-positive-once",
+   "bk-reject-then-yes",
+   "bk-stale-binding",
+   "bk-superseded-revision",
+   "bk-unknown-effect-reconciled",
+   "bk-unknown-no-effect-then-new",
+   "bk-unknown-unresolved-hold",
+   "bk-unregistered-tool"
+  ],
+  "denominator": 18,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "completed_valid_records",
+  "numerator": 18,
+  "stratum": "normative",
+  "value": 1.0
+ },
+ {
+  "applicable_case_ids": [
+   "bk-x-definite-refusal"
+  ],
+  "case_ids": [],
+  "denominator": 1,
+  "evidence_class": "scripted_fixture",
+  "metric_id": "exploratory_passing",
+  "numerator": 0,
+  "stratum": "exploratory",
+  "value": 0.0
+ }
+]

@@ -1,6 +1,6 @@
 # trace-v1 handoff packet (for the backend owner)
 
-**Status:** contract frozen 2026-10-24. The evaluation side is built and tested. **Backend integration has not been built or tested**: a schema existing is not an integration.
+**Status:** contract frozen 2026-10-24. The evaluation side is built and tested. **The backend effect adapter is built** (`python3 -m evalgate backend`). It has been run locally against an uncommitted copy of the backend's working tree, not in hosted CI. One contract gap is open: a definite no-effect provider failure has no core outcome (see `docs/EVALUATION_GATE.md`, "Backend adapter").
 
 ## What's in the packet
 
@@ -56,14 +56,14 @@ Events are keyed by `operation_id`. Legacy offline events have none, so they're 
 - `trace-check` prints **CONSISTENT** (exit 0) or **INVALID** (exit 2). It **never reports PASS**: a trace is the system's own account of itself. **Treat every nonzero exit as a failure**, not just 2.
 - Detected as INVALID: an empty, unreadable or non-UTF-8 file; a line that is cut off, isn't an object, or has duplicate keys; a dropped middle line or a missing tail (serving streams); an attempt without an outcome; and any contradiction with the rules above. The Python entry points never raise on malformed input.
 - **Not detectable from a trace alone:** a stream that was faithfully written but stopped early, *and* still ends with `serving.run_finished`, looks complete. So does a backend that leaves out events it should have written. That is why the trace is never a PASS.
-- A PASS or FAIL about **effects** comes only from independent effect evidence. Today that means `python3 -m evalgate check`, where the scorer reads a simulator the system under test cannot speak for.
+- A PASS or FAIL about **effects** comes only from independent effect evidence: `python3 -m evalgate check` (the offline gate, where the scorer reads a simulator the system under test cannot speak for) and `python3 -m evalgate backend` (the durable backend, where the scorer reads the evaluation provider's ledger).
 
 ## What the backend must do to be evaluated
 
 1. Emit trace-v1 JSON Lines exactly as above, including `serving.run_accepted` first and `serving.run_finished` last in every run. Run `python3 -m evalgate trace-check` on real service output in the backend's own CI, and treat any nonzero exit as a failure.
 2. Map ledger states one-to-one: `started` → `dispatch_started` (written before the call), `succeeded` → `dispatch_succeeded`, `unknown` → `dispatch_uncertain`, operator or provider resolution → `serving.reconciled`.
 3. Emit `prompt` only for a confirmation the customer actually saw, with `payload.prompt_sha256` set to the hash of the exact shown text (required).
-4. For PASS/FAIL on effects, add a `backend` adapter to `evalgate/driver.py`. It would drive the service's API with the existing cases, and point the service's tool layer at the evaluation simulator (or a provider sandbox whose ledger is read independently). That adapter is **not built**. Until it exists, a backend trace can be shown consistent but not safe.
+4. For PASS/FAIL on effects, run the opt-in backend adapter: `python3 -m evalgate backend --backend PATH [--backend-python PY]`. It drives the service's real HTTP API through the `backend-v1` suite and points the service's provider URL at an independent evaluation provider (`evalgate/backend_provider.py`), whose ledger the scorer reads. It was built in a separate module, not in `evalgate/driver.py`, so `check` stays standard-library only. It relies on these backend entry points, which the backend owner agreed to keep stable: `scripts/serving.py init` / `serve-app`, the `RRA_*` settings including the test-only failpoints, `credentials.json` and `provider.key` in `RRA_DATA_DIR`, the seeded principals and orders, the v1 HTTP routes, and the provider wire contract. If the backend is absent, the result is NOT_RUN (exit 3), never PASS. Results and limits are in `docs/EVALUATION_GATE.md`, section "Backend adapter".
 5. Keep the trace-v1 contract frozen: any added, removed or re-meant field or enum value is trace-v2. Re-run `python3 scripts/ci.py`, which fails if the schema enums drift from the checker.
 
 ## Compatibility limits

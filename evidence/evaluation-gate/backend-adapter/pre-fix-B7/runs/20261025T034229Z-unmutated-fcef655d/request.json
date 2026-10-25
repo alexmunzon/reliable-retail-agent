@@ -1,0 +1,523 @@
+{
+ "cases": [
+  {
+   "case_id": "bk-positive-once",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-ambiguous",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "maybe, let me think",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes if the price is right",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-other-principal",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "bob",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "dave",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "carol",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-stale-binding",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "prompt_id": "forged"
+     }
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "proposal_version": 2
+     }
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1",
+     "tamper": {
+      "payload_hash": "intent:B"
+     }
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-superseded-revision",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "invalidated",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-crash-after-claim",
+   "steps": [
+    {
+     "failpoints": [
+      "crash_after_claim"
+     ],
+     "op": "start_app"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "await_exit"
+    },
+    {
+     "op": "start_app"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "key": "k2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-effect-reconciled",
+   "steps": [
+    {
+     "actions": [
+      "lose_response_after_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded",
+      "failed"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-no-effect-then-new",
+   "steps": [
+    {
+     "actions": [
+      "drop_before_effect"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "failed",
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "capture": "r2",
+     "op": "snapshot",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "binding": "r2",
+     "op": "consent",
+     "response": "yes",
+     "run": "r2"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r2",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-unknown-unresolved-hold",
+   "env": {
+    "RRA_RECONCILE_MAX_ATTEMPTS": "2"
+   },
+   "steps": [
+    {
+     "actions": [
+      "lose_response_after_effect",
+      "status_unavailable_always"
+     ],
+     "op": "arm"
+    },
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "outcome_unknown"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    },
+    {
+     "intent": "B",
+     "op": "new_run",
+     "run": "r2"
+    },
+    {
+     "intent": "C",
+     "op": "new_run",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "capture": "r3",
+     "op": "snapshot",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "binding": "r3",
+     "op": "consent",
+     "response": "yes",
+     "run": "r3"
+    },
+    {
+     "actor": "carol",
+     "op": "wait",
+     "run": "r3",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  }
+ ],
+ "intents": {
+  "A": {
+   "actor": "alice",
+   "address": {
+    "apartment": "2A",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00000",
+    "state": "CA",
+    "street": "18 Example Lane"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "B": {
+   "actor": "alice",
+   "address": {
+    "apartment": "",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00002",
+    "state": "CA",
+    "street": "42 Second Avenue"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "C": {
+   "actor": "carol",
+   "address": {
+    "apartment": "9",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00003",
+    "state": "CA",
+    "street": "5 Third Court"
+   },
+   "order_id": "SYN-ORDER-1043",
+   "tenant": "acme"
+  }
+ },
+ "protocol": "evalgate-backend-driver-v1"
+}
