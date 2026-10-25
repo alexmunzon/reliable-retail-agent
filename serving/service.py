@@ -232,11 +232,11 @@ class Service:
 
     def _create_session(self, conn, principal, key, body, now):
         self.authorize(conn, principal, "runs:write")
+        request_hash, replay = self._idempotent(conn, principal, "POST /api/v1/sessions", key, body, now)
         resource = conn.execute("SELECT 1 FROM resources WHERE tenant_id=? AND resource_id=? AND owner_actor_id=?",
                                 (principal.tenant_id, body["resource_id"], principal.actor_id)).fetchone()
         if resource is None:
             raise ServiceError(404, "not_found", "Resource not found.")
-        request_hash, replay = self._idempotent(conn, principal, "POST /api/v1/sessions", key, body, now)
         if replay:
             return replay
         active = conn.execute("SELECT COUNT(*) FROM sessions WHERE actor_id=? AND expires_at>?",

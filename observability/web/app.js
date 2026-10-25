@@ -1,6 +1,8 @@
 "use strict";
 // Read-only dashboard client. All text from data goes through textContent (el()); no HTML strings are parsed.
 
+const liveServing = location.pathname.startsWith("/observability/");
+let servingToken = "";
 const state = { page: 1, pageSize: 20, filters: {}, items: [], selected: null, meta: null };
 
 const STATUS_TEXT = {
@@ -47,10 +49,17 @@ function moneyMap(map, empty) {
 }
 
 async function api(path) {
-  const response = await fetch(path, { headers: { Accept: "application/json" }, cache: "no-store" });
+  const headers = { Accept: "application/json" };
+  if (liveServing) { headers.Authorization = `Bearer ${servingToken}`; path = path.replace(/^\/api\//, "/api/v1/observability/"); }
+  const response = await fetch(path, { headers, cache: "no-store" });
   const body = await response.json().catch(() => ({ error: "unreadable_response" }));
   if (!response.ok) throw Object.assign(new Error(body.error || `http_${response.status}`), { status: response.status });
-  return body;
+  if (liveServing && body.sample) {
+    const banner = document.getElementById("set-banner");
+    banner.hidden = false;
+    banner.textContent = `Bounded live sample: newest ${body.sample.run_limit} owned runs; filters and denominators apply only to this sample. Older history is excluded. ${body.sample.truncated ? "More owned runs exist." : ""}`;
+  }
+  return liveServing && body.groups ? body.groups : body;
 }
 
 function query(extra) {
@@ -151,7 +160,7 @@ function aggregateCard(name, agg) {
       el("dt", { text: "p95" }), el("dd", { class: "agg-p95", text: lat.p95_ns === null ? "unknown (n=0)" : `${ms(lat.p95_ns)} (rank ${lat.p95_rank} of ${lat.eligible})` }),
       el("dt", { text: "Estimated charge" }), el("dd", { class: "agg-est", text: `${moneyMap(agg.costs.estimated_charge_complete_requests, "none")} (synthetic prices; complete requests only)` }),
       el("dt", { text: "Unknown estimates" }), el("dd", { text: `${agg.costs.requests_with_unknown_estimate} request(s); known subtotal ${moneyMap(agg.costs.known_subtotal_of_unknown_requests, "none")}` }),
-      el("dt", { text: "Confirmed charge" }), el("dd", { text: moneyMap(agg.costs.confirmed_charge, "none (no receipts)") })),
+      el("dt", { text: "Confirmed receipt subtotal" }), el("dd", { text: `${moneyMap(agg.costs.confirmed_charge, "none (no receipts)")}; ${agg.costs.requests_with_incomplete_billing} request(s) with unknown billing total` })),
     lat.warning ? el("p", { class: "warn", text: lat.warning }) : null);
 }
 
@@ -187,7 +196,7 @@ function banner(request) {
   const ev = request.evidence;
   const problems = [];
   if (ev.completeness.length) problems.push(`Incomplete evidence: ${ev.completeness.join(", ")}`);
-  if (ev.contract_verdict === "INVALID") problems.push(`trace-v1 checker: INVALID (${Object.entries(ev.contract_codes).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+  if (ev.contract_verdict === "INVALID") problems.push(`Versioned trace checker: INVALID (${Object.entries(ev.contract_codes).map(([k, v]) => `${k}×${v}`).join(", ")})`);
   if (ev.diagnostic_view) problems.push(`Diagnostic view: ${ev.duplicate_lines_in_artifact} repeated line(s) collapsed, ${ev.reordered_lines} line(s) reordered by sequence. The INVALID verdict stands.`);
   if (ev.flags.includes("repeated_attempt_across_runs")) problems.push("The same operation was attempted in more than one run (a real repeated provider attempt, not duplicate ingestion).");
   if (request.timing.telemetry_dropped) problems.push(`Telemetry: emitter reported ${request.timing.telemetry_dropped} dropped record(s).`);
@@ -195,7 +204,7 @@ function banner(request) {
   const level = ev.completeness.length || ev.contract_verdict === "INVALID" ? "bad" : problems.length ? "warn" : "ok";
   return el("div", { class: `banner ${level}`, role: level === "ok" ? "status" : "alert", "data-testid": "completeness" },
     el("strong", { text: level === "ok" ? "Evidence complete and contract-consistent" : "Evidence needs attention" }),
-    level === "ok" ? el("p", { text: "trace-v1 checker: CONSISTENT. This is the system's own account, not proof of external effects." }) : el("ul", {}, problems.map((p) => el("li", { text: p }))),
+    level === "ok" ? el("p", { text: "Versioned trace checker: CONSISTENT. This is the system's own account, not proof of external effects." }) : el("ul", {}, problems.map((p) => el("li", { text: p }))),
     ev.caveats.length ? el("p", { class: "caveat", text: `Clock caveats: ${ev.caveats.join(", ")}. Wall times order display only; durations use one process's monotonic clock.` }) : null);
 }
 
@@ -272,11 +281,11 @@ function costPanel(request) {
   const estTok = c.estimated_charge_from_estimated_tokens;
   const tokens = Object.entries(c.measured_tokens).map(([k, v]) => `${k} ${v}${c.measured_tokens_missing[k] ? ` (+${c.measured_tokens_missing[k]} not supplied)` : ""}`).join(" · ");
   const series = [
-    ["Measured usage", c.usage.filter((u) => u.measurement === "measured").length ? tokens : "no measured usage records", "measured"],
+    ["Measured usage (known subtotal)", c.model_usage_applicability === "not_applicable_no_model_calls" ? "not applicable — no model calls" : c.usage.filter((u) => u.measurement === "measured").length ? tokens : "no measured usage records", "measured"],
     ["Estimated charge", est.total ? `${moneyMap(est.total)} via ${est.pricing_tables.join(", ")} (SYNTHETIC prices)` : `unknown — ${est.reason}${Object.keys(est.known_subtotal).length ? `; known subtotal ${moneyMap(est.known_subtotal)}` : ""}`, "estimated"],
     ["Estimated from estimated tokens", estTok.usage_records ? (estTok.total ? moneyMap(estTok.total) : `unknown — ${estTok.reason}`) : "none", "estimated-tokens"],
-    ["Confirmed charge", Object.keys(c.confirmed_charge).length ? `${moneyMap(c.confirmed_charge)} (${c.confirmed_receipts} SYNTHETIC receipt(s))` : "none — no billing receipt", "confirmed"],
-    ["Unknown", `${est.unknown_usage_records} usage record(s) without an estimate${c.duplicate_usage_identities ? `; ${c.duplicate_usage_identities} re-sent usage record(s) counted once` : ""}${c.uncertain_outcome ? "; cost kept although the business outcome is unknown" : ""}`, "unknown"],
+    ["Confirmed receipt subtotal", `${moneyMap(c.confirmed_charge, "none — no billing receipt")}; ${c.confirmed_charge_complete ? "complete for observed usage" : `total unknown — ${c.confirmed_charge_unknown_reason}`}`, "confirmed"],
+    ["Unknown", `${est.unknown_usage_records} usage record(s) without an estimate; ${c.conflicting_usage_identities} conflicting usage identities; ${c.conflicting_receipts} conflicting receipts${c.incomplete_evidence_reasons.length ? `; telemetry incomplete: ${c.incomplete_evidence_reasons.join(", ")}` : ""}${c.duplicate_usage_identities ? `; ${c.duplicate_usage_identities} re-sent usage record(s) counted once` : ""}${c.uncertain_outcome ? "; cost kept although the business outcome is unknown" : ""}`, "unknown"],
   ];
   return el("div", {},
     el("dl", { class: "kv cost" }, series.flatMap(([label, value, id]) => [el("dt", { text: label }), el("dd", { "data-series": id, text: value })])),
@@ -332,7 +341,9 @@ async function boot() {
   const meta = state.meta;
   document.getElementById("viewer").textContent = meta.viewer;
   document.getElementById("isolation").textContent = meta.isolation;
-  document.getElementById("origin-badge").textContent = meta.synthetic ? "SYNTHETIC FIXTURES" : meta.data_origin;
+  document.getElementById("origin-badge").textContent = liveServing ? "LIVE · SYNTHETIC PROVIDER" : meta.synthetic ? "SYNTHETIC FIXTURES" : meta.data_origin;
+  document.querySelector(".badge.held").textContent = liveServing ? "Authenticated local observations" : "Fixture mode";
+  if (liveServing) document.querySelector(".foot").textContent = "Synthetic provider, no model calls or billing receipts. Provider durations are measured within one process; other durations remain unknown. Traces are not independent proof of effects.";
   const statusSelect = document.getElementById("f-status");
   meta.statuses.forEach((s) => statusSelect.append(el("option", { value: s, text: STATUS_TEXT[s] || s })));
   const routes = await api("/api/aggregates").then((g) => [...new Set(Object.keys(g).map((k) => k.split("/")[2]))]).catch(() => []);
@@ -369,4 +380,15 @@ async function boot() {
   if (location.hash.length > 1) openRequest(decodeURIComponent(location.hash.slice(1)), { push: false });
 }
 
-boot();
+if (liveServing) {
+  const token = el("input", { type: "password", autocomplete: "off", required: true, "aria-label": "Local serving bearer token" });
+  const form = el("form", { class: "filters", onsubmit: async (event) => {
+    event.preventDefault(); servingToken = token.value.trim(); token.value = "";
+    form.remove(); await boot();
+  } }, el("label", {}, "Local serving token (kept in page memory only)", token), el("button", { type: "submit", text: "Open observations" }));
+  document.querySelector("header").after(form);
+  document.querySelector("header").append(el("button", { type: "button", text: "Refresh observations", onclick: () => loadList() }),
+    el("button", { type: "button", text: "Clear token", onclick: () => { servingToken = ""; location.reload(); } }));
+  document.getElementById("origin-badge").textContent = "LIVE · SYNTHETIC PROVIDER";
+  document.querySelector(".badge.held").textContent = "Authentication required";
+} else { boot(); }

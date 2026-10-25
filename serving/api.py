@@ -14,7 +14,7 @@ from . import auth
 from .provider import ProviderUnavailable
 from .service import ServiceError
 from .streaming import SSEResponse, event_stream
-from .trace_export import to_trace_v1
+from .trace_export import to_trace
 
 RUN_ID = r"^run_[0-9a-f]{32}$"
 SESSION_ID = r"^ses_[0-9a-f]{32}$"
@@ -216,7 +216,7 @@ async def get_events(request: Request, run_id: RunId, caller: Caller = Depends(r
     def still_authorized() -> bool:
         conn = state.service.connect()
         try:
-            return auth.is_active(conn, caller.principal, caller.token)
+            return auth.is_active(conn, caller.principal, caller.token) and state.service.can_observe(caller.principal, run_id)
         finally:
             conn.close()
 
@@ -228,10 +228,11 @@ async def get_events(request: Request, run_id: RunId, caller: Caller = Depends(r
 
 
 @router.get("/runs/{run_id}/trace")
-async def get_trace(request: Request, run_id: RunId, caller: Caller = Depends(require("runs:read"))):
+async def get_trace(request: Request, run_id: RunId, contract: Literal["trace-v1", "trace-v2"] = "trace-v1",
+                    caller: Caller = Depends(require("runs:read"))):
     """The run's events mapped onto the evaluation owner's trace-v1 envelope (hashes and codes only)."""
     envelopes = await to_thread.run_sync(request.app.state.service.trace_envelopes, caller.principal, run_id)
-    body = "".join(json.dumps(to_trace_v1(event), sort_keys=True, separators=(",", ":")) + "\n" for event in envelopes)
+    body = "".join(json.dumps(to_trace(event, contract), sort_keys=True, separators=(",", ":")) + "\n" for event in envelopes)
     return Response(body, media_type="application/x-ndjson")
 
 
@@ -241,5 +242,6 @@ async def metrics(request: Request, caller: Caller = Depends(require("ops:read")
     counts = await to_thread.run_sync(state.service.counts)
     snapshot = state.telemetry.snapshot()
     snapshot["gauges"].update({"streams_open": state.stream_slots.total, "worker_degraded": int(state.worker.degraded),
-                               "outcomes_unrecorded": len(state.worker.parked), **counts})
+                               "outcomes_unrecorded": len(state.worker.parked),
+                               "observation_spans": state.observation_spans.stats(), **counts})
     return snapshot

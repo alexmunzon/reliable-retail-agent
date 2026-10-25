@@ -1,29 +1,17 @@
-"""Thin adapter: provisional serving outbox events -> the evaluation owner's trace-v1 envelope.
+"""Versioned projection of the durable outbox into frozen trace-v1/trace-v2.
 
-The contract is owned by the evaluation-gate branch: `contracts/trace-v1.schema.json` at
-TRACE_V1_COMMIT, titled "PROPOSAL, not frozen". This module only maps fields; it never defines,
-extends or loosens that schema. Compatibility is evidenced by running the owner's own checker
-(`evalgate.trace.validate_trace` at the pinned commit: envelope, enums, sequence) on traces exported
-through the HTTP API, in tests_serving/test_trace_contract.py; it is not asserted here.
-
-Exported traces carry hashes and reason codes only: never prompt text, tool arguments, provider
-keys or addresses (the contract's privacy rule).
-
-Known contract gap (reported to the owner, not papered over): trace-v1 has no core outcome for a
-definite provider no-effect failure. Such an attempt is exported as `serving.dispatch_failed_no_effect`;
-the owner's uncommitted draft ordering rules would report the attempt as having no recorded outcome.
-
-`prompt` means the exact text was delivered to the authenticated owner's client (recorded in the same
-transaction that reads it out; consent is refused before it). That is the closest a server can attest to
-the handoff's "actually displayed".
+Trace-v1 retains its original meanings. Trace-v2 adds a definite no-effect refusal.
+The immutable contract/checker revision below is validated by HTTP effect-ledger tests.
+Exports contain only hashes, identifiers and bounded reason codes. A prompt event attests
+that the server prepared an authenticated response, not that a human viewed it.
 """
 from __future__ import annotations
 
 from hashlib import sha256
 from typing import Any
 
-TRACE_V1_COMMIT = "09565cd65c4908c19d218d0b062fbafc723edf99"
-TRACE_V1_SCHEMA_BLOB = "bcd37d55b37bf408e560960602d7796ff000fe6c"  # git blob of contracts/trace-v1.schema.json there
+TRACE_V1_COMMIT = "11407c97c334d622df01f3de25792c5a045b34ea"
+TRACE_V1_SCHEMA_BLOB = "23b620cb151711fbb94c6233ca79b1629ce77ea2"  # git blob of contracts/trace-v1.schema.json there
 MAPPING_VERSION = "backend-outbox-map-v1"
 
 # Provisional reason codes -> the contract's enums. Anything unlisted maps to the contract's "other"
@@ -34,8 +22,10 @@ RECONCILED_OUTCOMES = {"succeeded": "effect_confirmed", "failed_no_effect": "no_
 DISPATCH_TYPES = ("dispatch_started", "dispatch_succeeded", "dispatch_uncertain")
 
 
-def to_trace_v1(event: dict[str, Any]) -> dict[str, Any]:
-    """Map one provisional envelope (as stored in the outbox) to one trace-v1 event."""
+def to_trace(event: dict[str, Any], contract: str = "trace-v1") -> dict[str, Any]:
+    """Map an outbox envelope; unsupported contracts fail before producing evidence."""
+    if contract not in ("trace-v1", "trace-v2"):
+        raise ValueError("unsupported trace contract")
     kind, payload = event["event_type"], event.get("payload") or {}
     raw_reason = payload.get("reason") or payload.get("code")
     title = str(payload.get("title", ""))
@@ -66,12 +56,16 @@ def to_trace_v1(event: dict[str, Any]) -> dict[str, Any]:
     elif kind == "serving.reconciliation_unavailable":
         mapped_kind, mapped = "serving.reconciled", {"outcome": "still_unknown", "by": payload["method"]}
     elif kind == "serving.dispatch_failed_no_effect":
-        mapped = {"code": payload.get("code")}
+        if contract == "trace-v2":
+            mapped_kind = "dispatch_rejected"
+            mapped = {"tool_name": "change_order_address", "code": str(payload["code"])[:96], "effect": "none"}
+        else:
+            mapped = {"code": payload.get("code")}
     # rejected and the remaining serving.* events export an empty payload: their meaning is the type.
-    source = {"component": "backend.service", "mapping_version": MAPPING_VERSION, "raw_type": kind}
+    source = {"component": "backend.service", "mapping_version": MAPPING_VERSION if contract == "trace-v1" else "backend-outbox-map-v2", "raw_type": kind}
     if title:
         source["raw_title"] = (f"{title} [{raw_reason}]" if raw_reason else title)[:128]
-    result = {"schema_version": "trace-v1", "event_id": event["event_id"], "sequence": event["sequence"],
+    result = {"schema_version": contract, "event_id": event["event_id"], "sequence": event["sequence"],
               "event_type": mapped_kind, "session_id": event["session_id"], "run_id": event["run_id"],
               "trace_id": event["trace_id"], "occurred_at": event["occurred_at"], "source": source,
               "evidence_class": "serving_observation", "payload": mapped}
@@ -79,3 +73,8 @@ def to_trace_v1(event: dict[str, Any]) -> dict[str, Any]:
         if event.get(key) is not None:
             result[key] = event[key]
     return result
+
+
+def to_trace_v1(event: dict[str, Any]) -> dict[str, Any]:
+    """Compatibility entry point retaining the original v1 projection."""
+    return to_trace(event, "trace-v1")

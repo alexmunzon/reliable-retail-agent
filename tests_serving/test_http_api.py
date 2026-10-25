@@ -12,11 +12,12 @@ from tests_serving.sse import SSEParser
 
 
 def read_stream(stack, run_id, actor="alice", cursor=None, deadline=2.0):
-    """Collect SSE events until the server closes the stream or `deadline` of silence passes."""
+    """Collect SSE events until close or the total observation deadline (heartbeats cannot extend it)."""
     headers = stack.headers(actor)
     if cursor:
         headers["Last-Event-ID"] = cursor
     parser, events = SSEParser(), []
+    stop_at = time.monotonic() + deadline
     try:
         with httpx.stream("GET", stack.url(f"/api/v1/runs/{run_id}/events"), headers=headers,
                           timeout=httpx.Timeout(10, read=deadline)) as response:
@@ -26,6 +27,8 @@ def read_stream(stack, run_id, actor="alice", cursor=None, deadline=2.0):
             assert response.headers["cache-control"] == "no-store"
             for chunk in response.iter_raw():
                 events.extend(parser.feed(chunk))
+                if time.monotonic() >= stop_at:
+                    break
     except httpx.ReadTimeout:
         pass
     return 200, events

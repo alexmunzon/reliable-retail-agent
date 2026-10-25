@@ -25,9 +25,10 @@ from .telemetry import Telemetry
 
 
 class Worker:
-    def __init__(self, service: Service, provider: ProviderClient, settings: Settings, telemetry: Telemetry, notify):
+    def __init__(self, service: Service, provider: ProviderClient, settings: Settings, telemetry: Telemetry, notify, observation_spans=None):
         self.service, self.provider, self.settings = service, provider, settings
         self.telemetry, self.notify = telemetry, notify
+        self.observation_spans = observation_spans
         self._wake = asyncio.Event()
         self._stopping = False
         self._loop_task: asyncio.Task | None = None
@@ -110,10 +111,18 @@ class Worker:
         if self.settings.failpoint("crash_after_claim"):
             os._exit(70)  # Test-only: die after the claim commit, before any provider I/O.
         started = time.monotonic()
+        provider_start_ns = time.monotonic_ns()
         self.telemetry.count("provider_attempts")
         outcome = await self.provider.mutate(provider_key=claim.provider_key, tenant=claim.tenant_id,
                                              tool_name=claim.tool_name, arguments=claim.arguments,
                                              expected_revision=claim.expected_revision)
+        provider_end_ns = time.monotonic_ns()
+        if self.observation_spans is not None:
+            try:
+                self.observation_spans.record(claim, provider_start_ns, provider_end_ns,
+                                              {"succeeded": "ok", "failed_no_effect": "error", "unknown": "unknown"}[outcome.state])
+            except Exception:
+                self.telemetry.count("observability_capture_dropped")
         if self.settings.failpoint("crash_after_provider_response"):
             os._exit(71)  # Test-only: provider answered; this process dies before recording it.
         self.telemetry.count(f"provider_outcome_{outcome.state}")

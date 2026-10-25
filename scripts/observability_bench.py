@@ -97,7 +97,7 @@ def main(argv=None) -> int:
         shutil.rmtree(root)
     receipt = {"bench": "obs-bench-v1", "python": platform.python_version(), "machine": platform.machine(),
                "system": platform.system(), "note": "single local run; not a CI threshold", "results": results,
-               "instrumentation_overhead": "not applicable: no code in any dispatch or serving path (integration held)"}
+               "instrumentation_overhead": "not measured here: this harness measures fixture ingest/query only; serving capture is measured separately"}
     text = json.dumps(receipt, indent=2)
     print(text)
     if args.out:

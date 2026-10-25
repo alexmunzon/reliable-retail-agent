@@ -144,6 +144,10 @@ CREATE INDEX runs_by_terminal ON runs(terminal_at) WHERE terminal_at IS NOT NULL
 CREATE INDEX idempotency_by_expiry ON idempotency(expires_at);
 """),
 ]
+# Match the authenticated dashboard's bounded newest-owned-runs query.
+MIGRATIONS.append((3, "owned-observation-window", """
+CREATE INDEX runs_by_owner_created ON runs(tenant_id, actor_id, created_at DESC, run_id);
+"""))
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
 

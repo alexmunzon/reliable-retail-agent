@@ -17,12 +17,15 @@ from tests_serving.sse import SSEParser
 def event_types(stack, run_id, actor="alice"):
     """Replay the full committed history (the run may still be open, so read with a short deadline)."""
     parser, events = SSEParser(), []
+    stop_at = time.monotonic() + 1.5
     try:
         with httpx.stream("GET", stack.url(f"/api/v1/runs/{run_id}/events"), headers=stack.headers(actor),
                           timeout=httpx.Timeout(10, read=1.5)) as response:
             assert response.status_code == 200, response.read()
             for chunk in response.iter_raw():
                 events.extend(parser.feed(chunk))
+                if time.monotonic() >= stop_at:
+                    break
     except httpx.ReadTimeout:
         pass
     return [event["event"] for event in events]

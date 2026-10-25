@@ -50,6 +50,11 @@ jobs:
           "$RUNNER_TEMP/backend-venv/bin/python" -m pip install --disable-pip-version-check --no-deps --require-hashes \
             -r "$RUNNER_TEMP/backend-lock.txt"
 
+      - name: Run current serving, crash-recovery, authentication and dashboard tests
+        run: |
+          test -x "$RUNNER_TEMP/backend-venv/bin/python"
+          "$RUNNER_TEMP/backend-venv/bin/python" -B scripts/ci_serving.py
+
       - name: Run the pinned backend evaluation (exit 0 PASS, 1 FAIL, 2 INVALID, 3 NOT_RUN; only 0 passes)
         run: |
           set -uo pipefail

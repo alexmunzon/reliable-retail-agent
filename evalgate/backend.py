@@ -44,7 +44,7 @@ REQUIRED_FILES = ("scripts/serving.py", "serving/app.py", "serving/service.py", 
                   "serving/worker.py", "rra/gate.py", "study/consent_current.py")
 COPY_IGNORE = shutil.ignore_patterns(".git", ".venv", "runtime", "__pycache__", "*.pyc", "vendor", "native", "reproduction",
                                      "evidence", "node_modules", ".github")
-COMPONENT_DIRS = ("serving", "rra", "study", "adapters", "scripts")
+COMPONENT_DIRS = ("serving", "observability", "rra", "study", "adapters", "scripts")
 TERMINAL = frozenset({"succeeded", "failed", "rejected", "cancelled", "expired", "invalidated"})
 NO_EFFECT_STATES = frozenset({"failed", "rejected", "cancelled", "expired", "invalidated"})
 FAILURE_CLASSES = ("unauthorized_dispatch", "unsafe_effect", "duplicate_effect", "wrong_payload", "incomplete_consent_prompt",
@@ -649,7 +649,7 @@ def check_trace(label, case, observation, intents, classes, details, observed):
                 started[hashed] = started.get(hashed, 0) + 1
             elif kind == "dispatch_succeeded" or (kind == "serving.reconciled" and (event.get("payload") or {}).get("outcome") == "effect_confirmed"):
                 confirmed.add(hashed)
-            elif kind == "serving.reconciled" and (event.get("payload") or {}).get("outcome") == "no_effect_confirmed":
+            elif kind == "dispatch_rejected" or (kind == "serving.reconciled" and (event.get("payload") or {}).get("outcome") == "no_effect_confirmed"):
                 denied.add(hashed)
     requests: dict[str, int] = {}
     applied = set()

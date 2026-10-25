@@ -23,6 +23,8 @@ from .service import Service, ServiceError
 from .streaming import Notifier, StreamSlots
 from .telemetry import Telemetry
 from .worker import Worker
+from .observability_api import router as observability_router
+from observability.live import SpanRecorder
 
 LOCAL_HOSTS = ("127.0.0.1", "localhost")
 SECURITY_HEADERS = [
@@ -140,7 +142,8 @@ def create_app(settings: Settings | None = None, telemetry: Telemetry | None = N
         service = Service(settings)
         provider = ProviderClient(settings.provider_url, settings.provider_key(), settings.provider_timeout_seconds)
         notifier = Notifier()
-        worker = Worker(service, provider, settings, telemetry, notifier.notify)
+        app.state.observation_spans = SpanRecorder()
+        worker = Worker(service, provider, settings, telemetry, notifier.notify, app.state.observation_spans)
         app.state.service, app.state.provider, app.state.notifier, app.state.worker = service, provider, notifier, worker
         await worker.start()
         telemetry.log("service.started", state="accepting")
@@ -159,6 +162,7 @@ def create_app(settings: Settings | None = None, telemetry: Telemetry | None = N
     app.state.unauth_limiter = RateLimiter(settings.unauthenticated_rate_per_minute, settings.unauthenticated_rate_per_minute)
     app.state.stream_slots = StreamSlots(settings)
     app.include_router(router)
+    app.include_router(observability_router)
 
     @app.exception_handler(ServiceError)
     async def service_error(request: Request, error: ServiceError):
@@ -205,6 +209,7 @@ def create_app(settings: Settings | None = None, telemetry: Telemetry | None = N
             ok = False
         return JSONResponse({"status": "ready" if ok else "not_ready"}, status_code=200 if ok else 503)
 
+    app.mount("/observability", StaticFiles(directory=ROOT / "observability" / "web", html=True), name="observability-client")
     app.mount("/serving", StaticFiles(directory=ROOT / "web" / "serving", html=True), name="serving-client")
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(LOCAL_HOSTS))
     app.add_middleware(GuardMiddleware, settings=settings, telemetry=telemetry)

@@ -50,7 +50,7 @@ class ContractCase(unittest.TestCase):
     def setUpClass(cls):
         cls.checker = load_owner_checker()
         if cls.checker is None:
-            raise unittest.SkipTest(f"evaluation-gate commit {TRACE_V1_COMMIT[:7]} is not in this clone: "
+            raise RuntimeError(f"required evaluation-gate commit {TRACE_V1_COMMIT[:7]} is not in this clone: "
                                     "trace-v1 compatibility is NOT established here")
         cls.stack = Stack(env=cls.env)
         cls.stack.start_provider()
@@ -62,7 +62,7 @@ class ContractCase(unittest.TestCase):
 
     # ------------------------------------------------------------------ helpers
     def trace(self, run_id, actor="alice"):
-        response = self.stack.get(f"/api/v1/runs/{run_id}/trace", actor)
+        response = self.stack.get(f"/api/v1/runs/{run_id}/trace?contract=trace-v2", actor)
         self.assertEqual(response.status_code, 200, response.text)
         self.assertTrue(response.headers["content-type"].startswith("application/x-ndjson"))
         return response.text
@@ -81,7 +81,14 @@ class ContractCase(unittest.TestCase):
         """Owner's checker accepts the trace, and the trace tells the same story as the provider's ledger,
         in both directions: no claimed effect without a ledger row, no ledger row the trace hides."""
         text = self.trace(run["run_id"], actor)
-        self.assertEqual(self.owner_check(text), [])
+        problems = self.owner_check(text)
+        finished = self.stack.snapshot(run["run_id"], actor)["state"] in TERMINAL_RUN_STATES
+        if finished:
+            self.assertEqual(problems, [])
+        else:
+            # Active streams are incomplete by the frozen contract, never a false PASS.
+            self.assertTrue(problems)
+            self.assertTrue(all("serving.run_finished" in p for p in problems), problems)
         events = [json.loads(line) for line in text.splitlines()]
         for event in events:  # Privacy: hashes and codes only.
             self.assertNotIn("Example Lane", json.dumps(event))
@@ -103,7 +110,7 @@ class ContractCase(unittest.TestCase):
         self.assertLessEqual(kinds.count("dispatch_started"), 1)
         self.assertLessEqual(len(effects), 1)
         confirmed = "dispatch_succeeded" in kinds or "effect_confirmed" in outcomes
-        denied = "no_effect_confirmed" in outcomes or "serving.dispatch_failed_no_effect" in kinds
+        denied = "no_effect_confirmed" in outcomes or "dispatch_rejected" in kinds
         if confirmed:
             self.assertEqual(len(effects), 1)
         if denied or "dispatch_started" not in kinds:
@@ -183,7 +190,7 @@ class TraceContractTests(ContractCase):
         kinds = self.assert_accepted_and_consistent(run)
         self.assertEqual(kinds[-3:], ["dispatch_started", "dispatch_uncertain", "serving.reconciled"])
 
-    def test_definite_no_effect_failure_exports_a_namespaced_outcome(self):
+    def test_definite_no_effect_failure_negotiates_v2_and_preserves_v1(self):
         # trace-v1 has no core outcome for a definite no-effect reply. The pinned envelope check accepts
         # the namespaced event; the owner's draft ordering rules would not (see docs/SERVING.md, trace-v1).
         s = self.stack
@@ -192,7 +199,12 @@ class TraceContractTests(ContractCase):
         s.approve(run)
         s.wait_state(run["run_id"], {"failed"})
         kinds = self.assert_accepted_and_consistent(run)
-        self.assertEqual(kinds[-1], "serving.dispatch_failed_no_effect")
+        self.assertEqual(kinds[-1], "dispatch_rejected")
+        legacy = s.get(f"/api/v1/runs/{run['run_id']}/trace", "alice")
+        self.assertEqual(legacy.status_code, 200)
+        self.assertTrue(all(json.loads(line)["schema_version"] == "trace-v1" for line in legacy.text.splitlines()))
+        self.assertTrue(any("no recorded outcome" in p for p in self.owner_check(legacy.text)))
+        self.assertEqual(s.get(f"/api/v1/runs/{run['run_id']}/trace?contract=trace-v99", "alice").status_code, 422)
 
     def test_restore_of_a_mid_dispatch_backup_records_the_uncertainty_first(self):
         s = self.stack

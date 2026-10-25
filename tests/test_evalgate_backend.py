@@ -452,6 +452,18 @@ class ValidationTests(unittest.TestCase):
 
 
 class TraceV2ContractTests(unittest.TestCase):
+    def test_v2_no_effect_claim_conflicting_with_provider_effect_fails(self):
+        observation = obs("bk-positive-once")
+        for run in observation["runs"].values():
+            for event in run["trace"]:
+                event["schema_version"] = "trace-v2"
+                if event["event_type"] == "dispatch_succeeded":
+                    event["event_type"] = "dispatch_rejected"
+                    event["payload"] = {"tool_name": "change_order_address", "code": "invalid_request", "effect": "none"}
+        record = score("bk-positive-once", observation)
+        self.assertIn("misreported_outcome", record["failure_classes"])
+        self.assertEqual(record["verdict"], "fail")
+
     """trace-v2 adds exactly one core outcome; trace-v1 is untouched."""
 
     def test_v2_schema_differs_from_v1_only_by_the_rejection_outcome(self):

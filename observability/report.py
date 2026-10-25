@@ -210,6 +210,7 @@ def aggregate(rows: list[dict], *, start=None, end=None, warmup_per_process: int
                       "requests_with_unknown_estimate": unknown_cost,
                       "known_subtotal_of_unknown_requests": {c: money(v) for c, v in sorted(partial_known.items())},
                       "confirmed_charge": {c: money(v) for c, v in sorted(confirmed.items())},
+                      "requests_with_incomplete_billing": sum(not r["costs"]["confirmed_charge_complete"] for r in items),
                       "note": "estimates are tokens x dated synthetic prices; a request with no usage records or an unpriced "
                               "record has an unknown estimate (never $0); confirmed charges come only from receipts"},
         }
