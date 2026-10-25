@@ -95,7 +95,9 @@ class ManifestAndPaths(unittest.TestCase):
             path.write_bytes(path.read_bytes().replace(b'"0.0074"', b'"0.0001"'))
             loaded = load_fixture_set(s.root)
             self.assertIn({"case": "healthy", "code": "sidecar_digest_mismatch"}, loaded["problems"])
-            self.assertFalse(any(st.key == "healthy/run-healthy" for st in loaded["streams"]))
+            stream = next(st for st in loaded["streams"] if st.key == "healthy/run-healthy")
+            self.assertEqual(stream.sidecar, [])  # unverified metrics are discarded, authoritative trace retained
+            self.assertEqual(stream.sidecar_rejected, {"sidecar.digest_mismatch": 1})
 
     def test_unsupported_data_origin_is_refused(self):
         with TempSet() as s:

@@ -351,10 +351,14 @@ class PlantedMutants(unittest.TestCase):
         self.assertCaught(oracle_mismatches(data), "redaction/run-redaction: redacted_payload_fields")
 
     def test_mutant_serves_another_principals_trace(self):
+        def assert_private(data):
+            self.assertIsNone(data.get("tenant-a", "tenant-b/run-tenant-b-private"))
+            self.assertIsNone(data.export("tenant-a", "tenant-b/run-tenant-b-private"))
+
         with mock.patch.object(Dataset, "get", lambda self, principal, key: self.requests.get(key)):
-            data = self.build()
-            self.assertIsNotNone(data.get("tenant-a", "tenant-b/run-tenant-b-private"))  # the planted leak
-        self.assertIsNone(Dataset().get("tenant-a", "tenant-b/run-tenant-b-private"))   # the real code refuses
+            with self.assertRaises(AssertionError):
+                assert_private(self.build())  # the normal security assertion must catch the planted leak
+        assert_private(self.build())
 
     def test_real_code_passes_every_check_the_mutants_fail(self):
         data = self.build()

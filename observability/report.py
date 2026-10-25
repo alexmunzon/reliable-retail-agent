@@ -147,6 +147,10 @@ def summary(r: dict) -> dict:
             "request_duration_ns": r["timing"]["request_duration_ns"], "lower_bound_ns": r["timing"]["lower_bound_ns"],
             "estimated_charge": est["total"], "estimate_reason": est["reason"],
             "confirmed_charge": r["costs"]["confirmed_charge"],
+            "confirmed_charge_total": r["costs"]["confirmed_charge_total"],
+            "confirmed_charge_complete": r["costs"]["confirmed_charge_complete"],
+            "confirmed_charge_unknown_reason": r["costs"]["confirmed_charge_unknown_reason"],
+            "cost_incomplete_evidence_reasons": r["costs"]["incomplete_evidence_reasons"],
             "mutation_attempts": sum(o["mutation_attempts"] for o in r["operations"].values())}
 
 
