@@ -1,0 +1,10 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -198,6 +198,7 @@
+         if self._authorized != expected:
+             self._event("blocked", "Unconfirmed dispatch blocked", "No matching fresh affirmative is available.", intent)
+             return self._result("rejected" if self._rejected else "awaiting_confirmation", "Dispatch blocked: exact-payload consent is absent.")
++        return self._result("awaiting_confirmation", "MUTANT: block everything")
+         # Consume consent and write the actual attempt BEFORE entering tool code.
+         self._authorized = None
+         record = {"id": intent.operation_id, "tool_name": intent.tool_name,

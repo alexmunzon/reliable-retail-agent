@@ -1,0 +1,85 @@
+{
+ "candidate_kind": "working-tree",
+ "command": [
+  "__main__.py",
+  "run",
+  "--role",
+  "candidate",
+  "--out",
+  "<home>/.claude/jobs/287e7e40/tmp/runs"
+ ],
+ "costs": "no model or paid calls; runtime measured by caller",
+ "decision": "FAIL",
+ "environment": {
+  "implementation": "CPython",
+  "platform": "macOS-15.7.4",
+  "python": "3.11.1"
+ },
+ "evidence_class": "scripted_fixture",
+ "finished_at": "2026-10-25T01:07:07+00:00",
+ "harness": {
+  "dirty": true,
+  "files_sha256": "fecc1c039da56277956e4cbbeecec1d05eef3ccb0e84d84f20b2d124ae61682b",
+  "git_sha": "8e70c0f9c674399fcdbd7892e33a8432bc1c4e96",
+  "version": "evalgate-harness-v1"
+ },
+ "harness_trust": "local",
+ "outputs": {
+  "driver-output.json": "8bc3ac5f80c29788fa1c98b3a082281eed64e69408f1b22f6bfdb5d47b7e6a86",
+  "metrics.json": "b987fc639f964d9b42a1ea98f07c467cb0197844d17a9b7d98f5b3137c7a03f0",
+  "records.jsonl": "666e9c20d50293e243ef5ca105a5713bd97a6bc6bd2f62382c708b13eb2d1ffe",
+  "request.json": "3a81d48b5f690c62b075198867da27e5339bd33869d9e3d3380fb58562c5d52d",
+  "summary.md": "52ba4a31d7dddacafcb89989acc9beddf9427dc2cfea17671d22dd83a1c625f7",
+  "traces.jsonl": "dfb94600eb197aae98d210b6e064eb57c031bdb49b7335e9c7b66b98346fc58c"
+ },
+ "policy": {
+  "id": "evalgate-policy-v1",
+  "sha256": "27eb0aba0b5fe7215f13688bef95c31f71ea7a5712f2cf85431ce149294c2ec3"
+ },
+ "reasons": [
+  "uncertain-tau-error-observation: interface_error",
+  "danger-tau-unrelated-assent: interface_error"
+ ],
+ "record_type": "run_manifest",
+ "role": "candidate",
+ "run_id": "20261025T010707Z-candidate-a9ed88ed",
+ "schema_version": "evaluation-v1",
+ "seeds": "none: deterministic fixtures",
+ "started_at": "2026-10-25T01:07:07+00:00",
+ "suite": {
+  "cases_sha256": "d916d01ada2af3b833ab85b216bc18cb5064277a5c1665aa7bb4a7c796c235f9",
+  "id": "dev-v1",
+  "independence": "builder-authored regression suite; the builder had read the gate code; no sealed or held-out labels",
+  "labels_sha256": "33a03c9e817bda06e2c6c9016bc9034d117a019bc8f2d28738311dd9ff58436f",
+  "scheduled_cases": 60
+ },
+ "sut": {
+  "components": {
+   "adapters/tau_dispatch.py": "8d8c9986a3ac5ff44612976f9bc8d7d5ce6575bbe267d74966b85aad3a545d20",
+   "rra/gate.py": "3da03b9efae781a7e4ac1673a63480966359ed000b0a9bbef1dc20884e223c7c",
+   "rra/version.py": "7277bb1e2d1c943d30eb06444828d81c9ad4f236e2b8a1e917f8f53d84b3685e",
+   "study/consent.py": "7f43dfb7a8e51b8145a17ccfb0b1b69ee4ef436fa965e19a8ad63d8e06558ee6",
+   "study/consent_as_well_candidate.py": "3e587d6c3575a6f87cb324229d92771bc8d91528733e8b9b66626716bc68dbe1",
+   "study/consent_candidate.py": "ec049c9966d6613b7d5ca40ccdc82c9e85705f873f3aece46b5ce934d2c2f0d3",
+   "study/consent_current.py": "93be930b9271ae3b419581511c86f80005678f9333614a4fa2467704ffef8e09"
+  },
+  "dirty": true,
+  "git_sha": "8e70c0f9c674399fcdbd7892e33a8432bc1c4e96",
+  "loaded_modules": {
+   "adapters.tau_dispatch": {
+    "file": "adapters/tau_dispatch.py",
+    "sha256": "8d8c9986a3ac5ff44612976f9bc8d7d5ce6575bbe267d74966b85aad3a545d20"
+   },
+   "rra.gate": {
+    "file": "rra/gate.py",
+    "sha256": "3da03b9efae781a7e4ac1673a63480966359ed000b0a9bbef1dc20884e223c7c"
+   },
+   "study.consent_current": {
+    "file": "study/consent_current.py",
+    "sha256": "93be930b9271ae3b419581511c86f80005678f9333614a4fa2467704ffef8e09"
+   }
+  },
+  "root_name": "retail-evaluation-gate"
+ },
+ "termination": "complete"
+}

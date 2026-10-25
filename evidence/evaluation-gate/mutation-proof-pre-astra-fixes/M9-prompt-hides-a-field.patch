@@ -1,0 +1,11 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -146,7 +146,7 @@
+         self._prompt_id = f"prompt-{self._instance_id}-{self._counter}-{intent.fingerprint[:12]}"
+         self._prompt = ("Please confirm this exact mutation.\n"
+                         f"Operation: {intent.operation_id}\nTool: {intent.tool_name}\n"
+-                        "Complete arguments:\n" + json.dumps(intent.arguments, sort_keys=True, indent=2, ensure_ascii=False, allow_nan=False)
++                        "Complete arguments:\n" + json.dumps({k: v for k, v in intent.arguments.items() if k != "zip"}, sort_keys=True, indent=2, ensure_ascii=False, allow_nan=False)
+                         + "\nReply yes to authorize only this operation and these exact arguments; reply no to reject.")
+         if changed:
+             self._event("invalidated", "Previous consent invalidated", "Operation or payload changed; a new prompt requires a fresh affirmative.", intent)

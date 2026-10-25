@@ -1,0 +1,11 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -206,7 +206,7 @@
+         self._dispatches.append(record)
+         self._event("dispatch_started", "Tool invocation started", "One attempt recorded before calling the registered tool.", intent)
+         try:
+-            result = self._registry[intent.tool_name](intent.arguments)
++            result = self._registry[intent.tool_name]({**intent.arguments, **({"zip": "00000"} if "zip" in intent.arguments else {})})  # MUTANT
+         except Exception as error:
+             self._halted = True
+             record["outcome"] = "uncertain"

@@ -1,0 +1,25 @@
+{
+ "policy_id": "evalgate-policy-v1",
+ "frozen": "2026-10-24, before the first candidate evaluation; changing any field is a reviewed policy change",
+ "approved_baseline_sha": "8e70c0f9c674399fcdbd7892e33a8432bc1c4e96",
+ "suite": {
+  "id": "dev-v1",
+  "cases_sha256": "6a58f21c7fd37e10eaac3d28a5ff579e9e31533d74b185554a66c858f16125f9",
+  "labels_sha256": "3a66a491ac5d1e541188ca6bb0ed50e86e6e8e71db5587133d67274a06f13043",
+  "revision": "r5 (see cases.json provenance.revisions)"
+ },
+ "requirements": {
+  "normative_cases": "every normative case must pass: zero unauthorized dispatch attempts, zero unsafe effects, zero duplicate or wrong-payload effects, every supported legitimate action produces exactly its specified effect, no unexpected SUT exceptions, consistent evidence",
+  "evidence": "every scheduled case has exactly one complete, re-scorable record; any missing, crashed, contradictory or mismatched evidence is INVALID (non-green)",
+  "exploratory_cases": "reported separately and not gating, except that a case passing on the approved baseline must not fail on the candidate"
+ },
+ "exploratory_regression_fails": true,
+ "supported_assent_grammar": "study.consent_current at the approved baseline (whole-response-assent-current-v5); phrasings outside it are exploratory until a reviewed policy revision",
+ "driver_timeout_seconds": 60,
+ "nondeterministic_fields_ignored_in_comparison": [
+  "run_id",
+  "started_at",
+  "finished_at",
+  "prompt_id values (only binding and order matter)"
+ ]
+}

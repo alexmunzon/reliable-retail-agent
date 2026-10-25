@@ -1,0 +1,11 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -163,7 +163,7 @@
+             return self._result("no_pending_operation", "No unattempted operation is awaiting consent.")
+         if self._rejected:
+             return self._result("rejected", "Rejected operation must be proposed again with a fresh prompt.")
+-        if prompt_id is None or prompt_id != self._prompt_id:
++        if False:  # MUTANT: prompt binding ignored
+             self._event("blocked", "Stale consent blocked", "Response is not bound to the active prompt.", self._active)
+             return self._result("stale_consent", "A fresh answer to the current prompt is required.")
+         classification = classify_response(text)

@@ -1,0 +1,31 @@
+..................F............F.F..........
+======================================================================
+FAIL: test_trace_invalid_runs_cannot_compare_pass (tests.test_evalgate.EvidenceTests.test_trace_invalid_runs_cannot_compare_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 383, in test_trace_invalid_runs_cannot_compare_pass
+    self.assertEqual(2, main(["validate", str(self.trace_invalid_copy(self.candidate))]))  # standalone validation too
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 25,000,')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 185, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_one_approval_cannot_cover_a_second_operation_with_the_same_payload (tests.test_evalgate.OracleTests.test_one_approval_cannot_cover_a_second_operation_with_the_same_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 208, in test_one_approval_cannot_cover_a_second_operation_with_the_same_payload
+    self.assertIn("invalid_evidence", self.score("legit-tau-new-operation-same-payload", observation)["failure_classes"])
+AssertionError: 'invalid_evidence' not found in []
+
+----------------------------------------------------------------------
+Ran 44 tests in 7.957s
+
+FAILED (failures=3)
+VALID 20261025T014958Z-candidate-0c696c98

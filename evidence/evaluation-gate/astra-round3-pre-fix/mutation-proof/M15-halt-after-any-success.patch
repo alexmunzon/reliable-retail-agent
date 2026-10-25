@@ -1,0 +1,10 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -217,6 +217,7 @@
+             record["outcome"] = "uncertain"
+             self._event("dispatch_uncertain", "Outcome uncertain; retry stopped", result.detail, intent)
+             return self._result("uncertain", result.detail + " Attempt consumed; do not retry.", dispatched=True)
++        self._halted = True  # MUTANT
+         record["outcome"] = "succeeded"
+         self._event("dispatch_succeeded", "Tool invocation succeeded", "Registered tool returned successfully.", intent)
+         return self._result("succeeded", "Exact confirmed mutation dispatched once.", dispatched=True, result=result)

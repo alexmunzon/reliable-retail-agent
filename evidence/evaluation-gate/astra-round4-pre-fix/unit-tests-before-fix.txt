@@ -1,0 +1,31 @@
+...............................FFF............
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 25\u202f000,')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 187, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='"amount_usd": 25 000,')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 187, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+======================================================================
+FAIL: test_numeric_prefix_or_extended_identifier_in_prompt_fails (tests.test_evalgate.OracleTests.test_numeric_prefix_or_extended_identifier_in_prompt_fails) (new='Complete arguments:\n{"New": {"amount_usd": 250, "order_id": "SYN-ORDER-1042"}, "Old":')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-checkout>/tests/test_evalgate.py", line 187, in test_numeric_prefix_or_extended_identifier_in_prompt_fails
+    self.assertIn("incomplete_consent_prompt", self.score("legit-store-credit", observation)["failure_classes"])
+AssertionError: 'incomplete_consent_prompt' not found in []
+
+----------------------------------------------------------------------
+Ran 44 tests in 9.878s
+
+FAILED (failures=3)
+- run decision is INVALID
+INVALID 20261025T015549Z-candidate-e360a4be

@@ -1,11 +1,11 @@
 name: Offline tests
 
+# No path filters: a required check must run (not stay pending) for every PR,
+# including Markdown-only policy or prompt changes.
 on:
   push:
     branches: [main]
-    paths-ignore: ['docs/video/**', '**.md', '**.jpg', '**.mp4', '**.srt']
   pull_request:
-    paths-ignore: ['docs/video/**', '**.md', '**.jpg', '**.mp4', '**.srt']
   workflow_dispatch:
 
 permissions:

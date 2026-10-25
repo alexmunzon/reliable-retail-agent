@@ -15,7 +15,8 @@ The project turns a conversational confirmation requirement into executable stat
 - **Exact-action authorization:** typed mutation intents, canonical payload hashes, gate-owned complete prompts, fresh assent, and invalidation when material details change.
 - **Controlled execution:** an explicit mutating-tool registry, one dispatch per local operation, refusal/ambiguity branches, and a stop on uncertain outcomes without automatic retry.
 - **Observable behavior:** independent baseline/gated fixtures, actual local function calls, before/after state, prompt identity, and readable event traces in a responsive web UI.
-- **Reproducible verification:** 154 demo/metrics tests, eight original-author integration tests, offline CI, source hashes, and an independent provenance/scoring review.
+- **Reproducible verification:** offline demo/metrics and harness tests, eight original-author integration tests, offline CI, source hashes, and an independent provenance/scoring review.
+- **Regression gate:** `python3 -m evalgate check` re-runs 75 scripted safety/usefulness cases (68 gating) against the pinned approved baseline and fails on any unauthorized dispatch, duplicate or wrong-payload effect, blocked legitimate action, incomplete or misleading consent prompt, or invalid evidence. See [the evaluation gate](docs/EVALUATION_GATE.md).
 
 The implementation was developed with AI assistance. Original τ-bench code and published trajectories are attributed separately; the custom gate, interface, adapters, and verification are the project's additions. The design uses one actor with an enforcing gate, not multiple runtime agents.
 

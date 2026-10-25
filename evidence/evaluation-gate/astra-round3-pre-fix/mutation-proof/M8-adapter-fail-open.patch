@@ -1,0 +1,11 @@
+--- a/adapters/tau_dispatch.py
++++ b/adapters/tau_dispatch.py
+@@ -100,7 +100,7 @@
+                 decision = self._gate.dispatch(self._intent(action, operation_id))
+                 return AdapterResult(decision.status, self._mutation_response, decision)
+             if action.name not in self._passthrough:
+-                raise ValueError(f"Unclassified tool blocked: {action.name}")
++                return AdapterResult("passthrough", self._native_dispatch(action))  # MUTANT
+             if action.name == "respond":
+                 # A later conversation turn may retract or qualify consent.
+                 # It cannot keep authorization from an earlier prompt alive.

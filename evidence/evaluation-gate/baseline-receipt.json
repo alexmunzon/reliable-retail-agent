@@ -1,0 +1,55 @@
+{
+ "receipt": "Phase A baseline, recorded before any implementation change",
+ "recorded": "2026-10-24",
+ "repository": "alexmunzon/reliable-retail-agent (local worktree retail-evaluation-gate)",
+ "head": "8e70c0f9c674399fcdbd7892e33a8432bc1c4e96",
+ "branch": "claude/evaluation-gate",
+ "dirty_at_start": false,
+ "agents_md": "absent; no .agents/skills directory",
+ "runtime": {
+  "python": "3.11.1",
+  "platform": "Darwin 24.6.0 arm64",
+  "dependencies": "demo/metrics suite is stdlib-only; optional native suite needs openai==1.54.4, tenacity==8.3.0, termcolor==2.4.0 (not installed)"
+ },
+ "commands": [
+  {
+   "command": "python3 scripts/ci.py",
+   "exit_code": 0,
+   "result": "154 tests run, 154 passed, 0 failed, 0 skipped",
+   "seconds": 2
+  },
+  {
+   "command": "python3 scripts/ci.py --native",
+   "exit_code": null,
+   "result": "NOT_RUN: pinned optional packages not installed; installing them was not needed for the no-model gate and was not performed"
+  }
+ ],
+ "known_failures": "none observed",
+ "observations": [
+  "docs/NATIVE_REJECTION_AUDIT.md is cited by study/gate_current.py but absent from the tree",
+  "ConfirmationGate.AFFIRMATIVE/NEGATIVE were unused (classification goes through study.consent_current)",
+  "offline-tests.yml path filters skipped all **.md changes, so a Markdown-only PR produced no check",
+  "current-dev-v5 classifier treats clear approvals such as 'yes please', 'Yes, I confirm.', 'sure', 'ok' as AMBIGUOUS (safe, but a usefulness gap)",
+  "legacy gate events carry the payload fingerprint but not operation_id or prompt_id; blocked reasons exist only in event titles"
+ ],
+ "component_sha256_at_baseline": {
+  "rra/gate.py": "3da03b9efae781a7e4ac1673a63480966359ed000b0a9bbef1dc20884e223c7c",
+  "study/consent_current.py": "93be930b9271ae3b419581511c86f80005678f9333614a4fa2467704ffef8e09",
+  "study/consent_as_well_candidate.py": "3e587d6c3575a6f87cb324229d92771bc8d91528733e8b9b66626716bc68dbe1",
+  "study/consent_candidate.py": "ec049c9966d6613b7d5ca40ccdc82c9e85705f873f3aece46b5ce934d2c2f0d3",
+  "study/consent.py": "7f43dfb7a8e51b8145a17ccfb0b1b69ee4ef436fa965e19a8ad63d8e06558ee6",
+  "adapters/tau_dispatch.py": "8d8c9986a3ac5ff44612976f9bc8d7d5ce6575bbe267d74966b85aad3a545d20",
+  "study/registry.py": "6a17fe423a3bbf75584ef2b2dfb761e73bf4d6b6e2a65266ab541b99445f5e58",
+  "study/gate_current.py": "717861bd0c6dc0c9360cd579c4d4e1795896b94525642602de6f2d8d226d9218"
+ },
+ "system_under_test": "rra.gate.ConfirmationGate (direct public API) and adapters.tau_dispatch.TauDispatchAdapter (actor dispatch path), each driven against an independent harness-owned simulator. The study/* controller lineage is inventoried but not evaluated.",
+ "permission_ledger": {
+  "local read/edit/run in assigned worktree": "granted",
+  "Opus 5.5 only; no Astra/Codex, subagents or extra sessions": "in force",
+  "commit / push / PR / merge / publish / deploy": "NOT granted",
+  "hosted GitHub Actions runs": "NOT granted (requires push)",
+  "repository settings / branch protection / rulesets": "NOT granted",
+  "paid model or provider calls": "NOT granted",
+  "package installation": "not performed"
+ }
+}

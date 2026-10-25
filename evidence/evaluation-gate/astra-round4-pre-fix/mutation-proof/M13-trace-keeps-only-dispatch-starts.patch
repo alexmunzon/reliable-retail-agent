@@ -1,0 +1,12 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -118,7 +118,8 @@
+         event = {"seq": len(self._events) + 1, "type": kind, "title": title, "detail": detail}
+         if intent is not None:
+             event["fingerprint"] = intent.fingerprint
+-        self._events.append(event)
++        if kind == "dispatch_started":  # MUTANT
++            self._events.append(event)
+ 
+     def _result(self, status: str, detail: str, *, dispatched: bool = False, result: Any = None) -> GateResult:
+         self.status = status

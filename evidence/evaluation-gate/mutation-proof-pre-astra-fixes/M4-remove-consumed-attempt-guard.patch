@@ -1,0 +1,21 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -187,7 +187,7 @@
+             self._authorized = None
+             self._event("blocked", "Unknown tool blocked", intent.tool_name, intent)
+             return self._result("blocked_unknown_tool", "Tool is not in the explicit mutation registry.")
+-        if intent.operation_id in self._ledger:
++        if False:  # MUTANT
+             self._event("blocked", "Repeat dispatch blocked", "Operation already attempted; no retry is allowed.", intent)
+             return self._result("already_attempted", "Operation already attempted; inspect prior outcome instead of retrying.")
+         if intent != self._active:
+@@ -199,8 +199,7 @@
+             self._event("blocked", "Unconfirmed dispatch blocked", "No matching fresh affirmative is available.", intent)
+             return self._result("rejected" if self._rejected else "awaiting_confirmation", "Dispatch blocked: exact-payload consent is absent.")
+         # Consume consent and write the actual attempt BEFORE entering tool code.
+-        self._authorized = None
+-        record = {"id": intent.operation_id, "tool_name": intent.tool_name,
++        record = {  # MUTANT: consent not consumed"id": intent.operation_id, "tool_name": intent.tool_name,
+                   "arguments": intent.arguments, "fingerprint": intent.fingerprint, "outcome": "invoking"}
+         self._ledger[intent.operation_id] = record
+         self._dispatches.append(record)

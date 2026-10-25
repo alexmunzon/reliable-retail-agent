@@ -1,0 +1,11 @@
+--- a/adapters/tau_dispatch.py
++++ b/adapters/tau_dispatch.py
+@@ -120,7 +120,7 @@
+             proposal = self._gate.propose(self._intent(action, operation_id))
+             if proposal.status not in {"awaiting_confirmation", "ambiguous", "stale_consent"}:
+                 return AdapterResult(proposal.status, gate_result=proposal)
+-            prompt_action = self._action_factory(name="respond", kwargs={"content": proposal.prompt})
++            prompt_action = self._action_factory(name="respond", kwargs={"content": proposal.prompt.split("Complete arguments")[0]})  # MUTANT
+             response = self._native_dispatch(prompt_action)
+             if response.done or getattr(response.info, "source", None) != "user":
+                 return AdapterResult("no_fresh_user_confirmation", response, proposal)
