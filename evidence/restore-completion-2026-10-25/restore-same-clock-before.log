@@ -1,0 +1,32 @@
+test_repeated_restore_preserves_both_backups_with_same_clock (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_repeated_restore_preserves_both_backups_with_same_clock) ... FAIL
+
+======================================================================
+FAIL: test_repeated_restore_preserves_both_backups_with_same_clock (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_repeated_restore_preserves_both_backups_with_same_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 240, in test_repeated_restore_preserves_both_backups_with_same_clock
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<frozen runpy>", line 291, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "[WORKTREE]/scripts/serving.py", line 318, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 303, in main
+    return cmd_restore(settings, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 122, in cmd_restore
+    _restore_locked(settings, source)
+  File "[WORKTREE]/scripts/serving.py", line 147, in _restore_locked
+    storage.backup(settings.db_path, aside)
+  File "[WORKTREE]/serving/storage.py", line 263, in backup
+    raise FileExistsError(destination)
+FileExistsError: /private/tmp/rra-serving-uih3ka08/app/serving.pre-restore-1700000000.db
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.091s
+
+FAILED (failures=1)

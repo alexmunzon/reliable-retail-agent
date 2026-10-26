@@ -34,3 +34,5 @@ jobs:
         run: '"$RUNNER_TEMP/rra-ci/bin/python" scripts/ci.py --native'
       - name: Verify dashboard response ordering without network access
         run: node scripts/verify_dashboard_races.js
+      - name: Verify serving identity and response ordering without network access
+        run: node scripts/verify_serving_races.js

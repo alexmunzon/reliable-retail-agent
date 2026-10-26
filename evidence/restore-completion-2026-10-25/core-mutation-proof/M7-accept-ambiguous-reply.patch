@@ -1,0 +1,11 @@
+--- a/rra/gate.py
++++ b/rra/gate.py
+@@ -171,7 +171,7 @@
+             self._rejected = True
+             self._event("rejected", "Customer rejected mutation", text, self._active)
+             return self._result("rejected", "Customer rejection blocks dispatch.")
+-        if classification != "AFFIRM":
++        if classification not in {"AFFIRM", "AMBIGUOUS"}:  # MUTANT
+             self._event("blocked", "Ambiguous response blocked", text, self._active)
+             return self._result("ambiguous", "An unambiguous affirmative to the exact prompt is required.")
+         self._authorized = (self._active.operation_id, self._active.fingerprint, self._prompt_id)

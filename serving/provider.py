@@ -101,7 +101,7 @@ class ProviderClient:
         return classify_mutation(response, provider_key)
 
     async def status(self, provider_key: str) -> Outcome:
-        """Read-only reconciliation lookup (the provider fences absent keys)."""
+        """Fenced reconciliation lookup; absent keys are fenced, never a mutation redispatch."""
         try:
             response = await self._client.get(f"/v1/mutations/{provider_key}")
         except httpx.HTTPError as error:

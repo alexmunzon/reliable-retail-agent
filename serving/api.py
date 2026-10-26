@@ -228,9 +228,9 @@ async def get_events(request: Request, run_id: RunId, caller: Caller = Depends(r
 
 
 @router.get("/runs/{run_id}/trace")
-async def get_trace(request: Request, run_id: RunId, contract: Literal["trace-v1", "trace-v2"] = "trace-v1",
+async def get_trace(request: Request, run_id: RunId, contract: Literal["trace-v1", "trace-v2", "trace-v3"] = "trace-v1",
                     caller: Caller = Depends(require("runs:read"))):
-    """The run's events mapped onto the evaluation owner's trace-v1 envelope (hashes and codes only)."""
+    """Versioned owned trace export; v1 compatibility default, explicit v2/v3 negotiation."""
     envelopes = await to_thread.run_sync(request.app.state.service.trace_envelopes, caller.principal, run_id)
     body = "".join(json.dumps(to_trace(event, contract), sort_keys=True, separators=(",", ":")) + "\n" for event in envelopes)
     return Response(body, media_type="application/x-ndjson")

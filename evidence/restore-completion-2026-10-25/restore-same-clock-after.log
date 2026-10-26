@@ -1,0 +1,15 @@
+test_basic_provider_restore_remains_unverified (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_basic_provider_restore_remains_unverified) ... ok
+test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history) ... ok
+test_old_sse_cursor_rejected_even_when_sequence_exists (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_old_sse_cursor_rejected_even_when_sequence_exists) ... ok
+test_partial_malformed_verification_stays_read_only_then_retries (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_partial_malformed_verification_stays_read_only_then_retries) ... ok
+test_repeated_restore_preserves_both_backups_with_same_clock (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_repeated_restore_preserves_both_backups_with_same_clock) ... ok
+test_tampered_recovery_evidence_is_rejected (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_tampered_recovery_evidence_is_rejected) ... ok
+test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt) ... ok
+test_verification_repeat_and_restore_generation_repeat (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_verification_repeat_and_restore_generation_repeat) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 17.557s
+
+OK
+RESTORE_MUTANTS: 19/19 rejected; exposed regression evidence
+Serving CI passed: no credentials inherited; outbound TCP blocked; synthetic provider only.

@@ -1,0 +1,80 @@
+test_basic_provider_restore_remains_unverified (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_basic_provider_restore_remains_unverified) ... FAIL
+test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history) ... ok
+test_old_sse_cursor_rejected_even_when_sequence_exists (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_old_sse_cursor_rejected_even_when_sequence_exists) ... ok
+test_partial_malformed_verification_stays_read_only_then_retries (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_partial_malformed_verification_stays_read_only_then_retries) ... FAIL
+test_tampered_recovery_evidence_is_rejected (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_tampered_recovery_evidence_is_rejected) ... ok
+test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt) ... ERROR
+test_verification_repeat_and_restore_generation_repeat (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_verification_repeat_and_restore_generation_repeat) ... FAIL
+
+======================================================================
+ERROR: test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 95, in test_v3_explicit_recovery_without_invented_attempt
+    row = db.execute("SELECT attempt_count, consumed_at FROM operations JOIN proposals USING(operation_id) WHERE run_id=?", (run["run_id"],)).fetchone()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: ambiguous column name: run_id
+
+======================================================================
+FAIL: test_basic_provider_restore_remains_unverified (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_basic_provider_restore_remains_unverified)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 199, in test_basic_provider_restore_remains_unverified
+    self.s.stop_app(); self.s.run_cli("restore", str(self.s.root / "before-consent.db"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/tests_serving/harness.py", line 57, in run_cli
+    raise AssertionError(f"CLI {args} failed: {result.stdout}\n{result.stderr}")
+AssertionError: CLI ('restore', '/tmp/rra-serving-9kf9pm6l/before-consent.db') failed: Current database preserved at /private/tmp/rra-serving-9kf9pm6l/app/serving.pre-restore-1792971415.db.
+
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/serving.py", line 318, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 303, in main
+    return cmd_restore(settings, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 122, in cmd_restore
+    _restore_locked(settings, source)
+  File "[WORKTREE]/scripts/serving.py", line 152, in _restore_locked
+    live.execute("PRAGMA journal_mode=DELETE")
+sqlite3.OperationalError: database is locked
+
+
+======================================================================
+FAIL: test_partial_malformed_verification_stays_read_only_then_retries (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_partial_malformed_verification_stays_read_only_then_retries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 189, in test_partial_malformed_verification_stays_read_only_then_retries
+    self.assertEqual(settled, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_verification_repeat_and_restore_generation_repeat (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_verification_repeat_and_restore_generation_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 163, in test_verification_repeat_and_restore_generation_repeat
+    self.s.stop_app(); self.s.run_cli("restore", str(self.s.root / "before-consent.db"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/tests_serving/harness.py", line 57, in run_cli
+    raise AssertionError(f"CLI {args} failed: {result.stdout}\n{result.stderr}")
+AssertionError: CLI ('restore', '/tmp/rra-serving-j0hbx4w0/before-consent.db') failed: Current database preserved at /private/tmp/rra-serving-j0hbx4w0/app/serving.pre-restore-1792971426.db.
+
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/serving.py", line 318, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 303, in main
+    return cmd_restore(settings, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 122, in cmd_restore
+    _restore_locked(settings, source)
+  File "[WORKTREE]/scripts/serving.py", line 152, in _restore_locked
+    live.execute("PRAGMA journal_mode=DELETE")
+sqlite3.OperationalError: database is locked
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 13.336s
+
+FAILED (failures=3, errors=1)
+RESTORE_MUTANTS: 16/16 rejected; exposed regression evidence

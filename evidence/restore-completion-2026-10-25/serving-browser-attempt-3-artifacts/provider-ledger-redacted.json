@@ -1,0 +1,11 @@
+[
+  {
+    "effect_id": 1,
+    "provider_key_sha256": "b46fb7236ac76d81d0b46393a4bec783da30a8223106783f771236e9bf6485b8",
+    "request_hash": "004ea0642bd60c4873cd18df73773335c22e95255064d9febcee1b9557ff6568",
+    "tenant": "acme",
+    "order_id": "SYN-ORDER-1042",
+    "address_sha256": "a6b1dbed514d16fa944a681c3708847dffab4c5a2e8addf5b81bb95d7e5b77ec",
+    "revision_after": 2
+  }
+]

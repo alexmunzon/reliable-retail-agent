@@ -1,0 +1,141 @@
+test_client_never_persists_the_token_or_renders_html (tests_serving.test_units.DemoClientPolicyTests.test_client_never_persists_the_token_or_renders_html) ... ok
+test_binding_hash_covers_every_bound_field (tests_serving.test_units.GateParityTests.test_binding_hash_covers_every_bound_field) ... ok
+test_prompt_is_recorded_once_when_shown_and_consent_requires_it (tests_serving.test_units.GateParityTests.test_prompt_is_recorded_once_when_shown_and_consent_requires_it) ... ok
+test_prompt_text_is_the_existing_gate_prompt (tests_serving.test_units.GateParityTests.test_prompt_text_is_the_existing_gate_prompt) ... ok
+test_response_decisions_match_the_existing_gate (tests_serving.test_units.GateParityTests.test_response_decisions_match_the_existing_gate) ... ok
+test_previous_schema_upgrades_and_altered_or_newer_schemas_fail_closed (tests_serving.test_units.MigrationTests.test_previous_schema_upgrades_and_altered_or_newer_schemas_fail_closed) ... ok
+test_crash_before_atomic_rename_leaves_live_db_and_marked_staging (tests_serving.test_units.RestoreCrashTests.test_crash_before_atomic_rename_leaves_live_db_and_marked_staging) ... ok
+test_unverified_restore_refuses_cancel_and_new_prompt_deliveries (tests_serving.test_units.RestoreCrashTests.test_unverified_restore_refuses_cancel_and_new_prompt_deliveries) ... ok
+test_purge_during_replay_ends_with_explicit_expiry_not_success (tests_serving.test_units.StreamTests.test_purge_during_replay_ends_with_explicit_expiry_not_success) ... ok
+test_revocation_is_enforced_during_a_long_backlog (tests_serving.test_units.StreamTests.test_revocation_is_enforced_during_a_long_backlog) ... ok
+test_stream_slot_released_when_headers_fail_or_client_leaves_first (tests_serving.test_units.StreamTests.test_stream_slot_released_when_headers_fail_or_client_leaves_first) ... ok
+test_wakeup_just_before_the_check_does_not_delay_revocation (tests_serving.test_units.StreamTests.test_wakeup_just_before_the_check_does_not_delay_revocation) ... ok
+test_claim_revalidates_and_invalidates_without_dispatch (tests_serving.test_units.TransactionTests.test_claim_revalidates_and_invalidates_without_dispatch) ... ok
+test_competing_claimers_produce_one_claim (tests_serving.test_units.TransactionTests.test_competing_claimers_produce_one_claim) ... ok
+test_competing_writers_allocate_contiguous_event_sequences (tests_serving.test_units.TransactionTests.test_competing_writers_allocate_contiguous_event_sequences) ... ok
+test_idempotency_conflict_and_cross_principal_isolation (tests_serving.test_units.TransactionTests.test_idempotency_conflict_and_cross_principal_isolation) ... ok
+test_stale_claim_cannot_overwrite_recovered_unknown (tests_serving.test_units.TransactionTests.test_stale_claim_cannot_overwrite_recovered_unknown) ... ok
+test_completion_write_retries_until_it_lands (tests_serving.test_units.WorkerRecordTests.test_completion_write_retries_until_it_lands) ... ok
+test_permanent_failure_parks_the_outcome_frees_the_slot_and_degrades (tests_serving.test_units.WorkerRecordTests.test_permanent_failure_parks_the_outcome_frees_the_slot_and_degrades) ... ok
+test_authentication_scope_and_ownership_matrix (tests_serving.test_http_api.HTTPAPITests.test_authentication_scope_and_ownership_matrix) ... ok
+test_client_controlled_strings_never_reach_logs_or_errors (tests_serving.test_http_api.HTTPAPITests.test_client_controlled_strings_never_reach_logs_or_errors) ... ok
+test_command_idempotency (tests_serving.test_http_api.HTTPAPITests.test_command_idempotency) ... ok
+test_consent_refusals_cause_no_effect (tests_serving.test_http_api.HTTPAPITests.test_consent_refusals_cause_no_effect) ... ok
+test_demo_client_is_served_same_origin_under_the_csp (tests_serving.test_http_api.HTTPAPITests.test_demo_client_is_served_same_origin_under_the_csp) ... ok
+test_expired_retention_cursor_returns_410 (tests_serving.test_http_api.HTTPAPITests.test_expired_retention_cursor_returns_410) ... ok
+test_health_endpoints_expose_no_customer_data (tests_serving.test_http_api.HTTPAPITests.test_health_endpoints_expose_no_customer_data) ... ok
+test_live_stream_delivers_incrementally_and_observing_never_dispatches (tests_serving.test_http_api.HTTPAPITests.test_live_stream_delivers_incrementally_and_observing_never_dispatches) ... ok
+test_origin_and_host_checks (tests_serving.test_http_api.HTTPAPITests.test_origin_and_host_checks) ... ok
+test_revoked_credential_closes_stream_and_blocks_commands (tests_serving.test_http_api.HTTPAPITests.test_revoked_credential_closes_stream_and_blocks_commands) ... ok
+test_sse_replay_resume_and_cursor_validation (tests_serving.test_http_api.HTTPAPITests.test_sse_replay_resume_and_cursor_validation) ... ok
+test_stream_subscriber_limit (tests_serving.test_http_api.HTTPAPITests.test_stream_subscriber_limit) ... ok
+test_strict_request_parsing (tests_serving.test_http_api.HTTPAPITests.test_strict_request_parsing) ... ok
+test_walkthrough_arm_command_injects_a_provider_failure (tests_serving.test_http_api.HTTPAPITests.test_walkthrough_arm_command_injects_a_provider_failure) ... ok
+test_zz_logs_contain_no_secrets_or_customer_data (tests_serving.test_http_api.HTTPAPITests.test_zz_logs_contain_no_secrets_or_customer_data) ... ok
+test_rate_limits_return_429_with_retry_after (tests_serving.test_http_api.LimitsTests.test_rate_limits_return_429_with_retry_after) ... ok
+test_slow_consumer_is_disconnected_without_blocking_work (tests_serving.test_http_api.LimitsTests.test_slow_consumer_is_disconnected_without_blocking_work) ... ok
+test_app_dies_after_claim_before_send_then_fenced_reconciliation_proves_no_effect (tests_serving.test_crash_recovery.CrashRecoveryTests.test_app_dies_after_claim_before_send_then_fenced_reconciliation_proves_no_effect) ... ok
+test_app_dies_after_provider_reply_before_recording (tests_serving.test_crash_recovery.CrashRecoveryTests.test_app_dies_after_provider_reply_before_recording) ... ok
+test_basic_provider_cannot_verify_a_restore (tests_serving.test_crash_recovery.CrashRecoveryTests.test_basic_provider_cannot_verify_a_restore) ... ok
+test_basic_provider_without_status_stays_unknown_and_blocks_only_that_order (tests_serving.test_crash_recovery.CrashRecoveryTests.test_basic_provider_without_status_stays_unknown_and_blocks_only_that_order) ... ok
+test_cancel_of_authorized_operation_waiting_for_a_claim_prevents_dispatch (tests_serving.test_crash_recovery.CrashRecoveryTests.test_cancel_of_authorized_operation_waiting_for_a_claim_prevents_dispatch) ... ok
+test_cancellation_before_and_after_the_claim (tests_serving.test_crash_recovery.CrashRecoveryTests.test_cancellation_before_and_after_the_claim) ... ok
+test_concurrent_approvals_produce_one_authorization_and_one_effect (tests_serving.test_crash_recovery.CrashRecoveryTests.test_concurrent_approvals_produce_one_authorization_and_one_effect) ... ok
+test_definite_no_effect_replies_release_the_hold_without_retry (tests_serving.test_crash_recovery.CrashRecoveryTests.test_definite_no_effect_replies_release_the_hold_without_retry) ... ok
+test_graceful_shutdown_mid_dispatch_records_unknown (tests_serving.test_crash_recovery.CrashRecoveryTests.test_graceful_shutdown_mid_dispatch_records_unknown) ... ok
+test_one_service_process_per_data_directory (tests_serving.test_crash_recovery.CrashRecoveryTests.test_one_service_process_per_data_directory) ... ok
+test_provider_applies_then_dies_before_reply_holds_order_until_reconciled (tests_serving.test_crash_recovery.CrashRecoveryTests.test_provider_applies_then_dies_before_reply_holds_order_until_reconciled) ... ok
+test_provider_dies_before_accepting (tests_serving.test_crash_recovery.CrashRecoveryTests.test_provider_dies_before_accepting) ... ok
+test_provider_idempotency_contract (tests_serving.test_crash_recovery.CrashRecoveryTests.test_provider_idempotency_contract) ... ok
+test_restore_keeps_credential_changes_made_after_the_backup (tests_serving.test_crash_recovery.CrashRecoveryTests.test_restore_keeps_credential_changes_made_after_the_backup) ... ok
+test_stale_backup_restore_is_read_only_until_provider_verification (tests_serving.test_crash_recovery.CrashRecoveryTests.test_stale_backup_restore_is_read_only_until_provider_verification) ... ok
+test_success_survives_restart_and_command_replay_never_redispatches (tests_serving.test_crash_recovery.CrashRecoveryTests.test_success_survives_restart_and_command_replay_never_redispatches) ... ok
+test_timeout_and_malformed_replies_are_unknown_not_failed (tests_serving.test_crash_recovery.CrashRecoveryTests.test_timeout_and_malformed_replies_are_unknown_not_failed) ... ok
+test_unavailable_status_lookup_retries_read_only_then_resolves (tests_serving.test_crash_recovery.CrashRecoveryTests.test_unavailable_status_lookup_retries_read_only_then_resolves) ... ok
+test_unverified_restore_does_not_expire_prompts_before_verification (tests_serving.test_crash_recovery.CrashRecoveryTests.test_unverified_restore_does_not_expire_prompts_before_verification) ... ok
+test_verify_restore_settles_prompts_that_were_awaiting_consent_in_the_backup (tests_serving.test_crash_recovery.CrashRecoveryTests.test_verify_restore_settles_prompts_that_were_awaiting_consent_in_the_backup) ... ok
+test_permanent_failure_is_visible_pauses_admission_and_recovers_without_redispatch (tests_serving.test_crash_recovery.StorageFailureTests.test_permanent_failure_is_visible_pauses_admission_and_recovers_without_redispatch) ... ok
+test_shutdown_during_permanent_failure_meets_its_deadline_and_restart_reconciles (tests_serving.test_crash_recovery.StorageFailureTests.test_shutdown_during_permanent_failure_meets_its_deadline_and_restart_reconciles) ... ok
+test_shutdown_with_a_held_lock_and_several_dispatches_is_bounded (tests_serving.test_crash_recovery.StorageFailureTests.test_shutdown_with_a_held_lock_and_several_dispatches_is_bounded) ... ok
+test_transient_lock_contention_recovers_with_one_provider_call (tests_serving.test_crash_recovery.StorageFailureTests.test_transient_lock_contention_recovers_with_one_provider_call) ... ok
+test_exhausted_reconciliation_leaves_an_explicit_manual_hold (tests_serving.test_trace_contract.ExpiryAndExhaustionTraceTests.test_exhausted_reconciliation_leaves_an_explicit_manual_hold) ... ok
+test_expired_prompt (tests_serving.test_trace_contract.ExpiryAndExhaustionTraceTests.test_expired_prompt) ... ok
+test_cancellation_before_and_after_the_claim (tests_serving.test_trace_contract.TraceContractTests.test_cancellation_before_and_after_the_claim) ... ok
+test_crash_after_claim_recovers_without_redispatch (tests_serving.test_trace_contract.TraceContractTests.test_crash_after_claim_recovers_without_redispatch) ... ok
+test_definite_no_effect_failure_negotiates_v2_and_preserves_v1 (tests_serving.test_trace_contract.TraceContractTests.test_definite_no_effect_failure_negotiates_v2_and_preserves_v1) ... ok
+test_restore_of_a_mid_dispatch_backup_records_the_uncertainty_first (tests_serving.test_trace_contract.TraceContractTests.test_restore_of_a_mid_dispatch_backup_records_the_uncertainty_first) ... ok
+test_stale_and_ambiguous_consent_then_rejection (tests_serving.test_trace_contract.TraceContractTests.test_stale_and_ambiguous_consent_then_rejection) ... ok
+test_success_and_duplicate_concurrent_approvals (tests_serving.test_trace_contract.TraceContractTests.test_success_and_duplicate_concurrent_approvals) ... ok
+test_trace_requires_ownership (tests_serving.test_trace_contract.TraceContractTests.test_trace_requires_ownership) ... ok
+test_unknown_outcome_reconciled_and_hold_blocks_a_second_consent (tests_serving.test_trace_contract.TraceContractTests.test_unknown_outcome_reconciled_and_hold_blocks_a_second_consent) ... ok
+test_claim_rechecks_current_scope (tests_serving.test_durability_regressions.CredentialRegressions.test_claim_rechecks_current_scope) ... ok
+test_claim_rechecks_current_tenant (tests_serving.test_durability_regressions.CredentialRegressions.test_claim_rechecks_current_tenant) ... ok
+test_current_read_scope_and_tenant_revalidated_for_snapshot_trace_and_stream (tests_serving.test_durability_regressions.CredentialRegressions.test_current_read_scope_and_tenant_revalidated_for_snapshot_trace_and_stream) ... ok
+test_current_resource_ownership_revalidated_even_for_replayed_consent (tests_serving.test_durability_regressions.CredentialRegressions.test_current_resource_ownership_revalidated_even_for_replayed_consent) ... ok
+test_existing_stream_stops_after_read_scope_revocation (tests_serving.test_durability_regressions.CredentialRegressions.test_existing_stream_stops_after_read_scope_revocation) ... ok
+test_old_policy_approval_is_invalidated (tests_serving.test_durability_regressions.CredentialRegressions.test_old_policy_approval_is_invalidated) ... ok
+test_prompt_delivery_race_does_not_return_stale_authorized_snapshot (tests_serving.test_durability_regressions.CredentialRegressions.test_prompt_delivery_race_does_not_return_stale_authorized_snapshot) ... ok
+test_revoke_then_rotate_cannot_revive_old_consent (tests_serving.test_durability_regressions.CredentialRegressions.test_revoke_then_rotate_cannot_revive_old_consent) ... ok
+test_rotation_invalidates_queued_consent_but_fresh_consent_can_execute (tests_serving.test_durability_regressions.CredentialRegressions.test_rotation_invalidates_queued_consent_but_fresh_consent_can_execute) ... ok
+test_stale_resolved_caller_cannot_read_replay_or_write (tests_serving.test_durability_regressions.CredentialRegressions.test_stale_resolved_caller_cannot_read_replay_or_write) ... ok
+test_verifier_is_not_in_repr_or_trace (tests_serving.test_durability_regressions.CredentialRegressions.test_verifier_is_not_in_repr_or_trace) ... ok
+test_restore_keeps_missing_local_claim_history (tests_serving.test_durability_regressions.RestoreHistoryRegressions.test_restore_keeps_missing_local_claim_history) ... ok
+test_restore_preserves_an_actual_local_claim (tests_serving.test_durability_regressions.RestoreHistoryRegressions.test_restore_preserves_an_actual_local_claim) ... ok
+test_drop_counter_saturates_and_logging_can_recover (tests_serving.test_durability_regressions.TelemetryRegressions.test_drop_counter_saturates_and_logging_can_recover) ... ok
+test_optional_write_or_flush_failure_does_not_escape (tests_serving.test_durability_regressions.TelemetryRegressions.test_optional_write_or_flush_failure_does_not_escape) ... ok
+test_unserializable_optional_field_is_dropped_and_private_fields_stay_excluded (tests_serving.test_durability_regressions.TelemetryRegressions.test_unserializable_optional_field_is_dropped_and_private_fields_stay_excluded) ... ok
+test_failing_optional_recorder_cannot_change_dispatch (tests_serving.test_observability_live.CaptureIsolation.test_failing_optional_recorder_cannot_change_dispatch) ... {"detail_code":"applied","duration_ms":1.5,"event":"worker.dispatch_finished","operation_id":"op_28006dff40af1f16e366d3bd58d0493d","run_id":"run_8c7d28dd26c149030354b41281c2f814","state":"succeeded","ts":1792971847.41}
+ok
+test_span_memory_and_age_are_bounded (tests_serving.test_observability_live.CaptureIsolation.test_span_memory_and_age_are_bounded) ... ok
+test_live_refusal_and_cancel_before_claim (tests_serving.test_observability_live.LiveHTTP.test_live_refusal_and_cancel_before_claim) ... ok
+test_observing_never_delivers_prompt_or_dispatches (tests_serving.test_observability_live.LiveHTTP.test_observing_never_delivers_prompt_or_dispatches) ... ok
+test_real_effect_and_measured_provider_duration_then_restart_missingness (tests_serving.test_observability_live.LiveHTTP.test_real_effect_and_measured_provider_duration_then_restart_missingness) ... ok
+test_only_unambiguous_loopback_origins_are_accepted (tests_serving.test_provider_boundary.LoopbackConfigTests.test_only_unambiguous_loopback_origins_are_accepted) ... ok
+test_applied_effect_with_malformed_reply_reconciles_only_from_complete_evidence (tests_serving.test_provider_boundary.MalformedProviderHTTPTests.test_applied_effect_with_malformed_reply_reconciles_only_from_complete_evidence) ... Current database preserved at /tmp/tmp34hig9ef/serving.pre-restore-1792971743.db.
+Provider boundary receipt: {"after_malformed_status": {"held": true, "state": "outcome_unknown", "status_requests": 2}, "final_holds": 0, "final_operation": {"attempt_count": 1, "state": "succeeded"}, "mutation_requests": 1, "provider_effects": 1, "status_requests": 3}
+ok
+test_dispatch_and_status_require_complete_positive_receipt (tests_serving.test_provider_boundary.ProviderClassificationTests.test_dispatch_and_status_require_complete_positive_receipt) ... ok
+test_malformed_json_and_duplicate_keys_stay_unknown (tests_serving.test_provider_boundary.ProviderClassificationTests.test_malformed_json_and_duplicate_keys_stay_unknown) ... ok
+test_malformed_refusal_fields_stay_unknown (tests_serving.test_provider_boundary.ProviderClassificationTests.test_malformed_refusal_fields_stay_unknown) ... ok
+test_cancellation_is_not_swallowed_by_provider_boundary (tests_serving.test_provider_boundary.ProviderWorkerTests.test_cancellation_is_not_swallowed_by_provider_boundary) ... ok
+test_status_client_exceptions_exhaust_lookup_budget_and_keep_hold (tests_serving.test_provider_boundary.ProviderWorkerTests.test_status_client_exceptions_exhaust_lookup_budget_and_keep_hold) ... ok
+test_unexpected_dispatch_exception_is_durably_unknown_without_redispatch (tests_serving.test_provider_boundary.ProviderWorkerTests.test_unexpected_dispatch_exception_is_durably_unknown_without_redispatch) ... ok
+test_basic_provider_restore_remains_unverified (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_basic_provider_restore_remains_unverified) ... FAIL
+test_dashboard_discloses_recovered_effect_and_missing_history (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_dashboard_discloses_recovered_effect_and_missing_history) ... ok
+test_old_sse_cursor_rejected_even_when_sequence_exists (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_old_sse_cursor_rejected_even_when_sequence_exists) ... ok
+test_partial_malformed_verification_stays_read_only_then_retries (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_partial_malformed_verification_stays_read_only_then_retries) ... ok
+test_tampered_recovery_evidence_is_rejected (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_tampered_recovery_evidence_is_rejected) ... ok
+test_v3_explicit_recovery_without_invented_attempt (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_v3_explicit_recovery_without_invented_attempt) ... ok
+test_verification_repeat_and_restore_generation_repeat (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_verification_repeat_and_restore_generation_repeat) ... ok
+
+======================================================================
+FAIL: test_basic_provider_restore_remains_unverified (tests_serving.test_restore_evidence.RestoreEvidenceTests.test_basic_provider_restore_remains_unverified)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/tests_serving/test_restore_evidence.py", line 231, in test_basic_provider_restore_remains_unverified
+    self.s.stop_app(); self.s.run_cli("restore", str(self.s.root / "before-consent.db"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/tests_serving/harness.py", line 57, in run_cli
+    raise AssertionError(f"CLI {args} failed: {result.stdout}\n{result.stderr}")
+AssertionError: CLI ('restore', '/tmp/rra-serving-f0sqzzjs/before-consent.db') failed: 
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/serving.py", line 318, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 303, in main
+    return cmd_restore(settings, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "[WORKTREE]/scripts/serving.py", line 122, in cmd_restore
+    _restore_locked(settings, source)
+  File "[WORKTREE]/scripts/serving.py", line 147, in _restore_locked
+    storage.backup(settings.db_path, aside)
+  File "[WORKTREE]/serving/storage.py", line 263, in backup
+    raise FileExistsError(destination)
+FileExistsError: /private/tmp/rra-serving-f0sqzzjs/app/serving.pre-restore-1792971852.db
+
+
+----------------------------------------------------------------------
+Ran 106 tests in 123.525s
+
+FAILED (failures=1)
+RESTORE_MUTANTS: 19/19 rejected; exposed regression evidence

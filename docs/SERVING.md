@@ -127,3 +127,17 @@ unsupported there.
 - Parked outcomes live in process memory. If the process dies while degraded, they are lost, but the
   ambiguity is not: the retained claim makes the operation `unknown` at restart and provider evidence settles it.
 - No proxy, TLS, or multi-worker deployment has been tested. Public deployment is out of scope.
+
+
+## Explicit recovery observations and SSE restore generations
+
+Request trace-v3 to inspect an effect observed after a stale restore with its restore generation,
+consistent snapshot fingerprint and typed provider receipt. This records external observation;
+it never reconstructs missing consent or dispatch. The authenticated dashboard shows the recovered
+effect alongside incomplete local history. Legacy v1/v2 exports and the old exploratory evaluation
+retain their original semantics. See [the contract](../contracts/RESTORE_EVIDENCE.md).
+
+SSE transport cursors from before restore return HTTP410 even if the same sequence number exists
+again. The client recovers a fresh snapshot and clears prior-generation displayed events. Repeated
+verification does not duplicate observations; partial/unknown/unsupported verification leaves
+writes disabled. All data remain synthetic and loopback-only.

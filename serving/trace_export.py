@@ -1,6 +1,7 @@
-"""Versioned projection of the durable outbox into frozen trace-v1/trace-v2.
+"""Versioned projection of the durable outbox into versioned trace-v1/v2/v3.
 
 Trace-v1 retains its original meanings. Trace-v2 adds a definite no-effect refusal.
+Trace-v3 explicitly observes restored effects without reconstructing missing authorization history.
 The immutable contract/checker revision below is validated by HTTP effect-ledger tests.
 Exports contain only hashes, identifiers and bounded reason codes. A prompt event attests
 that the server prepared an authenticated response, not that a human viewed it.
@@ -24,7 +25,7 @@ DISPATCH_TYPES = ("dispatch_started", "dispatch_succeeded", "dispatch_uncertain"
 
 def to_trace(event: dict[str, Any], contract: str = "trace-v1") -> dict[str, Any]:
     """Map an outbox envelope; unsupported contracts fail before producing evidence."""
-    if contract not in ("trace-v1", "trace-v2"):
+    if contract not in ("trace-v1", "trace-v2", "trace-v3"):
         raise ValueError("unsupported trace contract")
     kind, payload = event["event_type"], event.get("payload") or {}
     raw_reason = payload.get("reason") or payload.get("code")
@@ -51,18 +52,20 @@ def to_trace(event: dict[str, Any], contract: str = "trace-v1") -> dict[str, Any
         mapped = {"tool_name": payload["tool_name"]}
         if kind == "dispatch_uncertain":
             mapped["error_class"] = str(payload.get("code", "unknown"))[:96]
+    elif kind == "serving.reconciled" and contract == "trace-v3" and payload.get("restore_observation"):
+        mapped_kind, mapped = "serving.restore_observed", dict(payload["restore_observation"])
     elif kind == "serving.reconciled":
         mapped = {"outcome": RECONCILED_OUTCOMES[payload["resolved_state"]], "by": payload["method"]}
     elif kind == "serving.reconciliation_unavailable":
         mapped_kind, mapped = "serving.reconciled", {"outcome": "still_unknown", "by": payload["method"]}
     elif kind == "serving.dispatch_failed_no_effect":
-        if contract == "trace-v2":
+        if contract in ("trace-v2", "trace-v3"):
             mapped_kind = "dispatch_rejected"
             mapped = {"tool_name": "change_order_address", "code": str(payload["code"])[:96], "effect": "none"}
         else:
             mapped = {"code": payload.get("code")}
     # rejected and the remaining serving.* events export an empty payload: their meaning is the type.
-    source = {"component": "backend.service", "mapping_version": MAPPING_VERSION if contract == "trace-v1" else "backend-outbox-map-v2", "raw_type": kind}
+    source = {"component": "backend.service", "mapping_version": MAPPING_VERSION if contract == "trace-v1" else "backend-outbox-map-" + contract.removeprefix("trace-"), "raw_type": kind}
     if title:
         source["raw_title"] = (f"{title} [{raw_reason}]" if raw_reason else title)[:128]
     result = {"schema_version": contract, "event_id": event["event_id"], "sequence": event["sequence"],

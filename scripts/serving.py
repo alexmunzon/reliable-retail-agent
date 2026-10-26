@@ -17,6 +17,8 @@ from __future__ import annotations
 import argparse
 import asyncio
 import fcntl
+from hashlib import file_digest
+from uuid import uuid4
 import os
 from contextlib import contextmanager
 from pathlib import Path
@@ -124,18 +126,24 @@ def _restore_locked(settings, source):
     staged = settings.db_path.with_name("serving.restore-staging.db")
     staged.unlink(missing_ok=True)
     storage.backup(source, staged)
+    # Hash the consistent SQLite backup, including committed source WAL content.
+    with staged.open("rb") as snapshot:
+        snapshot_sha256 = file_digest(snapshot, "sha256").hexdigest()
+    generation = uuid4().hex  # transport/restore identity, never an authentication credential
     conn = storage.connect(staged)
     try:
         conn.execute("PRAGMA journal_mode=WAL")
         with storage.write_tx(conn):
             storage.set_meta(conn, "restore_state", "unverified")
+            storage.set_meta(conn, "restore_generation", generation)
+            storage.set_meta(conn, "restore_snapshot_sha256", snapshot_sha256)
             storage.set_meta(conn, "restore_source", source.name)
             # Credentials are not history: keep today's revocations and rotations, never the backup's.
             carried = _carry_principals(settings.db_path, conn) if settings.db_path.exists() else 0
     finally:
         conn.close()
     if settings.db_path.exists():
-        aside = settings.db_path.with_name(f"serving.pre-restore-{int(time.time())}.db")
+        aside = settings.db_path.with_name(f"serving.pre-restore-{int(time.time())}-{generation}.db")
         storage.backup(settings.db_path, aside)
         print(f"Current database preserved at {aside}.")
         live = storage.connect(settings.db_path)

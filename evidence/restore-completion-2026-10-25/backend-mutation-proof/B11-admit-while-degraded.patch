@@ -1,0 +1,11 @@
+--- a/serving/api.py
++++ b/serving/api.py
+@@ -185,7 +185,7 @@
+ async def post_consent(request: Request, run_id: RunId, body: ConsentCreate,
+                        caller: Caller = Depends(require("consent:write", command=True))):
+     state = request.app.state
+-    if state.worker.degraded:  # Admission control: no new authorization while outcomes cannot be recorded.
++    if False:  # MUTANT: admission control removed
+         raise ServiceError(503, "service_degraded", "Dispatch is paused because outcomes cannot be recorded right now; "
+                            "nothing was authorized. Retry later with the same Idempotency-Key.",
+                            retryable=True, retry_after=int(state.settings.recovery_probe_seconds))

@@ -8,7 +8,7 @@
 
 ![Actual desktop demo](evidence/demo-desktop.jpg)
 
-[Release readiness and deployment boundary](docs/RELEASE_READINESS.md): repository integration can be merged after checks; an existing authorized remote demo/test host still needs to be identified. Local synthetic run instructions remain below.
+[Release readiness and deployment boundary](docs/RELEASE_READINESS.md): the integrated release is merged. The [restore completion](docs/RESTORE_COMPLETION.md) adds explicit recovery evidence, generation-aware replay and verified interrupted/repeated browser flows. An existing authorized host with persistent storage still needs to be identified; the app remains local-only.
 
 ## The engineering contribution
 
@@ -79,7 +79,7 @@ For the optional original-author checks, install `requirements-offline.txt` in a
 
 The remaining validation boundaries include missing history after stale restore, broader consent-language coverage and a separately authorized prospective real-model evaluation. Local deterministic tests and measured synthetic workloads do not establish production reliability or model improvement.
 
-The deferred [post-build reflection](docs/POST_BUILD_REFLECTION.md) records the latest provider recovery, receipt-integrity and dashboard improvements with measured before/after evidence.
+The deferred [post-build reflection](docs/POST_BUILD_REFLECTION.md) preserves the provider recovery, receipt-integrity and dashboard review. The subsequent [completion report](docs/RESTORE_COMPLETION.md) covers stale-restore evidence and client continuity, with before/after failures and full-flow verification.
 
 ## Development and continuity
 

@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "scope": "actual app.js asynchronous functions, controlled completion and DOM facade; not full browser evidence",
+  "results": [
+    {
+      "name": "detail reversed success",
+      "status": "PASS"
+    },
+    {
+      "name": "detail stale error",
+      "status": "PASS"
+    },
+    {
+      "name": "list reversed success",
+      "status": "PASS"
+    },
+    {
+      "name": "list stale error",
+      "status": "PASS"
+    },
+    {
+      "name": "loading belongs to latest list",
+      "status": "PASS"
+    },
+    {
+      "name": "aggregate reversed success",
+      "status": "PASS"
+    },
+    {
+      "name": "aggregate stale error",
+      "status": "PASS"
+    },
+    {
+      "name": "credential change invalidates rendering",
+      "status": "PASS"
+    },
+    {
+      "name": "credential change invalidates API response",
+      "status": "PASS"
+    },
+    {
+      "name": "credential change suppresses export error",
+      "status": "PASS"
+    },
+    {
+      "name": "closing detail invalidates pending rendering",
+      "status": "PASS"
+    }
+  ]
+}

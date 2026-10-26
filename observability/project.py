@@ -22,7 +22,9 @@ EXPORTED_PAYLOAD = {"prompt": ("tool_name", "prompt_sha256"), "dispatch_started"
                     "dispatch_rejected": ("tool_name", "code", "effect"),
                     "blocked": ("reason",), "invalidated": ("reason",),
                     "authorized": ("classifier_version", "consent_binding_hash", "consent_binding_version"),
-                    "serving.reconciled": ("outcome", "by")}
+                    "serving.reconciled": ("outcome", "by"),
+                    "serving.restore_observed": ("outcome", "by", "history", "restore_id", "snapshot_sha256",
+                                                 "provider_key_sha256", "provider_receipt_sha256", "effect_id", "provider_revision")}
 LABELS = {"prompt": "Confirmation shown (proposed)", "authorized": "Customer approval accepted (authorized, not executed)",
           "rejected": "Customer refused", "invalidated": "Approval invalidated", "blocked": "Blocked by gate",
           "dispatch_started": "Attempt durably recorded", "dispatch_succeeded": "Provider confirmed effect",
@@ -31,20 +33,22 @@ LABELS = {"prompt": "Confirmation shown (proposed)", "authorized": "Customer app
           "dispatch_rejected": "Provider confirmed no effect",
           "serving.run_cancelled": "Cancellation requested", "serving.cancelled": "Cancelled before claim",
           "serving.cancel_requested": "Cancellation requested after claim (effect not undone)",
-          "serving.process_restarted": "Process restarted"}
+          "serving.process_restarted": "Process restarted",
+          "serving.restore_observed": "Provider observed effect after restore; local audit history incomplete"}
 CANCELLATION_EVENTS = ("serving.run_cancelled", "serving.cancelled", "serving.cancel_requested")
 
 
 def redact_event(event: dict) -> tuple[dict, int]:
     """Allowlisted view of one event, plus how many payload fields were withheld."""
     kind, payload = event["event_type"], event["payload"]
+    legacy_restore = kind == "serving.restore_observed" and event["schema_version"] != "trace-v3"
     out = {"schema_version": event["schema_version"],
            "sequence": event["sequence"], "event_id": event["event_id"], "event_type": kind,
-           "label": LABELS.get(kind, "Other namespaced event (not a business event)" if "." in kind else kind),
+           "label": "Other namespaced event (not a business event)" if legacy_restore else LABELS.get(kind, "Other namespaced event (not a business event)" if "." in kind else kind),
            "occurred_at": event.get("occurred_at"), "operation_id": event.get("operation_id"),
            "prompt_id": event.get("prompt_id"), "payload_hash": event.get("payload_hash")}
     withheld = 0
-    allowed = EXPORTED_PAYLOAD.get(kind, ())
+    allowed = () if legacy_restore else EXPORTED_PAYLOAD.get(kind, ())
     for key, value in payload.items():
         if key not in allowed:
             withheld += 1
@@ -70,9 +74,10 @@ def operations(events: list[dict]) -> dict[str, dict]:
         op = ops.setdefault(key, {"operation_id": key, "tool_name": None, "prompts": 0, "payload_hashes": [],
                                   "invalidations": 0, "authorized": False, "mutation_attempts": 0, "terminal": None,
                                   "outcome": "not_attempted", "confirmed_by": None, "history_has_unknown": False,
-                                  "reconciliations": [], "cancellation": None, "attempt_sequences": []})
+                                  "reconciliations": [], "cancellation": None, "attempt_sequences": [], "history_incomplete": False})
         kind = event["event_type"]
-        tool = event["payload"].get("tool_name") if kind in EXPORTED_PAYLOAD else None
+        legacy_restore = kind == "serving.restore_observed" and event["schema_version"] != "trace-v3"
+        tool = event["payload"].get("tool_name") if kind in EXPORTED_PAYLOAD and not legacy_restore else None
         op["tool_name"] = op["tool_name"] or tool
         if event.get("payload_hash") and event["payload_hash"] not in op["payload_hashes"]:
             op["payload_hashes"].append(event["payload_hash"])
@@ -97,6 +102,9 @@ def operations(events: list[dict]) -> dict[str, dict]:
             op["outcome"], op["confirmed_by"] = "no_effect_confirmed", "dispatch_rejected"
         elif kind == "dispatch_uncertain":
             op["outcome"], op["history_has_unknown"] = "unknown", True
+        elif kind == "serving.restore_observed" and event["schema_version"] == "trace-v3":
+            op["outcome"], op["confirmed_by"] = "effect_observed_after_restore", "provider status observation"
+            op["history_incomplete"] = True
         elif kind == "serving.reconciled":
             result = event["payload"].get("outcome")
             op["reconciliations"].append(result)
@@ -273,6 +281,8 @@ def project(stream: Stream, tables: list[dict], data_origin: str, limits: Limits
         error_redactions += bool(view.get("error_class_redacted"))
         events.append(view)
     ops = operations(stream.events)
+    if any(op["history_incomplete"] for op in ops.values()) and "missing_after_restore" not in stream.completeness:
+        stream.completeness.append("missing_after_restore")
     cancelled = any(e["event_type"] in ("serving.run_cancelled", "serving.cancelled") for e in stream.events)
     spans_in = [r for r in stream.sidecar if r["kind"] == "span"]
     time_view, spans, parents = timing(stream, spans_in, ops, limits)

@@ -1,0 +1,237 @@
+{
+  "verification": "serving-browser-restore-v1",
+  "status": "FAIL",
+  "checks": [
+    {
+      "name": "browser displayed the server's full exact prompt",
+      "result": "PASS"
+    },
+    {
+      "name": "initial run produced no provider effect",
+      "result": "PASS"
+    },
+    {
+      "name": "independent provider ledger remains empty after ambiguous consent",
+      "result": "PASS"
+    },
+    {
+      "name": "affirmative plus repeated UI commands has exactly one independent effect",
+      "result": "PASS"
+    }
+  ],
+  "scope": "actual browser -> local API -> synthetic provider independent SQLite ledger -> restore -> dashboard",
+  "provenance": "exposed deterministic regression; no real-model or customer evidence",
+  "verifier_sha256": "98461d3541d949f34430751c7355f4555305d417dd8c4b8b8e47d1accb67a831",
+  "source_hashes_before": {
+    "web/serving/client.js": "81e468345863d1b8b811939d688e4bd5f845dbe85c4d815ff42df855bef2fe47",
+    "serving/service.py": "48edc2960b5e535811c22ba65cb68ca027816b69f68101856d010fe4d382eed3",
+    "serving/streaming.py": "0e3168072b6a88f7dc1134f45c7ef3c56d7778cdec5bc1572751cbe784274a0d",
+    "scripts/serving.py": "230f34e83df5a02ef11363c2c58cb3e4b359e449415e675d0ad1f623d8133111",
+    "serving/trace_export.py": "0524711d16be565f462962f4da1cc62f5c15729a245b8c6e7e7580327a9f9a76",
+    "evalgate/trace.py": "0712ae496de02c85ef4d60a98aa3cd171ce6568c10410ee01111c0cf2519ebb8",
+    "evalgate/recovery.py": "8440175acef3835fbd6325fc00f4a04a8d1e5de59f81a9662b1cc66e19dd8078",
+    "contracts/trace-v3.schema.json": "6e8c5802bb58108d4e99acb077e8d2fdff91e790f1d3789a589587def69f1dc1",
+    "serving/observability_projection.py": "4704d1c453f3421af65b46e487c23dd9e6cd4e7419f7d426ff4d9f2654200d8a",
+    "observability/project.py": "af746e725f7bdb3f4f92eb5aec1ffb357d98aa338dfd06c1e762b62c98fd71bc",
+    "observability/web/app.js": "85ced247b1a4c46fc29ccc525974ec2dd951a07ecb0d4972f575c5aacc606445"
+  },
+  "initial": {
+    "run_id": "run_5ef5a33424383af5f65c770ddbf980c7",
+    "prompt_sha256": "0deab9cbf014724e51ac22b9eff253d80bfb6fee3de6e0ae50a828e8cb151765",
+    "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+    "operation_id": "op_0e094d767c74087ff7fb68e8bfbd82e1",
+    "initial_cursor": "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000002",
+    "browser_version": "153.0.8010.12"
+  },
+  "approved_browser": {
+    "run_id": "run_5ef5a33424383af5f65c770ddbf980c7",
+    "retained_cursor": "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000007",
+    "displayed_event_ids": [
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000001",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000002",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000003",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000004",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000005",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000006",
+      "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000007"
+    ],
+    "consent_commands": [
+      {
+        "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+        "body_sha256": "4fb31ee64bbd5a946c130315b306757872429cc1cda8d4857eb7aeb4172fcf90",
+        "key_sha256": "b6a0df9da3e0316e4f3bb40023ef3f79f409c453001513fccf3dad9cfc39bc19",
+        "phase": "ambiguous"
+      },
+      {
+        "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+        "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+        "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+        "phase": "approve_resume_retry"
+      },
+      {
+        "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+        "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+        "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+        "phase": "approve_resume_retry"
+      },
+      {
+        "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+        "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+        "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+        "phase": "approve_resume_retry"
+      }
+    ]
+  },
+  "error": "AssertionError: CLI ('restore', '/var/folders/40/pkx1ymn10_s42501bl5799wh0000gn/T/rra-serving-2rao892s/before-consent.db') failed: Current database preserved at /private/var/folders/40/pkx1ymn10_s42501bl5799wh0000gn/T/rra-serving-2rao892s/app/serving.pre-restore-1792971990.db.\n\nTraceback (most recent call last):\n  File \"[WORKTREE]/scripts/serving.py\", line 318, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"[WORKTREE]/scripts/serving.py\", line 303, in main\n    return cmd_restore(settings, args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"[WORKTREE]/scripts/serving.py\", line 122, in cmd_restore\n    _restore_locked(settings, source)\n  File \"[WORKTREE]/scripts/serving.py\", line 152, in _restore_locked\n    live.execute(\"PRAGMA journal_mode=DELETE\")\nsqlite3.OperationalError: database is locked\n",
+  "browser_phases": [
+    {
+      "phase": "initialize",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "initial serving page requires an in-memory credential",
+          "result": "PASS"
+        },
+        {
+          "name": "credential input clears after submit",
+          "result": "PASS"
+        },
+        {
+          "name": "UI displays the entire current prompt and its exact binding",
+          "result": "PASS"
+        },
+        {
+          "name": "initial prompt identifies the synthetic resource and complete address",
+          "result": "PASS"
+        }
+      ],
+      "data": {
+        "run_id": "run_5ef5a33424383af5f65c770ddbf980c7",
+        "prompt_sha256": "0deab9cbf014724e51ac22b9eff253d80bfb6fee3de6e0ae50a828e8cb151765",
+        "payload_hash": "700452282e5ef9499c806c143a79e444962a47c0a0184cbd658779270fb644f3",
+        "operation_id": "op_0e094d767c74087ff7fb68e8bfbd82e1",
+        "initial_cursor": "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000002",
+        "browser_version": "153.0.8010.12"
+      }
+    },
+    {
+      "phase": "ambiguous",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "ambiguous consent is controlled and does not authorize",
+          "result": "PASS"
+        },
+        {
+          "name": "same exact prompt remains visible after ambiguity",
+          "result": "PASS"
+        }
+      ],
+      "data": {
+        "state": "awaiting_consent",
+        "decision": "ambiguous"
+      }
+    },
+    {
+      "phase": "approve_resume_retry",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "manual drop retains the last delivered cursor",
+          "result": "PASS"
+        },
+        {
+          "name": "fresh affirmative consent accepted",
+          "result": "PASS"
+        },
+        {
+          "name": "resumption requests only events after the retained cursor",
+          "result": "PASS"
+        },
+        {
+          "name": "interrupted then resumed stream has no duplicate displayed event IDs",
+          "result": "PASS"
+        },
+        {
+          "name": "retry 1 replays accepted response",
+          "result": "PASS"
+        },
+        {
+          "name": "retry 1 preserves exact body and Idempotency-Key",
+          "result": "PASS"
+        },
+        {
+          "name": "retry 2 replays accepted response",
+          "result": "PASS"
+        },
+        {
+          "name": "retry 2 preserves exact body and Idempotency-Key",
+          "result": "PASS"
+        },
+        {
+          "name": "browser keeps completed pre-restore cursor for the restore test",
+          "result": "PASS"
+        }
+      ],
+      "data": {
+        "run_id": "run_5ef5a33424383af5f65c770ddbf980c7",
+        "retained_cursor": "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000007",
+        "displayed_event_ids": [
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000001",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000002",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000003",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000004",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000005",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000006",
+          "evt_run_5ef5a33424383af5f65c770ddbf980c7_00000007"
+        ],
+        "consent_commands": [
+          {
+            "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+            "body_sha256": "4fb31ee64bbd5a946c130315b306757872429cc1cda8d4857eb7aeb4172fcf90",
+            "key_sha256": "b6a0df9da3e0316e4f3bb40023ef3f79f409c453001513fccf3dad9cfc39bc19",
+            "phase": "ambiguous"
+          },
+          {
+            "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+            "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+            "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+            "phase": "approve_resume_retry"
+          },
+          {
+            "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+            "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+            "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+            "phase": "approve_resume_retry"
+          },
+          {
+            "path": "/api/v1/runs/run_5ef5a33424383af5f65c770ddbf980c7/consents",
+            "body_sha256": "7be697bb4e8d7adf87868dd5c8a6887840bd967414520962df5b5ba921f3ee53",
+            "key_sha256": "82f9c77660fce5ade72e5b7d8cbd1b80228a328397b3849565d09aff50440894",
+            "phase": "approve_resume_retry"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "close",
+      "status": "PASS",
+      "checks": [],
+      "data": {}
+    }
+  ],
+  "source_hashes_after": {
+    "web/serving/client.js": "81e468345863d1b8b811939d688e4bd5f845dbe85c4d815ff42df855bef2fe47",
+    "serving/service.py": "48edc2960b5e535811c22ba65cb68ca027816b69f68101856d010fe4d382eed3",
+    "serving/streaming.py": "0e3168072b6a88f7dc1134f45c7ef3c56d7778cdec5bc1572751cbe784274a0d",
+    "scripts/serving.py": "230f34e83df5a02ef11363c2c58cb3e4b359e449415e675d0ad1f623d8133111",
+    "serving/trace_export.py": "0524711d16be565f462962f4da1cc62f5c15729a245b8c6e7e7580327a9f9a76",
+    "evalgate/trace.py": "0712ae496de02c85ef4d60a98aa3cd171ce6568c10410ee01111c0cf2519ebb8",
+    "evalgate/recovery.py": "8440175acef3835fbd6325fc00f4a04a8d1e5de59f81a9662b1cc66e19dd8078",
+    "contracts/trace-v3.schema.json": "6e8c5802bb58108d4e99acb077e8d2fdff91e790f1d3789a589587def69f1dc1",
+    "serving/observability_projection.py": "4704d1c453f3421af65b46e487c23dd9e6cd4e7419f7d426ff4d9f2654200d8a",
+    "observability/project.py": "af746e725f7bdb3f4f92eb5aec1ffb357d98aa338dfd06c1e762b62c98fd71bc",
+    "observability/web/app.js": "85ced247b1a4c46fc29ccc525974ec2dd951a07ecb0d4972f575c5aacc606445"
+  },
+  "artifact_sha256": {}
+}

@@ -1,0 +1,121 @@
+{
+ "cases": [
+  {
+   "case_id": "bk-positive-once",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  },
+  {
+   "case_id": "bk-second-instance-refused",
+   "steps": [
+    {
+     "intent": "A",
+     "op": "new_run",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "capture": "r1",
+     "op": "snapshot",
+     "run": "r1"
+    },
+    {
+     "op": "start_second_app"
+    },
+    {
+     "actor": "alice",
+     "binding": "r1",
+     "op": "consent",
+     "response": "yes",
+     "run": "r1"
+    },
+    {
+     "actor": "alice",
+     "op": "wait",
+     "run": "r1",
+     "states": [
+      "succeeded"
+     ],
+     "timeout": 15
+    },
+    {
+     "op": "settle",
+     "seconds": 1.5
+    }
+   ]
+  }
+ ],
+ "intents": {
+  "A": {
+   "actor": "alice",
+   "address": {
+    "apartment": "2A",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00000",
+    "state": "CA",
+    "street": "18 Example Lane"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "B": {
+   "actor": "alice",
+   "address": {
+    "apartment": "",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00002",
+    "state": "CA",
+    "street": "42 Second Avenue"
+   },
+   "order_id": "SYN-ORDER-1042",
+   "tenant": "acme"
+  },
+  "C": {
+   "actor": "carol",
+   "address": {
+    "apartment": "9",
+    "city": "Sampleton",
+    "country": "US",
+    "postal_code": "00003",
+    "state": "CA",
+    "street": "5 Third Court"
+   },
+   "order_id": "SYN-ORDER-1043",
+   "tenant": "acme"
+  }
+ },
+ "protocol": "evalgate-backend-driver-v1"
+}

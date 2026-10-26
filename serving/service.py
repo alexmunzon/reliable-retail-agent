@@ -37,7 +37,7 @@ EVENT_SCHEMA_VERSION = "rra-serving-event-v0-provisional"
 TERMINAL_RUN_STATES = frozenset({"succeeded", "failed", "rejected", "cancelled", "expired", "invalidated"})
 ACTIVE_RUN_STATES = ("awaiting_consent", "queued", "dispatching", "outcome_unknown")
 IDEMPOTENCY_KEY = re.compile(r"[A-Za-z0-9_.:-]{8,128}\Z")
-EVENT_ID = re.compile(r"evt_(run_[0-9a-f]{32})_([0-9]{8})\Z")
+EVENT_ID = re.compile(r"evt_(run_[0-9a-f]{32})_([0-9]{8})(?:_r([0-9a-f]{32}))?\Z")
 
 
 class ServiceError(Exception):
@@ -91,6 +91,11 @@ def consent_binding_hash(row: sqlite3.Row | dict[str, Any], credential_verifier:
 
 def event_id(run_id: str, sequence: int) -> str:
     return f"evt_{run_id}_{sequence:08d}"
+
+
+def stream_cursor(run_id: str, sequence: int, generation: str | None = None) -> str:
+    """Transport identity includes restore generation; business event IDs stay unchanged."""
+    return event_id(run_id, sequence) + ("_r" + generation if generation else "")
 
 
 class Service:
@@ -525,7 +530,7 @@ class Service:
                   "operation": None,
                   "resource_hold": {"held": hold is not None, "by_operation_id": hold["operation_id"] if hold else None,
                                     "state": hold["state"] if hold else None},
-                  "last_event_id": event_id(run_id, run["next_seq"]) if run["next_seq"] else None,
+                  "last_event_id": stream_cursor(run_id, run["next_seq"], storage.get_meta(conn, "restore_generation")) if run["next_seq"] else None,
                   "_prompt_delivered": self._prompt_delivered(conn, run_id),
                   "links": {"events": f"/api/v1/runs/{run_id}/events"}}
         if operation is not None:
@@ -537,7 +542,8 @@ class Service:
                                    "recorded" if operation["attempt_count"] else "not_started",
                                    "error_code": operation["error_code"],
                                    "provider_result": json.loads(operation["provider_result"]) if operation["provider_result"] else None,
-                                   "reconciliation": reconciliation}
+                                   "reconciliation": reconciliation,
+                                   "recovery_observation": (reconciliation or {}).get("restore_observation")}
         return result
 
     def stream_start(self, principal: Principal, run_id: str, cursor: str | None) -> int:
@@ -548,7 +554,12 @@ class Service:
                 after = 0
             else:
                 match = EVENT_ID.fullmatch(cursor)
-                if not match or match[1] != run_id or int(match[2]) > run["next_seq"]:
+                if not match or match[1] != run_id:
+                    raise ServiceError(400, "invalid_cursor", "Last-Event-ID does not identify an event of this run.")
+                if match[3] != storage.get_meta(conn, "restore_generation"):
+                    raise ServiceError(410, "replay_expired", "History changed after restore; recover from the current snapshot.",
+                                       extra={"snapshot": f"/api/v1/runs/{run_id}"})
+                if int(match[2]) > run["next_seq"]:
                     raise ServiceError(400, "invalid_cursor", "Last-Event-ID does not identify an event of this run.")
                 after = int(match[2])
             if after < run["purged_through_seq"]:
@@ -556,6 +567,9 @@ class Service:
                                    "recover from the run snapshot.", extra={"snapshot": f"/api/v1/runs/{run_id}"})
             return after
         return self._read(read)
+
+    def stream_generation(self) -> str | None:
+        return self._read(lambda conn: storage.get_meta(conn, "restore_generation"))
 
     def trace_envelopes(self, principal: Principal, run_id: str) -> list[dict[str, Any]]:
         """Every stored envelope of an owned run, oldest first; refuses a run whose history was purged."""
@@ -834,8 +848,22 @@ class Service:
             return "unresolved"
         common = dict(now=now, source="serving-restore", operation_id=operation_id,
                       payload_hash=row["payload_hash"], prompt_id=row["prompt_id"])
-        evidence = canonical_json({"method": "restore_provider_status_lookup", "code": outcome.code,
-                                   "observed": outcome.result, "checked_at": now})
+        recovery = None
+        generation = storage.get_meta(conn, "restore_generation")
+        snapshot_hash = storage.get_meta(conn, "restore_snapshot_sha256")
+        if outcome.state == "succeeded" and not row["attempt_count"] and generation and snapshot_hash:
+            receipt = {"effect_id": outcome.result["effect_id"], "revision": outcome.result["revision"]}
+            recovery = {"outcome": "effect_confirmed", "by": "restore_provider_status_lookup",
+                        "history": "missing_after_restore", "restore_id": generation,
+                        "snapshot_sha256": snapshot_hash,
+                        "provider_key_sha256": sha256(row["provider_key"].encode()).hexdigest(),
+                        "provider_receipt_sha256": sha256(canonical_json(receipt).encode()).hexdigest(),
+                        "effect_id": receipt["effect_id"], "provider_revision": receipt["revision"]}
+        evidence_data = {"method": "restore_provider_status_lookup", "code": outcome.code,
+                         "observed": outcome.result, "checked_at": now}
+        if recovery is not None:
+            evidence_data["restore_observation"] = recovery
+        evidence = canonical_json(evidence_data)
         if row["state"] == "pending" and outcome.state == "failed_no_effect":
             # Never dispatched (the key is now fenced): discard the pre-backup authorization.
             conn.execute("UPDATE operations SET state='invalidated', error_code='restored_authorization_discarded', "
@@ -863,7 +891,8 @@ class Service:
         self._apply_outcome(conn, operation_id, row["run_id"], outcome, {run_state}, common, now, reconciled=True)
         self._event(conn, row["run_id"], "serving.reconciled", {"title": "Outcome established after restore",
                                                                 "resolved_state": outcome.state,
-                                                                "method": "restore_provider_status_lookup"}, **common)
+                                                                "method": "restore_provider_status_lookup",
+                                                                **({"restore_observation": recovery} if recovery else {})}, **common)
         return outcome.state
 
     def restore_complete(self, revisions: dict[tuple[str, str], int]) -> None:
